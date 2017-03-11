@@ -3,11 +3,14 @@ package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
+import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.control.TextArea;
+import javafx.scene.Node;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Region;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 
@@ -18,8 +21,9 @@ public class JsonPrettyWindow
 	extends FxWindow
 {
 	public static final Duration PERIOD = Duration.millis(200);
-	public final TextArea textField; // TODO replace with styled text
+	public final TextFlow textField;
 	protected final Clipboard clipboard;
+	protected final StyleProcessor styleProcessor;
 	protected String oldContent;
 	
 	
@@ -27,7 +31,10 @@ public class JsonPrettyWindow
 	{
 		super("JsonPrettyWindow");
 		
-		textField = new TextArea();
+		styleProcessor = new StyleProcessor();
+		
+		textField = new TextFlow();
+		textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
 		textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
 		
 		setTitle("Pretty Print JSON/XML " + Version.VERSION);
@@ -57,6 +64,7 @@ public class JsonPrettyWindow
 	
 	protected void updateContent(String s)
 	{
-		textField.setText(s);
+		List<Node> cs = styleProcessor.process(s);
+		textField.getChildren().setAll(cs);
 	}
 }

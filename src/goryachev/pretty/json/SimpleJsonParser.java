@@ -88,11 +88,11 @@ public class SimpleJsonParser
 	}
 	
 	
-	public void parse()
+	public ParseResult parse()
 	{
-		if(chunks != null)
+		if(result != null)
 		{
-			return;
+			return result;
 		}
 		
 		result = new ParseResult();
@@ -196,6 +196,7 @@ public class SimpleJsonParser
 		setState(null);
 		
 		result.setChunks(chunks);
+		return result;
 	}
 }
 
