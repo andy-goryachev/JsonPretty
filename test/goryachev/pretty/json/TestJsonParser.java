@@ -3,6 +3,9 @@ package goryachev.pretty.json;
 import goryachev.common.test.TF;
 import goryachev.common.test.Test;
 import goryachev.common.util.CKit;
+import goryachev.pretty.parser.Chunk;
+import goryachev.pretty.parser.ChunkType;
+import goryachev.pretty.parser.SimpleJsonParser;
 
 
 public class TestJsonParser

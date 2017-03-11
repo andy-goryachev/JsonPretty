@@ -1,5 +1,5 @@
 // Copyright (c) 2013-2017 Andy Goryachev <andy@goryachev.com>
-package goryachev.pretty.json;
+package goryachev.pretty.parser;
 import goryachev.common.util.CList;
 
 
