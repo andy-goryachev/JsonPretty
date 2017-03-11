@@ -2,11 +2,14 @@ General
 	json/xml pretty previewer
 	monitors clipboard
 	syntax highlight of even malformed or mixed text
+	
+Data Conversion
 	parses dates numbers on click
 	lookup whois 
 	run arbitrary command from context menu
 	at the bottom value display:
 	unicode hex java time linux time base64
+	color values
 		
 History
 	keeps history

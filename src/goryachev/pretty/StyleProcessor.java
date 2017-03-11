@@ -9,6 +9,8 @@ import goryachev.pretty.json.ParseResult;
 import goryachev.pretty.json.SimpleJsonParser;
 import java.util.List;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 
 
@@ -46,22 +48,33 @@ public class StyleProcessor
 		CList<Node> rv = new CList<>(cs.length);
 		for(Chunk c: cs)
 		{
-			rv.add(createText(c.getText(), getStyle(c.getType())));
+			rv.add(createText(c.getText(), c.getType()));
 		}
 		return rv;
 	}
 
 
-	protected ChunkType getStyle(ChunkType type)
+	protected Paint getColor(ChunkType t)
 	{
-		// TODO
-		return null;
+		switch(t)
+		{
+		case COMMENT:
+			return Color.RED;
+		case ERROR:
+			return Color.MAGENTA;
+		case IDENTIFIER:
+			return Color.DARKGREEN;
+		case VALUE:
+			return Color.BLUE;
+		}
+		return Color.BLACK;
 	}
 	
 
-	protected Text createText(String text, ChunkType error)
+	protected Text createText(String text, ChunkType type)
 	{
-		// TODO style
-		return new Text(text);
+		Text t = new Text(text);
+		t.setFill(getColor(type));
+		return t;
 	}
 }
