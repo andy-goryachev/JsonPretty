@@ -32,12 +32,6 @@ public class Chunk
 	}
 	
 	
-	public String getTypeString()
-	{
-		return getType().getName();
-	}
-	
-	
 	public String getTag()
 	{
 		if(isTag())
@@ -86,7 +80,6 @@ public class Chunk
 
 	public boolean isAttribute()   { return (getType() == ChunkType.ATTR); }
 	public boolean isComment()     { return (getType() == ChunkType.COMMENT); }
-	public boolean isData()        { return (getType() == ChunkType.DATA); }
 	public boolean isDelimiter()   { return (getType() == ChunkType.DELIMITER); }
 	public boolean isError()       { return (getType() == ChunkType.ERROR); }
 	public boolean isIgnore()      { return (getType() == ChunkType.IGNORE); }
@@ -161,68 +154,11 @@ public class Chunk
 			}
 		}
 		return false;
-		//throw new RuntimeException("not a tag: " + original);
 	}
 	
 	
 	public String toString()
 	{
-		return "Chunk." + getTypeString() + "[" + getText() + "]";
-	}
-
-
-	public static String[] toStringArray(Chunk[] cs)
-	{
-		if(cs == null)
-		{
-			return null;
-		}
-		
-		int sz = cs.length;
-		if(sz == 0)
-		{
-			return null;
-		}
-		
-		String[] ss = new String[sz + sz];
-		int ix = 0;
-		for(int i=0; i<sz; i++)
-		{
-			Chunk ch = cs[i];
-			ss[ix++] = ch.getType().getCode();
-			ss[ix++] = ch.getText();
-		}
-		return ss;
-	}
-	
-	
-	public static Chunk[] toChunkArray(Object x)
-	{
-		if(x instanceof String[])
-		{
-			String[] ss = (String[])x;
-			int sz = ss.length;
-			Chunk[] cs = new Chunk[sz/2];
-			
-			int ix = 0;
-			for(int i=0; i<cs.length; i++)
-			{
-				String code = ss[ix++];
-				ChunkType t = ChunkType.parse(code);
-				if(t == null)
-				{
-					log.print("unknown chunk:", code);
-					return null;
-				}
-				
-				String text = ss[ix++];
-				cs[i] = new Chunk(t, text);
-			}
-			return cs;
-		}
-		else
-		{
-			return null;
-		}
+		return "Chunk." + getType() + "[" + getText() + "]";
 	}
 }
