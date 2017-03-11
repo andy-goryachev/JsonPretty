@@ -6,14 +6,24 @@ extra text
 	{
 		"description": "(JSON object &nbsp;)",
 	},
+	"anEmptyObject": {},
 	"anArray":
 	[
 		0,
 		1,
 		"2",
 		-1.23456789,
-		true
+		true,
+        "string with embedded \\ backslash",
+        "string with embedded \b backspace",
+        "string with embedded \" double quote",
+        "string with embedded \f form feed",
+        "string with embedded \n newline",
+        "string with embedded \t tab",
+        "string with an 😂 emoji",
+        "string with an \uD83D\uDE02 unicode emoji"
 	],
+	"anEmptyArray": [],
 	"aBoolean": true,
 	"aNull": null
 }

@@ -8,7 +8,13 @@ Data Conversion
 	lookup whois 
 	run arbitrary command from context menu
 	at the bottom value display:
-	unicode hex java time linux time base64
+	unicode
+		int -> char
+		\uxxxx -> char
+	hex 
+	java time 
+	linux time 
+	base64
 	color values
 		
 History
