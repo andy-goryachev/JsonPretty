@@ -1,7 +1,7 @@
 extra text
 {
 	"description": "JSON example shows all possible types",
-	"aNumber": +1e308,
+	"aNumber": 1e308,
 	"anObject":
 	{
 		"description": "(JSON object &nbsp;)",
