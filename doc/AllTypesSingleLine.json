@@ -1,0 +1,1 @@
+extra text{"description": "JSON example shows all possible types","aNumber": +1e308,"anObject":{"description": "(JSON object &nbsp;)",},"anArray":[0,1,"2",-1.23456789,true],"aBoolean":true,"aNull":null}extra text

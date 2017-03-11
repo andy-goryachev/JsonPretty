@@ -31,8 +31,18 @@ public class StyleProcessor
 	{
 		try
 		{
-			ParseResult r = new SimpleJsonParser(s).parse();
-			return convert(r);
+			// parse
+			Chunk[] cs = parse(s);
+			
+			// format
+			CList<Chunk> formatted = format(cs);
+				
+			CList<Node> rv = new CList<>(formatted.size());
+			for(Chunk c: formatted)
+			{
+				rv.add(createText(c.getText(), c.getType()));
+			}
+			return rv;
 		}
 		catch(Exception e)
 		{
@@ -40,16 +50,26 @@ public class StyleProcessor
 			return new CList<>(createText(CKit.stackTrace(e), ChunkType.ERROR));
 		}
 	}
-
-
-	protected List<Node> convert(ParseResult r)
+	
+	
+	protected Chunk[] parse(String text)
 	{
-		Chunk[] cs = r.getChunks();
-		CList<Node> rv = new CList<>(cs.length);
+		ParseResult r = new SimpleJsonParser(text).parse();
+		return r.getChunks();
+	}
+	
+	
+	// TODO format
+	protected CList<Chunk> format(Chunk[] cs)
+	{
+		int sz = cs.length * 2;
+		CList<Chunk> rv = new CList<>(sz);
+		
 		for(Chunk c: cs)
 		{
-			rv.add(createText(c.getText(), c.getType()));
+			rv.add(c);
 		}
+		
 		return rv;
 	}
 
