@@ -5,7 +5,8 @@ import goryachev.common.test.Test;
 import goryachev.common.util.CKit;
 import goryachev.pretty.parser.Chunk;
 import goryachev.pretty.parser.ChunkType;
-import goryachev.pretty.parser.SimpleJsonParser;
+import goryachev.pretty.parser.ResilientJsonParser;
+import java.util.List;
 
 
 public class TestJsonParser
@@ -24,7 +25,6 @@ public class TestJsonParser
 	
 	public static void t(Object ... parts) throws Exception
 	{
-		Chunk[] chunks = null;
 		StringBuilder sb = new StringBuilder();
 		for(int i=0; i<parts.length; i++)
 		{
@@ -32,9 +32,9 @@ public class TestJsonParser
 		}
 		String text = sb.toString();
 		
-		SimpleJsonParser p = new SimpleJsonParser(text);
+		ResilientJsonParser p = new ResilientJsonParser(text);
 		p.parse();
-		chunks = p.getParsedDocument().getChunks();
+		List<Chunk> chunks = p.getParsedDocument().getChunks();
 		
 		int sz = parts.length / 2;
 		Chunk[] expected = new Chunk[sz];

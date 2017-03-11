@@ -1,6 +1,7 @@
 // Copyright (c) 2013-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
 import goryachev.common.util.CList;
+import java.util.List;
 
 
 /** 
@@ -8,7 +9,7 @@ import goryachev.common.util.CList;
  */
 public class ParseResult
 {
-	private Chunk[] chunks;
+	private final CList<Chunk> chunks = new CList<>(128);
 	
 	
 	public ParseResult()
@@ -16,20 +17,14 @@ public class ParseResult
 	}
 	
 	
-	public Chunk[] getChunks()
+	public List<Chunk> getChunks()
 	{
 		return chunks;
 	}
 
 		
-	public void setChunks(Chunk[] cs)
+	public void add(Chunk c)
 	{
-		chunks = cs;
-	}
-	
-	
-	public void setChunks(CList<Chunk> cs)
-	{
-		setChunks(cs == null ? null : cs.toArray(new Chunk[cs.size()]));
+		chunks.add(c);
 	}
 }

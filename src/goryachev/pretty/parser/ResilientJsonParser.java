@@ -1,11 +1,10 @@
 // Copyright (c) 2013-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
 import goryachev.common.util.CKit;
-import goryachev.common.util.CList;
 
 
 /*
- * Simple JSON Parser, does not distinguish between identifier and value.
+ * A JSON parser capable of handling malformed JSON (and later, XML).
  * 
  * Generates the following Chunks:
  *    LINEBREAK
@@ -13,7 +12,7 @@ import goryachev.common.util.CList;
  *    IDENTIFIER - for identifier names and quoted values
  *    VALUE      - for unquoted values
  */
-public class SimpleJsonParser
+public class ResilientJsonParser
 {
 	protected final String text;
 	private int line;
@@ -23,11 +22,10 @@ public class SimpleJsonParser
 	private boolean inQuotes;
 	private boolean escape;
 	private ChunkType state;
-	private CList<Chunk> chunks;
 	private ParseResult result;
 	
 	
-	public SimpleJsonParser(String text)
+	public ResilientJsonParser(String text)
 	{
 		this.text = text;
 	}
@@ -51,7 +49,7 @@ public class SimpleJsonParser
 		{
 			String s = text.substring(startOffset, offset);
 			Chunk ch = new Chunk(state, s);
-			chunks.add(ch);
+			result.add(ch);
 
 			startOffset = offset;
 		}
@@ -96,8 +94,6 @@ public class SimpleJsonParser
 		}
 		
 		result = new ParseResult();
-		
-		chunks = new CList();
 		state = ChunkType.IGNORE;
 		
 		int length = text.length();
@@ -195,7 +191,6 @@ public class SimpleJsonParser
 		
 		setState(null);
 		
-		result.setChunks(chunks);
 		return result;
 	}
 }

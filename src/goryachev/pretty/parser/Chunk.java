@@ -78,22 +78,12 @@ public class Chunk
 	}
 	
 
-	public boolean isAttribute()   { return (getType() == ChunkType.ATTR); }
 	public boolean isComment()     { return (getType() == ChunkType.COMMENT); }
-	public boolean isDelimiter()   { return (getType() == ChunkType.DELIMITER); }
 	public boolean isError()       { return (getType() == ChunkType.ERROR); }
 	public boolean isIgnore()      { return (getType() == ChunkType.IGNORE); }
 	public boolean isIdentifier()  { return (getType() == ChunkType.IDENTIFIER); }
-	public boolean isKeyword()     { return (getType() == ChunkType.KEYWORD); }
 	public boolean isLinebreak()   { return (getType() == ChunkType.LINEBREAK); }
-	public boolean isNormal()      { return (getType() == ChunkType.NORMAL); }
-	public boolean isNumber()      { return (getType() == ChunkType.NUMBER); }
-	public boolean isPartialTag()  { return (getType() == ChunkType.TAG_PART); }
-	public boolean isPunctuation() { return (getType() == ChunkType.PUNCT); }
-	public boolean isScript()      { return (getType() == ChunkType.SCRIPT); }
-	public boolean isString()      { return (getType() == ChunkType.STRING); }
 	public boolean isTag()         { return (getType() == ChunkType.TAG); }
-	public boolean isText()        { return (getType() == ChunkType.TEXT); }
 	public boolean isValue()       { return (getType() == ChunkType.VALUE); }
 	public boolean isWhitespace()  { return (getType() == ChunkType.WHITESPACE); }
 	

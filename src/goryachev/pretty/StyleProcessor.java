@@ -6,7 +6,7 @@ import goryachev.common.util.Log;
 import goryachev.pretty.parser.Chunk;
 import goryachev.pretty.parser.ChunkType;
 import goryachev.pretty.parser.ParseResult;
-import goryachev.pretty.parser.SimpleJsonParser;
+import goryachev.pretty.parser.ResilientJsonParser;
 import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -32,7 +32,7 @@ public class StyleProcessor
 		try
 		{
 			// parse
-			Chunk[] cs = parse(s);
+			List<Chunk> cs = parse(s);
 			
 			// format
 			CList<Chunk> formatted = format(cs);
@@ -52,17 +52,17 @@ public class StyleProcessor
 	}
 	
 	
-	protected Chunk[] parse(String text)
+	protected List<Chunk> parse(String text)
 	{
-		ParseResult r = new SimpleJsonParser(text).parse();
+		ParseResult r = new ResilientJsonParser(text).parse();
 		return r.getChunks();
 	}
 	
 	
 	// TODO format
-	protected CList<Chunk> format(Chunk[] cs)
+	protected CList<Chunk> format(List<Chunk> cs)
 	{
-		int sz = cs.length * 2;
+		int sz = cs.size() * 2;
 		CList<Chunk> rv = new CList<>(sz);
 		
 		for(Chunk c: cs)
