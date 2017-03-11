@@ -2,15 +2,12 @@
 package goryachev.pretty.parser;
 import goryachev.common.util.CKit;
 import goryachev.common.util.FH;
-import goryachev.common.util.Log;
-import goryachev.common.util.TextTools;
 
 
 public class Chunk
 {
-	private ChunkType type;
-	private String text;
-	protected static final Log log = Log.get("Chunk");
+	private final ChunkType type;
+	private final String text;
 	
 	
 	public Chunk(ChunkType type, String text)
@@ -29,25 +26,6 @@ public class Chunk
 	public String getText()
 	{
 		return text;
-	}
-	
-	
-	public String getTag()
-	{
-		if(isTag())
-		{
-			String s = TextTools.beforeSpace(getText());
-			if(s.startsWith("<"))
-			{
-				s = s.substring(1);
-			}
-			if(s.endsWith(">"))
-			{
-				s = s.substring(0, s.length()-1);
-			}
-			return s;
-		}
-		return null;
 	}
 	
 	
@@ -75,75 +53,6 @@ public class Chunk
 		h = FH.hash(h, type);
 		h = FH.hash(h, text);
 		return h;
-	}
-	
-
-	public boolean isComment()     { return (getType() == ChunkType.COMMENT); }
-	public boolean isError()       { return (getType() == ChunkType.ERROR); }
-	public boolean isIgnore()      { return (getType() == ChunkType.IGNORE); }
-	public boolean isIdentifier()  { return (getType() == ChunkType.IDENTIFIER); }
-	public boolean isLinebreak()   { return (getType() == ChunkType.LINEBREAK); }
-	public boolean isTag()         { return (getType() == ChunkType.TAG); }
-	public boolean isValue()       { return (getType() == ChunkType.VALUE); }
-	public boolean isWhitespace()  { return (getType() == ChunkType.WHITESPACE); }
-	
-
-	public String getLowerCaseTag()
-	{
-		if(getType() == ChunkType.TAG)
-		{
-			int start = isClosingTag() ? 2 : 1;
-			for(int i=start; i<text.length(); i++)
-			{
-				char c = text.charAt(i);
-				if(!Character.isLetterOrDigit(c))
-				{
-					return text.substring(start, i).toLowerCase();
-				}
-			}
-			
-			return text.substring(start).toLowerCase();
-		}
-
-		throw new RuntimeException("not a tag: " + text);
-	}
-	
-	
-	public String getCompactTag()
-	{
-		if(getType() == ChunkType.TAG)
-		{
-			if(isClosingTag())
-			{
-				return text.toLowerCase();
-			}
-			else
-			{
-				for(int i=1; i<text.length(); i++)
-				{
-					char c = text.charAt(i);
-					if(!Character.isLetter(c))
-					{
-						return text.substring(0, i).toLowerCase() + ">";
-					}
-				}
-				throw new RuntimeException("tag has no closing >: " + text);
-			}
-		}
-		throw new RuntimeException("not a tag: " + text);
-	}
-	
-	
-	public boolean isClosingTag()
-	{
-		if(getType() == ChunkType.TAG)
-		{
-			if(text.length() > 1)
-			{
-				return text.charAt(1) == '/';
-			}
-		}
-		return false;
 	}
 	
 	

@@ -84,6 +84,8 @@ public class StyleProcessor
 			return Color.MAGENTA;
 		case IDENTIFIER:
 			return Color.DARKGREEN;
+		case IGNORE:
+			return Color.GRAY;
 		case VALUE:
 			return Color.BLUE;
 		}

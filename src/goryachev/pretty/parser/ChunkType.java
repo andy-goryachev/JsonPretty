@@ -9,8 +9,6 @@ public enum ChunkType
 	IDENTIFIER,
 	IGNORE,
 	LINEBREAK,
-	TAG,
-	VALUE,
-	WHITESPACE
+	VALUE
 	;
 }

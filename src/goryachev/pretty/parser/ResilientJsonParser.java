@@ -157,6 +157,7 @@ public class ResilientJsonParser
 					{
 						if(inQuotes)
 						{
+							// FIX or name
 							setState(ChunkType.IDENTIFIER);
 						}
 						else
