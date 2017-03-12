@@ -3,6 +3,7 @@ package goryachev.pretty.json;
 import goryachev.common.test.TF;
 import goryachev.common.test.Test;
 import goryachev.common.util.CKit;
+import goryachev.common.util.Rex;
 import goryachev.pretty.parser.Chunk;
 import goryachev.pretty.parser.ChunkType;
 import goryachev.pretty.parser.ResilientJsonParser;
@@ -11,8 +12,8 @@ import java.util.List;
 
 public class TestJsonParser
 {
-	public static final ChunkType I = ChunkType.IDENTIFIER;
 	public static final ChunkType L = ChunkType.LINEBREAK;
+	public static final ChunkType N = ChunkType.NAME;
 	public static final ChunkType V = ChunkType.VALUE;
 	public static final ChunkType X = ChunkType.IGNORE;
 	
@@ -23,7 +24,7 @@ public class TestJsonParser
 	}
 	
 	
-	public static void t(Object ... parts) throws Exception
+	public static void t(Object ... parts)
 	{
 		StringBuilder sb = new StringBuilder();
 		for(int i=0; i<parts.length; i++)
@@ -53,7 +54,7 @@ public class TestJsonParser
 			TF.list(chunks);
 			TF.print("expected:");
 			TF.list(expected);
-			throw new Exception();
+			throw new Rex();
 		}
 	}
 	
@@ -61,10 +62,17 @@ public class TestJsonParser
 	@Test
 	public void testParser() throws Exception
 	{
-		t(X, "{", L, "\n", X, " [ \"", I, "I \\\" I", X, "\": ", V, "1", X, " ] }", L, "\n");
-		t(X, "{", L, "\n", X, " [ \"", I, "I \\\" I", X, "\": \"", I, "V \\\" V", X, "\" ] }", L, "\n");
-		t(X, "{", L, "\n", X, "\"", I, "I \\\" I", X, "\": \"", I, "V \\\" V", X, "\" }", L, "\n");
-		t(X, "{", L, "\n", X, "\"", I, "I I", X, "\": \"", I, "V V", X, "\" }", L, "\n");
-		t(X, "{", L, "\n", X, "\"", I, "I", X, "\": \"", I, "V", X, "\" }", L, "\n");
+		t(X, "{", L, "\n", X, " [ \"", N, "I \\\" I", X, "\": ", V, "1", X, " ] }", L, "\n");
+		t(X, "{", L, "\n", X, " [ \"", N, "I \\\" I", X, "\": \"", N, "V \\\" V", X, "\" ] }", L, "\n");
+		t(X, "{", L, "\n", X, "\"", N, "I \\\" I", X, "\": \"", N, "V \\\" V", X, "\" }", L, "\n");
+		t(X, "{", L, "\n", X, "\"", N, "I I", X, "\": \"", N, "V V", X, "\" }", L, "\n");
+		t(X, "{", L, "\n", X, "\"", N, "I", X, "\": \"", N, "V", X, "\" }", L, "\n");
+	}
+	
+	
+//	@Test
+	public void test()
+	{
+		t(X, "hello"); 
 	}
 }

@@ -6,9 +6,9 @@ public enum ChunkType
 {
 	COMMENT,
 	ERROR,
-	IDENTIFIER,
 	IGNORE,
 	LINEBREAK,
+	NAME,
 	VALUE
 	;
 }

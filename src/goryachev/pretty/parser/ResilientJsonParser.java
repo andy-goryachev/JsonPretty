@@ -6,11 +6,17 @@ import goryachev.common.util.CKit;
 /*
  * A JSON parser capable of handling malformed JSON (and later, XML).
  * 
+ * FIX this parser was written for another project with totally different requirements.
+ * Need to rewrite completely.
+ * 
  * Generates the following Chunks:
- *    LINEBREAK
- *    IGNORE     - whitespace, braces, punctuation
- *    IDENTIFIER - for identifier names and quoted values
- *    VALUE      - for unquoted values
+ *    IGNORE      - text outside of json
+ *    LINEBREAK   -
+ *    PUNCTUATION - json [ ] : 
+ *    NAME        - json names
+ *    STRING      - string value
+ *    VALUE       - unquoted value (boolean, number, null)
+ *    WHITESPACE  -
  */
 public class ResilientJsonParser
 {
@@ -157,8 +163,7 @@ public class ResilientJsonParser
 					{
 						if(inQuotes)
 						{
-							// FIX or name
-							setState(ChunkType.IDENTIFIER);
+							setState(ChunkType.NAME);
 						}
 						else
 						{
