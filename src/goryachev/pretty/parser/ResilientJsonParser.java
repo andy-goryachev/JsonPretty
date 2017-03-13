@@ -1,33 +1,18 @@
-// Copyright (c) 2013-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
-import goryachev.common.util.CKit;
+import goryachev.common.util.Rex;
 
 
-/*
+/**
  * A JSON parser capable of handling malformed JSON (and later, XML).
- * 
- * FIX this parser was written for another project with totally different requirements.
- * Need to rewrite completely.
- * 
- * Generates the following Chunks:
- *    IGNORE      - text outside of json
- *    LINEBREAK   -
- *    PUNCTUATION - json [ ] : 
- *    NAME        - json names
- *    STRING      - string value
- *    VALUE       - unquoted value (boolean, number, null)
- *    WHITESPACE  -
  */
 public class ResilientJsonParser
 {
 	protected final String text;
-	private int line;
+	private Type state;
+	private Type beforeWhitespace;
 	private int offset;
 	private int startOffset;
-	private boolean skipLF;
-	private boolean inQuotes;
-	private boolean escape;
-	private ChunkType state;
 	private ParseResult result;
 	
 	
@@ -37,168 +22,195 @@ public class ResilientJsonParser
 	}
 	
 	
-	public ParseResult getParsedDocument()
+	public ParseResult parse()
 	{
+		if(result != null)
+		{
+			throw new Rex("parser can be called only once");
+		}
+		
+		result = new ParseResult();
+		state = Type.IGNORE;
+		for(offset=0; offset<text.length(); )
+		{
+			int c = text.codePointAt(offset);
+			Type newState = processSymbol(c);
+			if(newState != null)
+			{
+				if(newState != state)
+				{
+					addSegment();
+					state = newState;
+				}
+			}
+			offset += Character.charCount(c);
+		}
+		addSegment();
+		
 		return result;
 	}
 	
 	
-	protected void newLine()
-	{
-		++line;
-	}
-	
-	
-	protected void addChunk()
+	protected void addSegment()
 	{
 		if(offset > startOffset)
 		{
 			String s = text.substring(startOffset, offset);
-			Chunk ch = new Chunk(state, s);
-			result.add(ch);
+			Segment ch = new Segment(state, s);
+			result.addSegment(ch);
 
 			startOffset = offset;
 		}
 	}
 	
 	
-	protected void setState(ChunkType t)
+	protected Type processSymbol(int c)
 	{
-		if(state != t)
+		switch(state)
 		{
-			addChunk();
-			state = t;
+		case ARRAY_BEGIN:
+			return inArrayBegin(c);
+		case ARRAY_END:
+			return inArrayEnd(c);
+		case COMMENT:
+			return inComment(c);
+		case ERROR:
+			return inError(c);
+		case IGNORE:
+			return inIgnore(c);
+		case NAME:
+			return inName(c);
+		case NAME_BEGIN:
+			return inNameBegin(c);
+		case NAME_END:
+			return inNameEnd(c);
+		case OBJECT_BEGIN:
+			return inObjectBegin(c);
+		case OBJECT_END:
+			return inObjectEnd(c);
+		case STRING:
+			return inString(c);
+		case STRING_BEGIN:
+			return inStringBegin(c);
+		case STRING_END:
+			return inStringEnd(c);
+		case VALUE:
+			return inValue(c);
+		case WHITESPACE:
+			return inWhitespace(c);
+		default:
+			throw new Rex("unknown state " + state);
 		}
 	}
 	
 	
-	protected boolean isValue(char c)
+	protected Type inArrayBegin(int c)
 	{
-		if(CKit.isBlank(c))
+		throw new Rex();
+	}
+	
+	
+	protected Type inArrayEnd(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inComment(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inError(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inIgnore(int c)
+	{
+		switch(c)
 		{
-			return false;
+		case '{':
+			return Type.OBJECT_BEGIN;
+		case '[':
+			return Type.ARRAY_BEGIN;
+		}
+		return null;
+	}
+	
+	
+	protected Type inName(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inNameBegin(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inNameEnd(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inObjectBegin(int c)
+	{
+		if(Character.isWhitespace(c))
+		{
+			beforeWhitespace = state;
+			return Type.WHITESPACE;
 		}
 		
 		switch(c)
 		{
-		case '{':
+		case '"':
+			return Type.NAME_BEGIN;
 		case '}':
-		case '[':
-		case ']':
-		case ':':
-			return false;
+			return Type.OBJECT_END;
 		}
-		return true;
+		
+		return Type.ERROR;
 	}
 	
 	
-	public ParseResult parse()
+	protected Type inObjectEnd(int c)
 	{
-		if(result != null)
-		{
-			return result;
-		}
-		
-		result = new ParseResult();
-		state = ChunkType.IGNORE;
-		
-		int length = text.length();
-		for(offset=0; offset<length; offset++)
-		{
-			char c = text.charAt(offset);
-			switch(c)
-			{
-			case '\r':
-				setState(ChunkType.LINEBREAK);
-				newLine();
-				skipLF = true;
-				escape = false;
-				break;
-
-			case '\n':
-				if(skipLF)
-				{
-					skipLF = false;
-				}
-				else
-				{
-					setState(ChunkType.LINEBREAK);
-					newLine();
-				}
-				escape = false;
-				break;
-				
-			case '\\':
-				escape = true;
-				break;
-				
-			case '"':
-				if(inQuotes)
-				{
-					if(!escape)
-					{
-						setState(ChunkType.IGNORE);
-						inQuotes = false;
-					}
-				}
-				else
-				{
-					if(!escape)
-					{
-						if(state != ChunkType.IGNORE)
-						{
-							setState(ChunkType.IGNORE);
-						}
-						inQuotes = true;
-					}
-				}
-				escape = false;
-				break;
-				
-			default:
-				switch(state)
-				{
-				case IGNORE:
-				case LINEBREAK:
-					{
-						if(inQuotes)
-						{
-							setState(ChunkType.NAME);
-						}
-						else
-						{
-							if(isValue(c))
-							{
-								setState(ChunkType.VALUE);
-							}
-							else
-							{
-								if(state != ChunkType.IGNORE)
-								{
-									setState(ChunkType.IGNORE);
-								}
-							}
-						}
-					}
-					break;
-				case VALUE:
-					if(!inQuotes)
-					{
-						if(CKit.isBlank(c))
-						{
-							setState(ChunkType.IGNORE);
-						}
-					}
-					break;
-				}
-				escape = false;
-			}
-		}
-		
-		setState(null);
-		
-		return result;
+		throw new Rex();
+	}
+	
+	
+	protected Type inString(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inStringBegin(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inStringEnd(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inValue(int c)
+	{
+		throw new Rex();
+	}
+	
+	
+	protected Type inWhitespace(int c)
+	{
+		throw new Rex();
 	}
 }
-
-

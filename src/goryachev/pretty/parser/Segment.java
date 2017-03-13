@@ -4,20 +4,20 @@ import goryachev.common.util.CKit;
 import goryachev.common.util.FH;
 
 
-public class Chunk
+public class Segment
 {
-	private final ChunkType type;
+	private final Type type;
 	private final String text;
 	
 	
-	public Chunk(ChunkType type, String text)
+	public Segment(Type type, String text)
 	{
 		this.type = type;
 		this.text = text;
 	}
 	
 	
-	public ChunkType getType()
+	public Type getType()
 	{
 		return type;
 	}
@@ -35,9 +35,9 @@ public class Chunk
 		{
 			return true;
 		}
-		else if(x instanceof Chunk)
+		else if(x instanceof Segment)
 		{
-			Chunk c = (Chunk)x;
+			Segment c = (Segment)x;
 			return (type == c.type) && CKit.equals(text, c.text);
 		}
 		else
@@ -49,7 +49,7 @@ public class Chunk
 	
 	public int hashCode()
 	{
-		int h = FH.hash(Chunk.class);
+		int h = FH.hash(Segment.class);
 		h = FH.hash(h, type);
 		h = FH.hash(h, text);
 		return h;

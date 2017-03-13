@@ -3,8 +3,8 @@ package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
-import goryachev.pretty.parser.Chunk;
-import goryachev.pretty.parser.ChunkType;
+import goryachev.pretty.parser.Segment;
+import goryachev.pretty.parser.Type;
 import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.ResilientJsonParser;
 import java.util.List;
@@ -32,13 +32,13 @@ public class StyleProcessor
 		try
 		{
 			// parse
-			List<Chunk> cs = parse(s);
+			List<Segment> cs = parse(s);
 			
 			// format
-			CList<Chunk> formatted = format(cs);
+			CList<Segment> formatted = format(cs);
 				
 			CList<Node> rv = new CList<>(formatted.size());
-			for(Chunk c: formatted)
+			for(Segment c: formatted)
 			{
 				rv.add(createText(c.getText(), c.getType()));
 			}
@@ -47,25 +47,25 @@ public class StyleProcessor
 		catch(Exception e)
 		{
 			log.err(e);
-			return new CList<>(createText(CKit.stackTrace(e), ChunkType.ERROR));
+			return new CList<>(createText(CKit.stackTrace(e), Type.ERROR));
 		}
 	}
 	
 	
-	protected List<Chunk> parse(String text)
+	protected List<Segment> parse(String text)
 	{
 		ParseResult r = new ResilientJsonParser(text).parse();
-		return r.getChunks();
+		return r.getSegments();
 	}
 	
 	
 	// TODO format
-	protected CList<Chunk> format(List<Chunk> cs)
+	protected CList<Segment> format(List<Segment> cs)
 	{
 		int sz = cs.size() * 2;
-		CList<Chunk> rv = new CList<>(sz);
+		CList<Segment> rv = new CList<>(sz);
 		
-		for(Chunk c: cs)
+		for(Segment c: cs)
 		{
 			rv.add(c);
 		}
@@ -74,7 +74,7 @@ public class StyleProcessor
 	}
 
 
-	protected Paint getColor(ChunkType t)
+	protected Paint getColor(Type t)
 	{
 		switch(t)
 		{
@@ -93,7 +93,7 @@ public class StyleProcessor
 	}
 	
 
-	protected Text createText(String text, ChunkType type)
+	protected Text createText(String text, Type type)
 	{
 		Text t = new Text(text);
 		t.setFill(getColor(type));

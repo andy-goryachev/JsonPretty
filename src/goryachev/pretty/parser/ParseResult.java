@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class ParseResult
 {
-	private final CList<Chunk> chunks = new CList<>(128);
+	private final CList<Segment> segments = new CList<>(128);
 	
 	
 	public ParseResult()
@@ -17,14 +17,14 @@ public class ParseResult
 	}
 	
 	
-	public List<Chunk> getChunks()
+	public List<Segment> getSegments()
 	{
-		return chunks;
+		return segments;
 	}
 
 		
-	public void add(Chunk c)
+	public void addSegment(Segment c)
 	{
-		chunks.add(c);
+		segments.add(c);
 	}
 }
