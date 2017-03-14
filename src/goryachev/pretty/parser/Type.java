@@ -4,6 +4,7 @@ package goryachev.pretty.parser;
 
 public enum Type
 {
+	COMMA,
 	COMMENT,
 	ERROR,
 	IGNORE,
@@ -14,6 +15,7 @@ public enum Type
 	NAME,
 	NAME_BEGIN,
 	NAME_END,
+	SEPARATOR,
 	STRING,
 	STRING_BEGIN,
 	STRING_END,

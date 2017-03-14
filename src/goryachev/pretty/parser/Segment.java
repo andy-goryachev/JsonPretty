@@ -58,6 +58,6 @@ public class Segment
 	
 	public String toString()
 	{
-		return "Chunk." + getType() + "[" + getText() + "]";
+		return "Segment." + getType() + "<" + getText() + ">";
 	}
 }

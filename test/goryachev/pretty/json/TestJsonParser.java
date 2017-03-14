@@ -14,9 +14,14 @@ import java.util.List;
 
 public class TestJsonParser
 {
+	public static final Type AB = Type.ARRAY_BEGIN;
+	public static final Type AE = Type.ARRAY_END;
 	public static final Type N = Type.NAME;
+	public static final Type NB = Type.NAME_BEGIN;
+	public static final Type NE = Type.NAME_END;
 	public static final Type OB = Type.OBJECT_BEGIN;
 	public static final Type OE = Type.OBJECT_END;
+	public static final Type S = Type.SEPARATOR;
 	public static final Type V = Type.VALUE;
 	public static final Type X = Type.IGNORE;
 	
@@ -74,15 +79,18 @@ public class TestJsonParser
 	
 	
 	@Test
+	public void testRegression()
+	{
+		t(OB, "{", OE, "}");
+		t(AB, "[", AE, "]");
+		t(X, "hello");
+		t(OB, "{", NB, "\"", N, "name", NE, "\"", S, ":", V, "true", OE, "}");
+	}
+
+
+	@Test
 	public void test()
 	{
-		t(OB, "{", OE, "}"); 
-	}
-	
-	
-	@Test
-	public void testIgnore()
-	{
-		t(X, "hello"); 
+		t(OB, "{", NB, "\"", N, "name", NE, "\"", S, ":", V, "true", OE, "}");
 	}
 }

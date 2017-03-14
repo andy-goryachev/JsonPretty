@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
+import goryachev.common.util.CList;
 import goryachev.common.util.Rex;
 
 
@@ -10,7 +11,7 @@ public class ResilientJsonParser
 {
 	protected final String text;
 	private Type state;
-	private Type beforeWhitespace;
+	private CList<Type> states = new CList<>();
 	private int offset;
 	private int startOffset;
 	private ParseResult result;
@@ -51,6 +52,17 @@ public class ResilientJsonParser
 	}
 	
 	
+	protected void pushState()
+	{
+		states.add(state);
+	}
+	
+	
+	protected void popState()
+	{
+	}
+	
+	
 	protected void addSegment()
 	{
 		if(offset > startOffset)
@@ -88,6 +100,8 @@ public class ResilientJsonParser
 			return inObjectBegin(c);
 		case OBJECT_END:
 			return inObjectEnd(c);
+		case SEPARATOR:
+			return inSeparator(c);
 		case STRING:
 			return inString(c);
 		case STRING_BEGIN:
@@ -106,7 +120,21 @@ public class ResilientJsonParser
 	
 	protected Type inArrayBegin(int c)
 	{
-		throw new Rex();
+		if(Character.isWhitespace(c))
+		{
+			pushState();
+			return Type.WHITESPACE;
+		}
+		
+		switch(c)
+		{
+		case '"':
+			return Type.STRING_BEGIN;
+		case ']':
+			return Type.ARRAY_END;
+		}
+		
+		return Type.VALUE;
 	}
 	
 	
@@ -143,19 +171,43 @@ public class ResilientJsonParser
 	
 	protected Type inName(int c)
 	{
-		throw new Rex();
+		switch(c)
+		{
+		case '"':
+			return Type.NAME_END;
+		}
+		
+		return null;
 	}
 	
 	
 	protected Type inNameBegin(int c)
 	{
-		throw new Rex();
+		switch(c)
+		{
+		case '"':
+			return Type.NAME_END;
+		}
+		
+		return Type.NAME;
 	}
 	
 	
 	protected Type inNameEnd(int c)
 	{
-		throw new Rex();
+		if(Character.isWhitespace(c))
+		{
+			pushState();
+			return Type.WHITESPACE;
+		}
+		
+		switch(c)
+		{
+		case ':':
+			return Type.SEPARATOR;
+		}
+		
+		return Type.ERROR;
 	}
 	
 	
@@ -163,7 +215,7 @@ public class ResilientJsonParser
 	{
 		if(Character.isWhitespace(c))
 		{
-			beforeWhitespace = state;
+			pushState();
 			return Type.WHITESPACE;
 		}
 		
@@ -182,6 +234,24 @@ public class ResilientJsonParser
 	protected Type inObjectEnd(int c)
 	{
 		throw new Rex();
+	}
+	
+	
+	protected Type inSeparator(int c)
+	{
+		if(Character.isWhitespace(c))
+		{
+			pushState();
+			return Type.WHITESPACE;
+		}
+		
+		switch(c)
+		{
+		case '"':
+			return Type.STRING;
+		default:
+			return Type.VALUE;
+		}
 	}
 	
 	
@@ -205,7 +275,21 @@ public class ResilientJsonParser
 	
 	protected Type inValue(int c)
 	{
-		throw new Rex();
+		if(Character.isWhitespace(c))
+		{
+			pushState();
+			return Type.WHITESPACE;
+		}
+		
+		switch(c)
+		{
+		case ',':
+			return Type.COMMA;
+		case '}':
+			return Type.OBJECT_END;
+		}
+		
+		return null;
 	}
 	
 	
