@@ -16,6 +16,7 @@ public class TestJsonParser
 {
 	public static final Type AB = Type.ARRAY_BEGIN;
 	public static final Type AE = Type.ARRAY_END;
+	public static final Type I = Type.IGNORE;
 	public static final Type N = Type.NAME;
 	public static final Type NB = Type.NAME_BEGIN;
 	public static final Type NE = Type.NAME_END;
@@ -23,7 +24,7 @@ public class TestJsonParser
 	public static final Type OE = Type.OBJECT_END;
 	public static final Type S = Type.SEPARATOR;
 	public static final Type V = Type.VALUE;
-	public static final Type X = Type.IGNORE;
+	public static final Type W = Type.WHITESPACE;
 	
 	
 	public static void main(String[] args)
@@ -83,7 +84,7 @@ public class TestJsonParser
 	{
 		t(OB, "{", OE, "}");
 		t(AB, "[", AE, "]");
-		t(X, "hello");
+		t(I, "hello");
 		t(OB, "{", NB, "\"", N, "name", NE, "\"", S, ":", V, "true", OE, "}");
 	}
 
@@ -91,6 +92,6 @@ public class TestJsonParser
 	@Test
 	public void test()
 	{
-		t(OB, "{", NB, "\"", N, "name", NE, "\"", S, ":", V, "true", OE, "}");
+		t(I, "xx  ", OB, "{", W, " ", NB, "\"", N, "name", NE, "\"", W, "  ", S, ":", W, "  ", V, "true", W, "\n", OE, "}");
 	}
 }

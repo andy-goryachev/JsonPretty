@@ -58,8 +58,9 @@ public class ResilientJsonParser
 	}
 	
 	
-	protected void popState()
+	protected Type popState()
 	{
+		return states.remove(states.size() - 1);
 	}
 	
 	
@@ -295,6 +296,48 @@ public class ResilientJsonParser
 	
 	protected Type inWhitespace(int c)
 	{
-		throw new Rex();
+		if(Character.isWhitespace(c))
+		{
+			return null;
+		}
+		
+		Type prev = popState();
+		switch(c)
+		{
+		case '"':
+			switch(prev)
+			{
+			case OBJECT_BEGIN:
+				return Type.NAME_BEGIN;
+			}
+			// TODO
+			break;
+			
+		case ':':
+			switch(prev)
+			{
+			case NAME_END:
+				return Type.SEPARATOR;
+			}
+			// TODO
+			break;
+			
+		case '}':
+			switch(prev)
+			{
+			case VALUE:
+				return Type.OBJECT_END;
+			}
+			// TODO
+			break;
+		}
+		
+		switch(prev)
+		{
+		case SEPARATOR:
+			return Type.VALUE;
+		}
+		
+		throw new Rex("c=" + (char)c + " " + prev);
 	}
 }
