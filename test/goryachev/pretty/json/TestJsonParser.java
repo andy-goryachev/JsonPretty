@@ -16,15 +16,18 @@ public class TestJsonParser
 {
 	public static final Type AB = Type.ARRAY_BEGIN;
 	public static final Type AE = Type.ARRAY_END;
-	public static final Type I = Type.IGNORE;
-	public static final Type N = Type.NAME;
+	public static final Type IG = Type.IGNORE;
+	public static final Type NA = Type.NAME;
 	public static final Type NB = Type.NAME_BEGIN;
 	public static final Type NE = Type.NAME_END;
 	public static final Type OB = Type.OBJECT_BEGIN;
 	public static final Type OE = Type.OBJECT_END;
-	public static final Type S = Type.SEPARATOR;
-	public static final Type V = Type.VALUE;
-	public static final Type W = Type.WHITESPACE;
+	public static final Type SP = Type.SEPARATOR;
+	public static final Type ST = Type.STRING;
+	public static final Type SB = Type.STRING_BEGIN;
+	public static final Type SE = Type.STRING_END;
+	public static final Type VA = Type.VALUE;
+	public static final Type WH = Type.WHITESPACE;
 	
 	
 	public static void main(String[] args)
@@ -84,14 +87,15 @@ public class TestJsonParser
 	{
 		t(OB, "{", OE, "}");
 		t(AB, "[", AE, "]");
-		t(I, "hello");
-		t(OB, "{", NB, "\"", N, "name", NE, "\"", S, ":", V, "true", OE, "}");
+		t(IG, "hello");
+		t(OB, "{", NB, "\"", NA, "name", NE, "\"", SP, ":", VA, "true", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", VA, "true", WH, "\n", OE, "}");
 	}
 
 
 	@Test
 	public void test()
 	{
-		t(I, "xx  ", OB, "{", W, " ", NB, "\"", N, "name", NE, "\"", W, "  ", S, ":", W, "  ", V, "true", W, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 	}
 }

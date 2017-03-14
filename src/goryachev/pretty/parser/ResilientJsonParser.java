@@ -258,19 +258,53 @@ public class ResilientJsonParser
 	
 	protected Type inString(int c)
 	{
-		throw new Rex();
+		switch(c)
+		{
+		case '\\':
+			// TODO escape
+			throw new Rex("esc"); 
+		case '"':
+			return Type.STRING_END;
+		}
+		
+		return null;
 	}
 	
 	
 	protected Type inStringBegin(int c)
 	{
-		throw new Rex();
+		switch(c)
+		{
+		case '\\':
+			// TODO escape
+			throw new Rex("esc"); 
+		case '"':
+			return Type.STRING_END;
+		}
+		
+		return Type.STRING;
 	}
 	
 	
 	protected Type inStringEnd(int c)
 	{
-		throw new Rex();
+		if(Character.isWhitespace(c))
+		{
+			pushState();
+			return Type.WHITESPACE;
+		}
+		
+		switch(c)
+		{
+		case ',':
+			return Type.COMMA;
+		case '}':
+			return Type.OBJECT_END;
+		case ']':
+			return Type.ARRAY_END; // FIX?
+		}
+		
+		return Type.ERROR;
 	}
 	
 	
@@ -309,9 +343,11 @@ public class ResilientJsonParser
 			{
 			case OBJECT_BEGIN:
 				return Type.NAME_BEGIN;
+			case SEPARATOR:
+				return Type.STRING_BEGIN;
 			}
 			// TODO
-			break;
+			throw new Rex("c=" + (char)c + " " + prev);
 			
 		case ':':
 			switch(prev)
@@ -320,16 +356,17 @@ public class ResilientJsonParser
 				return Type.SEPARATOR;
 			}
 			// TODO
-			break;
+			throw new Rex("c=" + (char)c + " " + prev);
 			
 		case '}':
 			switch(prev)
 			{
+			case STRING_END:
 			case VALUE:
 				return Type.OBJECT_END;
 			}
 			// TODO
-			break;
+			throw new Rex("c=" + (char)c + " " + prev);
 		}
 		
 		switch(prev)
