@@ -19,6 +19,7 @@
 		"string with embedded \" double quote",
 		"string with embedded \f form feed",
 		"string with embedded \n newline",
+		"string with embedded \r carriage return",
 		"string with embedded \/ slash",
 		"string with embedded \t tab",
 		"string with an 😂 emoji",

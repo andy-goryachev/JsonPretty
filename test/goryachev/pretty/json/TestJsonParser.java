@@ -71,17 +71,6 @@ public class TestJsonParser
 	}
 	
 	
-//	@Test
-//	public void testParser() throws Exception
-//	{
-//		t(X, "{", L, "\n", X, " [ \"", N, "I \\\" I", X, "\": ", V, "1", X, " ] }", L, "\n");
-//		t(X, "{", L, "\n", X, " [ \"", N, "I \\\" I", X, "\": \"", N, "V \\\" V", X, "\" ] }", L, "\n");
-//		t(X, "{", L, "\n", X, "\"", N, "I \\\" I", X, "\": \"", N, "V \\\" V", X, "\" }", L, "\n");
-//		t(X, "{", L, "\n", X, "\"", N, "I I", X, "\": \"", N, "V V", X, "\" }", L, "\n");
-//		t(X, "{", L, "\n", X, "\"", N, "I", X, "\": \"", N, "V", X, "\" }", L, "\n");
-//	}
-	
-	
 	@Test
 	public void testRegression()
 	{
@@ -90,6 +79,17 @@ public class TestJsonParser
 		t(IG, "hello");
 		t(OB, "{", NB, "\"", NA, "name", NE, "\"", SP, ":", VA, "true", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", VA, "true", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\nname", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\r", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "x\\r", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "x\\rx", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\rx", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "x\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "x\\u4fdex", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\n\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 	}
 
 

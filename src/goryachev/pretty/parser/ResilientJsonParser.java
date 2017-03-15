@@ -14,6 +14,7 @@ public class ResilientJsonParser
 	private CList<Type> states = new CList<>();
 	private int offset;
 	private int startOffset;
+	private int symbolLength;
 	private ParseResult result;
 	
 	
@@ -35,6 +36,8 @@ public class ResilientJsonParser
 		for(offset=0; offset<text.length(); )
 		{
 			int c = text.codePointAt(offset);
+			symbolLength = Character.charCount(c);
+				
 			Type newState = processSymbol(c);
 			if(newState != null)
 			{
@@ -44,7 +47,7 @@ public class ResilientJsonParser
 					state = newState;
 				}
 			}
-			offset += Character.charCount(c);
+			offset += symbolLength;
 		}
 		addSegment();
 		
@@ -73,6 +76,33 @@ public class ResilientJsonParser
 			result.addSegment(ch);
 
 			startOffset = offset;
+		}
+	}
+	
+	
+	// returns length of the escaped symbols, or -1 if not a valid sequence
+	protected int getEscapeSequenceLength()
+	{
+		int c = text.codePointAt(offset + symbolLength);
+		int len = Character.charCount(c);
+		
+		switch(c)
+		{
+		case 'b':
+		case 'f':
+		case 'n':
+		case 'r':
+		case 't':
+		case '"':
+		case '\\':
+		case '/':
+			return len;
+		case 'u':
+			// unicode escape
+			return len += 3;
+		default:
+			// not a valid escape sequence
+			return -1;
 		}
 	}
 	
@@ -153,7 +183,8 @@ public class ResilientJsonParser
 	
 	protected Type inError(int c)
 	{
-		throw new Rex();
+		// stay in error state
+		return null;
 	}
 	
 	
@@ -188,6 +219,16 @@ public class ResilientJsonParser
 		{
 		case '"':
 			return Type.NAME_END;
+		case '\\':
+			int n = getEscapeSequenceLength();
+			if(n < 0)
+			{
+				return Type.ERROR;
+			}
+			else
+			{
+				symbolLength += n;
+			}
 		}
 		
 		return Type.NAME;
