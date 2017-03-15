@@ -1,0 +1,48 @@
+﻿STATE MACHINE
+
+
+Initial         Symbol    Next State
+
+IGNORE          {         OBJECT_BEGIN
+                [         ARRAY_BEGIN
+		        any       same
+
+OBJECT_BEGIN	ws
+                "         NAME_BEGIN
+                }         OBJECT_END
+                any       ERROR
+
+NAME_BEGIN      "         NAME_END
+                \         skip escape sequence
+                any       NAME
+				
+NAME            "         NAME_END
+                \         skip escape sequence
+				any       same
+				
+NAME_END        ws
+                :         SEPARATOR
+				any       ERROR
+				
+SEPARATOR       ws
+				{         OBJECT_BEGIN
+				[         ARRAY_BEGIN
+				"         STRING_BEGIN
+				any       VALUE
+				
+VALUE           ws
+                ,         COMMA
+                }         OBJECT_END
+                any       same
+
+OBJECT_END		ws
+                ,         COMMA
+				any       IGNORE
+
+COMMA  		    ws
+                {         OBJECT_BEGIN
+				any       ERROR
+				
+ARRAY_BEGIN     ws
+                "         STRING_BEGIN
+				any       VALUE

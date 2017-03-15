@@ -115,6 +115,8 @@ public class ResilientJsonParser
 			return inArrayBegin(c);
 		case ARRAY_END:
 			return inArrayEnd(c);
+		case COMMA:
+			return inComma(c);
 		case COMMENT:
 			return inComment(c);
 		case ERROR:
@@ -171,13 +173,33 @@ public class ResilientJsonParser
 	
 	protected Type inArrayEnd(int c)
 	{
+		// FIX
 		throw new Rex();
+	}
+	
+	
+	protected Type inComma(int c)
+	{
+		if(Character.isWhitespace(c))
+		{
+			pushState();
+			return Type.WHITESPACE;
+		}
+		
+		switch(c)
+		{
+		case '{':
+			return Type.OBJECT_BEGIN;
+		default:
+			return Type.ERROR;
+		}
 	}
 	
 	
 	protected Type inComment(int c)
 	{
-		throw new Rex();
+		// stay in comment state (no such state in json)
+		return null;
 	}
 	
 	
@@ -207,6 +229,16 @@ public class ResilientJsonParser
 		{
 		case '"':
 			return Type.NAME_END;
+		case '\\':
+			int n = getEscapeSequenceLength();
+			if(n < 0)
+			{
+				return Type.ERROR;
+			}
+			else
+			{
+				symbolLength += n;
+			}
 		}
 		
 		return null;
@@ -275,7 +307,19 @@ public class ResilientJsonParser
 	
 	protected Type inObjectEnd(int c)
 	{
-		throw new Rex();
+		if(Character.isWhitespace(c))
+		{
+			pushState();
+			return Type.WHITESPACE;
+		}
+		
+		switch(c)
+		{
+		case ',':
+			return Type.COMMA;
+		default:
+			return Type.IGNORE;
+		}
 	}
 	
 	
@@ -290,7 +334,11 @@ public class ResilientJsonParser
 		switch(c)
 		{
 		case '"':
-			return Type.STRING;
+			return Type.STRING_BEGIN;
+		case '{':
+			return Type.OBJECT_BEGIN;
+		case '[':
+			return Type.ARRAY_BEGIN;
 		default:
 			return Type.VALUE;
 		}
