@@ -60,6 +60,8 @@ WHITESPACE      ws
                           (other)          -> ERROR
                 :         (NAME_END)       -> SEPARATOR
                           (other)          -> ERROR
+				{         (SEPARATOR)      -> NAME_BEGIN
+                          (other)          -> ERROR
                 }         (ARRAY_END)      -> OBJECT_END
 				          (OBJECT_BEGIN)   -> OBJECT_END
                           (STRING_END)     -> OBJECT_END

@@ -468,6 +468,16 @@ public class ResilientJsonParser
 			D.print("e2 c=" + (char)c + " " + prev);
 			return Type.ERROR;
 			
+		case '{':
+			switch(prev)
+			{
+			case SEPARATOR:
+				return Type.OBJECT_BEGIN;
+			}
+			// TODO
+			D.print("e2.2 c=" + (char)c + " " + prev);
+			return Type.ERROR;
+			
 		case '}':
 			switch(prev)
 			{
