@@ -70,9 +70,14 @@ WHITESPACE      ws
                           (SEPARATOR)      -> ARRAY_BEGIN
                           (other)          -> ERROR
                 ]         (ARRAY_BEGIN)    -> ARRAY_END
-	                      (other)          -> ERROR			
+				          (VALUE)          -> ARRAY_END
+	                      (other)          -> ERROR
+                ,         (VALUE)          -> COMMA
+                          (other)          -> ERROR				
 			    (any)     (SEPARATOR)      -> VALUE
 				          (OBJECT_END)     -> IGNORE
 						  (ARRAY_END)      -> IGNORE
+						  (ARRAY_BEGIN)    -> VALUE
+						  (COMMA)          -> VALUE
 						  
 						  

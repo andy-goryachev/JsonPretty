@@ -30,3 +30,10 @@
 	"aNull": null
 }
 extra text
+
+{
+	"a" :
+	[
+		1, 2
+	]
+}

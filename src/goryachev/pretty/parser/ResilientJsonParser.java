@@ -505,10 +505,21 @@ public class ResilientJsonParser
 			switch(prev)
 			{
 			case ARRAY_BEGIN:
+			case VALUE:
 				return Type.ARRAY_END;
 			}
 			// TODO
 			D.print("e5 c=" + (char)c + " " + prev);
+			return Type.ERROR;
+			
+		case ',':
+			switch(prev)
+			{
+			case VALUE:
+				return Type.COMMA;
+			}
+			// TODO
+			D.print("e5.2 c=" + (char)c + " " + prev);
 			return Type.ERROR;
 		}
 		
@@ -519,6 +530,10 @@ public class ResilientJsonParser
 		case ARRAY_END:
 		case OBJECT_END:
 			return Type.IGNORE;
+		case ARRAY_BEGIN:
+			return Type.VALUE;
+		case COMMA:
+			return Type.VALUE;
 		}
 		
 		D.print("e6 c=" + (char)c + " " + prev);
