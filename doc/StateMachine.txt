@@ -56,7 +56,7 @@ ARRAY_END       ws
                 any       IGNORE
 				
 WHITESPACE      ws
-                "         (COMMA)          -> NAME_BEGIN
+                "         (COMMA)          -> STRING_BEGIN
 				          (OBJECT_BEGIN)   -> NAME_BEGIN
                           (SEPARATOR)      -> STRING_BEGIN
                           (other)          -> ERROR
@@ -72,6 +72,7 @@ WHITESPACE      ws
                           (SEPARATOR)      -> ARRAY_BEGIN
                           (other)          -> ERROR
                 ]         (ARRAY_BEGIN)    -> ARRAY_END
+				          (STRING_END)     -> ARRAY_END
 				          (VALUE)          -> ARRAY_END
 	                      (other)          -> ERROR
                 ,         (VALUE)          -> COMMA

@@ -27,4 +27,21 @@ public class ParseResult
 	{
 		segments.add(c);
 	}
+	
+	
+	boolean isInArray()
+	{
+		for(int i=segments.size() - 1; i>=0; i--)
+		{
+			Segment seg = segments.get(i);
+			switch(seg.getType())
+			{
+			case ARRAY_BEGIN:
+				return true;
+			case OBJECT_BEGIN:
+				return false;
+			}
+		}
+		return false;
+	}
 }

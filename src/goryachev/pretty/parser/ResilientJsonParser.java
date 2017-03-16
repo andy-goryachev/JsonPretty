@@ -85,6 +85,13 @@ public class ResilientJsonParser
 	}
 	
 	
+	protected boolean isInArray()
+	{
+		// inferring state from already parsed chunks
+		return result.isInArray();
+	}
+	
+	
 	// returns length of the escaped symbols, or -1 if not a valid sequence
 	protected int getEscapeSequenceLength()
 	{
@@ -122,6 +129,8 @@ public class ResilientJsonParser
 			return inArrayEnd(c);
 		case COMMA:
 			return inComma(c);
+		case COMMA_ARRAY:
+			return inCommaArray(c);
 		case COMMENT:
 			return inComment(c);
 		case ERROR:
@@ -197,6 +206,26 @@ public class ResilientJsonParser
 	
 	
 	protected Type inComma(int c)
+	{
+		if(Character.isWhitespace(c))
+		{
+			pushState();
+			return Type.WHITESPACE;
+		}
+		
+		switch(c)
+		{
+		case '{':
+			return Type.OBJECT_BEGIN;
+		case '"':
+			return Type.STRING_BEGIN;
+		default:
+			return Type.VALUE;
+		}
+	}
+	
+	
+	protected Type inCommaArray(int c)
 	{
 		if(Character.isWhitespace(c))
 		{
@@ -406,7 +435,14 @@ public class ResilientJsonParser
 		switch(c)
 		{
 		case ',':
-			return Type.COMMA;
+			if(isInArray())
+			{
+				return Type.COMMA_ARRAY;
+			}
+			else
+			{
+				return Type.COMMA;
+			}
 		case '}':
 			return Type.OBJECT_END;
 		case ']':
@@ -428,7 +464,14 @@ public class ResilientJsonParser
 		switch(c)
 		{
 		case ',':
-			return Type.COMMA;
+			if(isInArray())
+			{
+				return Type.COMMA_ARRAY;
+			}
+			else
+			{
+				return Type.COMMA;
+			}
 		case '}':
 			return Type.OBJECT_END;
 		case ']':
@@ -452,6 +495,8 @@ public class ResilientJsonParser
 		case '"':
 			switch(prev)
 			{
+			case COMMA_ARRAY:
+				return Type.STRING_BEGIN;
 			case COMMA:
 			case OBJECT_BEGIN:
 				return Type.NAME_BEGIN;
@@ -509,6 +554,7 @@ public class ResilientJsonParser
 			switch(prev)
 			{
 			case ARRAY_BEGIN:
+			case STRING_END:
 			case VALUE:
 				return Type.ARRAY_END;
 			}
@@ -520,7 +566,14 @@ public class ResilientJsonParser
 			switch(prev)
 			{
 			case VALUE:
-				return Type.COMMA;
+				if(isInArray())
+				{
+					return Type.COMMA_ARRAY;
+				}
+				else
+				{
+					return Type.COMMA;
+				}
 			}
 			// TODO
 			D.print("e5.2 c=" + (char)c + " " + prev);
@@ -537,6 +590,7 @@ public class ResilientJsonParser
 		case ARRAY_BEGIN:
 			return Type.VALUE;
 		case COMMA:
+		case COMMA_ARRAY:
 			return Type.VALUE;
 		}
 		

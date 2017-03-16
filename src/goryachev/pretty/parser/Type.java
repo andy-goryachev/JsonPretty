@@ -5,6 +5,7 @@ package goryachev.pretty.parser;
 public enum Type
 {
 	COMMA,
+	COMMA_ARRAY,
 	COMMENT,
 	ERROR,
 	IGNORE,

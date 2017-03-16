@@ -16,6 +16,7 @@ public class TestJsonParser
 {
 	public static final Type AB = Type.ARRAY_BEGIN;
 	public static final Type AE = Type.ARRAY_END;
+	public static final Type CA = Type.COMMA_ARRAY;
 	public static final Type CO = Type.COMMA;
 	public static final Type IG = Type.IGNORE;
 	public static final Type NA = Type.NAME;
@@ -99,15 +100,18 @@ public class TestJsonParser
 		t(AB, "[", WH, " ", AE, "]", WH, " ", IG, "xx");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", CO, ",", WH, "\n ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n ", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", OB, "{", WH, "\n", NB, "\"", NA, "n", NE, "\"", SP, ":", VA, "true", OE, "}", CO, ",", WH, "\n ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n ", OE, "}");
-		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", WH, "\n", VA, "1", WH, " ", CO, ",", WH, " ", VA, "2", WH, " ", AE, "]", WH, " ", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", WH, "\n", VA, "1", WH, " ", CA, ",", WH, " ", VA, "2", WH, " ", AE, "]", WH, " ", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", WH, "\n", VA, "1", WH, " ", CA, ",", WH, " ", VA, "2", WH, " ", AE, "]", WH, " ", OE, "}");
+		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "s", SE, "\"", AE, "]");
+		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "s", SE, "\"", CA, ",", VA, "3", AE, "]");
+		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
+		t(AB, "[", WH, " ", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
 	}
 
 
 	@Test
 	public void test()
 	{
-		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", WH, "\n", VA, "1", WH, " ", CO, ",", WH, " ", VA, "2", WH, " ", AE, "]", WH, " ", OE, "}");
-		t(AB, "[", VA, "1", CO, ",", SB, "\"", ST, "s", SE, "\"", AE, "]");
-		t(AB, "[", VA, "1", CO, ",", SB, "\"", ST, "s", SE, "\"", CO, ",", VA, "3", AE, "]");
+		t(AB, "[", WH, " ", VA, "1", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
 	}
 }
