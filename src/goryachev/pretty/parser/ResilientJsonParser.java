@@ -399,8 +399,16 @@ public class ResilientJsonParser
 		switch(c)
 		{
 		case '\\':
-			// TODO escape
-			throw new Rex("esc"); 
+			int n = getEscapeSequenceLength();
+			if(n < 0)
+			{
+				return Type.ERROR;
+			}
+			else
+			{
+				symbolLength += n;
+			}
+			return null;
 		case '"':
 			return Type.STRING_END;
 		}
@@ -414,8 +422,16 @@ public class ResilientJsonParser
 		switch(c)
 		{
 		case '\\':
-			// TODO escape
-			throw new Rex("esc"); 
+			int n = getEscapeSequenceLength();
+			if(n < 0)
+			{
+				return Type.ERROR;
+			}
+			else
+			{
+				symbolLength += n;
+			}
+			return null;
 		case '"':
 			return Type.STRING_END;
 		}
@@ -495,6 +511,7 @@ public class ResilientJsonParser
 		case '"':
 			switch(prev)
 			{
+			case ARRAY_BEGIN:
 			case COMMA_ARRAY:
 				return Type.STRING_BEGIN;
 			case COMMA:
@@ -565,6 +582,7 @@ public class ResilientJsonParser
 		case ',':
 			switch(prev)
 			{
+			case STRING_END:
 			case VALUE:
 				if(isInArray())
 				{

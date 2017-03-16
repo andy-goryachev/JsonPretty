@@ -3,10 +3,10 @@ package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
-import goryachev.pretty.parser.Segment;
-import goryachev.pretty.parser.Type;
 import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.ResilientJsonParser;
+import goryachev.pretty.parser.Segment;
+import goryachev.pretty.parser.Type;
 import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -19,9 +19,6 @@ import javafx.scene.text.Text;
  */
 public class StyleProcessor
 {
-	protected static final Log log = Log.get("StyleProcessor");
-
-	
 	public StyleProcessor()
 	{
 	}
@@ -46,7 +43,7 @@ public class StyleProcessor
 		}
 		catch(Exception e)
 		{
-			log.err(e);
+			Log.ex(e);
 			return new CList<>(createText(CKit.stackTrace(e), Type.ERROR));
 		}
 	}

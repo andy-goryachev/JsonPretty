@@ -26,7 +26,8 @@ public class JsonPrettyApp
 		File baseDir = new File(System.getProperty("user.home"), ".goryachev.com");
 			
 		File logFolder = new File(baseDir, "logs"); 
-		Log.init(logFolder);
+//		Log.init(logFolder);
+		Log.initConsole();
 		
 		File settingsFile = new File(baseDir, "settings.conf");
 		FileSettingsProvider p = new FileSettingsProvider(settingsFile);

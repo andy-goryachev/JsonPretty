@@ -106,12 +106,13 @@ public class TestJsonParser
 		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "s", SE, "\"", CA, ",", VA, "3", AE, "]");
 		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
 		t(AB, "[", WH, " ", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
+		t(AB, "[", WH, " ", VA, "1", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
 	}
 
 
 	@Test
 	public void test()
 	{
-		t(AB, "[", WH, " ", VA, "1", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
+		t(AB, "[", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
 	}
 }
