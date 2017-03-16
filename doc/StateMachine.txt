@@ -32,6 +32,7 @@ SEPARATOR       ws
 				
 VALUE           ws
                 ,         COMMA
+				]         ARRAY_END
                 }         OBJECT_END
                 any       same
 
@@ -41,7 +42,8 @@ OBJECT_END      ws
 
 COMMA           ws
                 {         OBJECT_BEGIN
-                any       ERROR
+				"         STRING_BEGIN
+                any       VALUE
 				
 ARRAY_BEGIN     ws
                 ]         ARRAY_END

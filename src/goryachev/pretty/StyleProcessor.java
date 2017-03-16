@@ -82,10 +82,14 @@ public class StyleProcessor
 			return Color.RED;
 		case ERROR:
 			return Color.MAGENTA;
-		case NAME:
-			return Color.DARKGREEN;
 		case IGNORE:
 			return Color.GRAY;
+		case NAME:
+			return Color.DARKGREEN;
+		case STRING_BEGIN:
+		case STRING:
+		case STRING_END:
+			return Color.BLUE;
 		case VALUE:
 			return Color.BLUE;
 		}

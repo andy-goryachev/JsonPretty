@@ -208,8 +208,10 @@ public class ResilientJsonParser
 		{
 		case '{':
 			return Type.OBJECT_BEGIN;
+		case '"':
+			return Type.STRING_BEGIN;
 		default:
-			return Type.ERROR;
+			return Type.VALUE;
 		}
 	}
 	
@@ -408,7 +410,7 @@ public class ResilientJsonParser
 		case '}':
 			return Type.OBJECT_END;
 		case ']':
-			return Type.ARRAY_END; // FIX?
+			return Type.ARRAY_END;
 		}
 		
 		return Type.ERROR;
@@ -429,6 +431,8 @@ public class ResilientJsonParser
 			return Type.COMMA;
 		case '}':
 			return Type.OBJECT_END;
+		case ']':
+			return Type.ARRAY_END;
 		}
 		
 		return null;
