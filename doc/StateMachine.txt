@@ -18,31 +18,50 @@ NAME_BEGIN      "         NAME_END
 				
 NAME            "         NAME_END
                 \         skip escape sequence
-				any       same
+                any       same
 				
 NAME_END        ws
                 :         SEPARATOR
-				any       ERROR
+                any       ERROR
 				
 SEPARATOR       ws
-				{         OBJECT_BEGIN
-				[         ARRAY_BEGIN
-				"         STRING_BEGIN
-				any       VALUE
+                {         OBJECT_BEGIN
+                [         ARRAY_BEGIN
+                "         STRING_BEGIN
+                any       VALUE
 				
 VALUE           ws
                 ,         COMMA
                 }         OBJECT_END
                 any       same
 
-OBJECT_END		ws
+OBJECT_END      ws
                 ,         COMMA
-				any       IGNORE
+                any       IGNORE
 
-COMMA  		    ws
+COMMA           ws
                 {         OBJECT_BEGIN
-				any       ERROR
+                any       ERROR
 				
 ARRAY_BEGIN     ws
+                ]         ARRAY_END
                 "         STRING_BEGIN
-				any       VALUE
+                any       VALUE
+				
+ARRAY_END       ws
+                ,         COMMA
+                }         OBJECT_END
+                any       IGNORE
+				
+WHITESPACE      ws
+                "         (OBJECT_BEGIN)   -> NAME_BEGIN
+                          (SEPARATOR)      -> STRING_BEGIN
+                          (other)          -> ERROR
+                :         (NAME_END)       -> SEPARATOR
+                          (other)          -> ERROR
+                }         (ARRAY_END)      -> OBJECT_END
+                          (STRING_END)     -> OBJECT_END
+                          (VALUE)          -> OBJECT_END
+                          (other)          -> ERROR
+                          (SEPARATOR)      -> ARRAY_BEGIN
+                          (other)          -> ERROR

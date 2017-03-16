@@ -173,8 +173,21 @@ public class ResilientJsonParser
 	
 	protected Type inArrayEnd(int c)
 	{
-		// FIX
-		throw new Rex();
+		if(Character.isWhitespace(c))
+		{
+			pushState();
+			return Type.WHITESPACE;
+		}
+		
+		switch(c)
+		{
+		case ',':
+			return Type.COMMA;
+		case '}':
+			return Type.OBJECT_END;
+		}
+		
+		return Type.IGNORE;
 	}
 	
 	
@@ -450,9 +463,19 @@ public class ResilientJsonParser
 		case '}':
 			switch(prev)
 			{
+			case ARRAY_END:
 			case STRING_END:
 			case VALUE:
 				return Type.OBJECT_END;
+			}
+			// TODO
+			throw new Rex("c=" + (char)c + " " + prev);
+			
+		case '[':
+			switch(prev)
+			{
+			case SEPARATOR:
+				return Type.ARRAY_BEGIN;
 			}
 			// TODO
 			throw new Rex("c=" + (char)c + " " + prev);

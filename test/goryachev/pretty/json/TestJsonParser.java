@@ -90,12 +90,13 @@ public class TestJsonParser
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "x\\u4fdex", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\n\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", VA, "true", WH, "\n", OE, "}");
 	}
 
 
 	@Test
 	public void test()
 	{
-		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", VA, "true", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n", OE, "}");
 	}
 }
