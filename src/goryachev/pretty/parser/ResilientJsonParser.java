@@ -464,6 +464,7 @@ public class ResilientJsonParser
 			switch(prev)
 			{
 			case ARRAY_END:
+			case OBJECT_BEGIN:
 			case STRING_END:
 			case VALUE:
 				return Type.OBJECT_END;
@@ -479,12 +480,24 @@ public class ResilientJsonParser
 			}
 			// TODO
 			throw new Rex("c=" + (char)c + " " + prev);
+			
+		case ']':
+			switch(prev)
+			{
+			case ARRAY_BEGIN:
+				return Type.ARRAY_END;
+			}
+			// TODO
+			throw new Rex("c=" + (char)c + " " + prev);
 		}
 		
 		switch(prev)
 		{
 		case SEPARATOR:
 			return Type.VALUE;
+		case ARRAY_END:
+		case OBJECT_END:
+			return Type.IGNORE;
 		}
 		
 		throw new Rex("c=" + (char)c + " " + prev);

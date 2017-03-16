@@ -98,5 +98,9 @@ public class TestJsonParser
 	public void test()
 	{
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n", OE, "}");
+		t(OB, "{", WH, " ", OE, "}");
+		t(AB, "[", WH, " ", AE, "]");
+		t(OB, "{", WH, " ", OE, "}", WH, " ", IG, "xx");
+		t(AB, "[", WH, " ", AE, "]", WH, " ", IG, "xx");
 	}
 }
