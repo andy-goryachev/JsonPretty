@@ -1,11 +1,16 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
 import goryachev.common.util.CList;
+import goryachev.common.util.D;
 import goryachev.common.util.Rex;
 
 
 /**
  * A JSON parser capable of handling malformed JSON (and later, XML).
+ * 
+ * WARNING: this parser lacks a formal proof of correctness.
+ * I am too tired to do better at the moment, perhaps some other time.
+ * Sorry.
  */
 public class ResilientJsonParser
 {
@@ -443,13 +448,15 @@ public class ResilientJsonParser
 		case '"':
 			switch(prev)
 			{
+			case COMMA:
 			case OBJECT_BEGIN:
 				return Type.NAME_BEGIN;
 			case SEPARATOR:
 				return Type.STRING_BEGIN;
 			}
 			// TODO
-			throw new Rex("c=" + (char)c + " " + prev);
+			D.print("e1 c=" + (char)c + " " + prev);
+			return Type.ERROR;
 			
 		case ':':
 			switch(prev)
@@ -458,7 +465,8 @@ public class ResilientJsonParser
 				return Type.SEPARATOR;
 			}
 			// TODO
-			throw new Rex("c=" + (char)c + " " + prev);
+			D.print("e2 c=" + (char)c + " " + prev);
+			return Type.ERROR;
 			
 		case '}':
 			switch(prev)
@@ -470,7 +478,8 @@ public class ResilientJsonParser
 				return Type.OBJECT_END;
 			}
 			// TODO
-			throw new Rex("c=" + (char)c + " " + prev);
+			D.print("e3 c=" + (char)c + " " + prev);
+			return Type.ERROR;
 			
 		case '[':
 			switch(prev)
@@ -479,7 +488,8 @@ public class ResilientJsonParser
 				return Type.ARRAY_BEGIN;
 			}
 			// TODO
-			throw new Rex("c=" + (char)c + " " + prev);
+			D.print("e4 c=" + (char)c + " " + prev);
+			return Type.ERROR;
 			
 		case ']':
 			switch(prev)
@@ -488,7 +498,8 @@ public class ResilientJsonParser
 				return Type.ARRAY_END;
 			}
 			// TODO
-			throw new Rex("c=" + (char)c + " " + prev);
+			D.print("e5 c=" + (char)c + " " + prev);
+			return Type.ERROR;
 		}
 		
 		switch(prev)
@@ -500,6 +511,7 @@ public class ResilientJsonParser
 			return Type.IGNORE;
 		}
 		
-		throw new Rex("c=" + (char)c + " " + prev);
+		D.print("e6 c=" + (char)c + " " + prev);
+		return Type.ERROR;
 	}
 }

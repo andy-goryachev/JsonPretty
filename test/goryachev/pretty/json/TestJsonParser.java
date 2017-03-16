@@ -16,6 +16,7 @@ public class TestJsonParser
 {
 	public static final Type AB = Type.ARRAY_BEGIN;
 	public static final Type AE = Type.ARRAY_END;
+	public static final Type CO = Type.COMMA;
 	public static final Type IG = Type.IGNORE;
 	public static final Type NA = Type.NAME;
 	public static final Type NB = Type.NAME_BEGIN;
@@ -91,16 +92,17 @@ public class TestJsonParser
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\n\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", VA, "true", WH, "\n", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n", OE, "}");
+		t(OB, "{", WH, " ", OE, "}");
+		t(AB, "[", WH, " ", AE, "]");
+		t(OB, "{", WH, " ", OE, "}", WH, " ", IG, "xx");
+		t(AB, "[", WH, " ", AE, "]", WH, " ", IG, "xx");
 	}
 
 
 	@Test
 	public void test()
 	{
-		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n", OE, "}");
-		t(OB, "{", WH, " ", OE, "}");
-		t(AB, "[", WH, " ", AE, "]");
-		t(OB, "{", WH, " ", OE, "}", WH, " ", IG, "xx");
-		t(AB, "[", WH, " ", AE, "]", WH, " ", IG, "xx");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", CO, ",", WH, "\n ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n ", OE, "}");
 	}
 }

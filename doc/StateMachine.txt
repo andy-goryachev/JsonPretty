@@ -54,7 +54,8 @@ ARRAY_END       ws
                 any       IGNORE
 				
 WHITESPACE      ws
-                "         (OBJECT_BEGIN)   -> NAME_BEGIN
+                "         (COMMA)          -> NAME_BEGIN
+				          (OBJECT_BEGIN)   -> NAME_BEGIN
                           (SEPARATOR)      -> STRING_BEGIN
                           (other)          -> ERROR
                 :         (NAME_END)       -> SEPARATOR
