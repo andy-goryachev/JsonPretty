@@ -99,6 +99,8 @@ public class TestRecursiveJsonParser
 	{
 		t(OB, "{", OE, "}");
 		t(AB, "[", AE, "]");
+		t(OB, "{", WH, " ", OE, "}", IG, " xx");
+		t(AB, "[", WH, " ", AE, "]", IG, " xx");
 		t(OB, "{", WH, " ", OE, "}");
 		t(AB, "[", WH, " ", AE, "]");
 		t(OB, "{", NB, "\"", NA, "name", NE, "\"", SP, ":", VA, "null", OE, "}");
@@ -120,8 +122,6 @@ public class TestRecursiveJsonParser
 //		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 //		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\n\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		
-//		t(OB, "{", WH, " ", OE, "}", WH, " ", IG, "xx");
-//		t(AB, "[", WH, " ", AE, "]", WH, " ", IG, "xx");
 		
 //		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", CO, ",", WH, "\n ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n ", OE, "}");
 //		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", OB, "{", WH, "\n", NB, "\"", NA, "n", NE, "\"", SP, ":", VA, "true", OE, "}", CO, ",", WH, "\n ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n ", OE, "}");

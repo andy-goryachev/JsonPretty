@@ -39,10 +39,24 @@ public class RecursiveJsonParser
 		result = new ParseResult();
 		state = Type.IGNORE;
 
-		while(peek() != EOF)
+		for(;;)
 		{
-			skipIgnore();
-			jsonObject();
+			int c = peek();
+			if(c == EOF)
+			{
+				break;
+			}
+			
+			switch(c)
+			{
+			case '{':
+			case '[':
+				jsonObject();
+				setState(Type.IGNORE);
+				break;
+			}
+			
+			next();
 		}
 		
 		addSegment();
@@ -53,9 +67,10 @@ public class RecursiveJsonParser
 	
 	protected void addSegment()
 	{
-		if(offset > startOffset)
+		int off = Math.min(offset, text.length());
+		if(off > startOffset)
 		{
-			String s = text.substring(startOffset, offset);
+			String s = text.substring(startOffset, off);
 			Segment ch = new Segment(state, s);
 			result.addSegment(ch);
 
@@ -93,24 +108,6 @@ public class RecursiveJsonParser
 	protected void next()
 	{
 		offset += symbolLength;
-	}
-	
-	
-	protected void skipIgnore()
-	{
-		for(;;)
-		{
-			int c = peek();
-			switch(c)
-			{
-			case '{':
-			case '[':
-			case EOF:
-				return;
-			}
-			
-			next();
-		}
 	}
 	
 	
