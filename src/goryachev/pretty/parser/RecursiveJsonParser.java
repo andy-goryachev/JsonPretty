@@ -113,8 +113,8 @@ public class RecursiveJsonParser
 	
 	protected String nextString(int len)
 	{
-		len = Math.min(len, text.length() - offset);
-		return text.substring(offset, len);
+		len = Math.max(0, Math.min(len, text.length() - offset));
+		return text.substring(offset, offset + len);
 	}
 	
 	
@@ -274,6 +274,7 @@ public class RecursiveJsonParser
 			next();
 			return;
 		case 'u':
+			next();
 			readHex();
 			return;
 		case EOF:
