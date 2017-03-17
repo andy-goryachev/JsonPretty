@@ -108,6 +108,8 @@ public class RecursiveJsonParser
 			case EOF:
 				return;
 			}
+			
+			next();
 		}
 	}
 	
@@ -152,7 +154,7 @@ public class RecursiveJsonParser
 		if(c != '}')
 		{
 			setState(Type.NAME);
-			readString();
+			readString(true);
 			skipWhitespace();
 			setState(Type.SEPARATOR);
 			expect(':');
@@ -216,14 +218,14 @@ public class RecursiveJsonParser
 	}
 	
 	
-	protected void readString()
+	protected void readString(boolean name)
 	{
-		setState(Type.NAME_BEGIN);
+		setState(name ? Type.NAME_BEGIN : Type.STRING_BEGIN);
 		expect('"');
 		
 		for(;;)
 		{
-			setState(Type.NAME);
+			setState(name ? Type.NAME : Type.STRING);
 			
 			int c = peek();
 			if(c == '"')
@@ -242,7 +244,7 @@ public class RecursiveJsonParser
 			}
 		}
 		
-		setState(Type.NAME_END);
+		setState(name ? Type.NAME_END : Type.STRING_END);
 		expect('"');
 	}
 	
@@ -263,6 +265,9 @@ public class RecursiveJsonParser
 			case '\f':
 			case '}':
 			case ']':
+				return;
+			case '"':
+				readString(false);
 				return;
 			}
 			
