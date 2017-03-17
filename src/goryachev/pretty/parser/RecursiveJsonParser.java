@@ -111,6 +111,13 @@ public class RecursiveJsonParser
 	}
 	
 	
+	protected String nextString(int len)
+	{
+		len = Math.min(len, text.length() - offset);
+		return text.substring(offset, len);
+	}
+	
+	
 	protected void skipWhitespace()
 	{
 		for(;;)
@@ -237,7 +244,8 @@ public class RecursiveJsonParser
 			switch(c)
 			{
 			case '\\':
-				// TODO escapes
+				next();
+				readEscape();
 				break;
 			default:
 				next();
@@ -247,6 +255,45 @@ public class RecursiveJsonParser
 		
 		setState(name ? Type.NAME_END : Type.STRING_END);
 		expect('"');
+	}
+	
+	
+	protected void readEscape()
+	{
+		int c = peek();
+		switch(c)
+		{
+		case '"':
+		case '\\':
+		case '/':
+		case 'b':
+		case 'f':
+		case 'n':
+		case 'r':
+		case 't':
+			next();
+			return;
+		case 'u':
+			readHex();
+			return;
+		case EOF:
+			return;
+		}
+	}
+	
+	
+	protected void readHex()
+	{
+		String hex = nextString(4);
+		if(hex.length() != 4)
+		{
+			setState(Type.ERROR);
+		}
+		
+		for(int i=0; i<hex.length(); i++)
+		{
+			next();
+		}
 	}
 	
 	
