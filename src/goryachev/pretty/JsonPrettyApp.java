@@ -3,6 +3,7 @@ package goryachev.pretty;
 import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
+import goryachev.fx.CssLoader;
 import java.io.File;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -39,5 +40,6 @@ public class JsonPrettyApp
 	public void start(Stage stage) throws Exception
 	{
 		new JsonPrettyWindow().open();
+		CssLoader.setStyles(() -> new Styles());
 	}
 }
