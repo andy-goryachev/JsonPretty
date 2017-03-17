@@ -4,7 +4,7 @@ import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
 import goryachev.pretty.parser.ParseResult;
-import goryachev.pretty.parser.ResilientJsonParser;
+import goryachev.pretty.parser.RecursiveJsonParser;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;
@@ -51,7 +51,7 @@ public class StyleProcessor
 	
 	protected List<Segment> parse(String text)
 	{
-		ParseResult r = new ResilientJsonParser(text).parse();
+		ParseResult r = new RecursiveJsonParser(text).parse();
 		return r.getSegments();
 	}
 	

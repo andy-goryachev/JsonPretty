@@ -192,6 +192,10 @@ public class RecursiveJsonParser
 			{
 				break;
 			}
+			else if(c == EOF)
+			{
+				break;
+			}
 			
 			switch(c)
 			{
@@ -262,6 +266,7 @@ public class RecursiveJsonParser
 			case '\f':
 			case '}':
 			case ']':
+			case EOF:
 				return;
 			case '"':
 				readString(false);
