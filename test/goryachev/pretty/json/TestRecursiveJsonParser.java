@@ -77,8 +77,10 @@ public class TestRecursiveJsonParser
 	public void testRegression()
 	{
 		t(OB, "{", OE, "}");
-//		t(AB, "[", AE, "]");
-//		t(IG, "hello");
+		t(AB, "[", AE, "]");
+		t(OB, "{", NB, "\"", NA, "name", NE, "\"", SP, ":", VA, "null", OE, "}");
+		t(IG, "hello");
+		
 //		t(OB, "{", NB, "\"", NA, "name", NE, "\"", SP, ":", VA, "true", OE, "}");
 //		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", VA, "true", WH, "\n", OE, "}");
 //		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");

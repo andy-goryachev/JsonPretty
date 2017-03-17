@@ -39,7 +39,7 @@ public class RecursiveJsonParser
 		result = new ParseResult();
 		state = Type.IGNORE;
 
-		while(ch != EOF)
+		while(peek() != EOF)
 		{
 			skipIgnore();
 			jsonObject();
@@ -105,6 +105,7 @@ public class RecursiveJsonParser
 			{
 			case '{':
 			case '[':
+			case EOF:
 				return;
 			}
 		}
@@ -180,22 +181,93 @@ public class RecursiveJsonParser
 	
 	protected void readArray()
 	{
-		// TODO
-		throw new Rex();
+		setState(Type.ARRAY_BEGIN);
+		expect('[');
+		
+		for(;;)
+		{
+			skipWhitespace();
+			
+			int c = peek();
+			if(c == ']')
+			{
+				break;
+			}
+			
+			switch(c)
+			{
+			case ',':
+				setState(Type.COMMA_ARRAY);
+				next();
+				break;
+			case '[':
+				readArray();
+				break;
+			case '{':
+				readObject();
+				break;
+			default:
+				readValue();
+				break;
+			}
+		}
+		setState(Type.ARRAY_END);
+		expect(']');
 	}
 	
 	
 	protected void readString()
 	{
-		// TODO
-		throw new Rex();
+		setState(Type.NAME_BEGIN);
+		expect('"');
+		
+		for(;;)
+		{
+			setState(Type.NAME);
+			
+			int c = peek();
+			if(c == '"')
+			{
+				break;
+			}
+			
+			switch(c)
+			{
+			case '\\':
+				// TODO escapes
+				break;
+			default:
+				next();
+				break;
+			}
+		}
+		
+		setState(Type.NAME_END);
+		expect('"');
 	}
 	
 	
 	protected void readValue()
 	{
-		// TODO
-		throw new Rex();
+		setState(Type.VALUE);
+		
+		for(;;)
+		{
+			int c = peek();
+			switch(c)
+			{
+			case ',':
+			case ' ':
+			case '\n':
+			case '\r':
+			case '\f':
+			case '}':
+			case ']':
+				return;
+			}
+			
+			next();
+		}
 	}
 	
 	
