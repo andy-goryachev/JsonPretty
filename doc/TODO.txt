@@ -1,4 +1,5 @@
 TODO
 
 - parser: single AB,OB,AE,OE tags
+- show invalud values maybe
 

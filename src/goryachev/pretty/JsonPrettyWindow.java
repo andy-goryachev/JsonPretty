@@ -2,7 +2,6 @@
 package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.D;
 import goryachev.common.util.Log;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
@@ -83,7 +82,7 @@ public class JsonPrettyWindow
 			// parse
 			ParseResult r = new RecursiveJsonParser(text).parse();
 			List<Segment> segments = r.getSegments();
-			D.list(segments); // FIX
+			//D.list(segments); // FIX
 			
 			// format
 			JsonPrettyFormatter f = new JsonPrettyFormatter(segments);

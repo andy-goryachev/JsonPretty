@@ -1,13 +1,14 @@
-notice how text outside of the valid json is 
-ignored
+notice how the text outside of the json block is quietly
+ignored:
 {
-	"description": "JSON example shows all possible types",
+	"aBoolean": true,
+	"aNull": null,
 	"aNumber": 1e308,
 	"anObject":
 	{
-		"description": "(JSON object &nbsp;)"
+		"anEmptyObject": {},
+		"anEmptyArray": []
 	},
-	"anEmptyObject": {},
 	"anArray":
 	[
 		0,
@@ -25,10 +26,7 @@ ignored
 		"string with embedded \t tab",
 		"string with an 😂 emoji",
 		"string with an \uD83D\uDE02 unicode emoji"
-	],
-	"anEmptyArray": [],
-	"aBoolean": true,
-	"aNull": null
+	]
 }
 extra text
 
