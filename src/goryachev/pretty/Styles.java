@@ -31,9 +31,16 @@ public class Styles
 				prop("-fx-font-smoothing-type", "gray")
 			),
 			
-			new Selector(".scroll-pane > .viewport").defines
+			new Selector(".scroll-pane").defines
 			(
-				backgroundColor(Color.WHITE)
+				new Selector(FOCUSED).defines
+				(
+					backgroundInsets(1)
+				),
+				new Selector(" > .viewport").defines
+				(
+					backgroundColor(Color.WHITE)
+				)
 			),
 			
 			// common fx styles
