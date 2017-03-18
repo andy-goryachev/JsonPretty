@@ -122,15 +122,14 @@ public class TestRecursiveJsonParser
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\n\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", CO, ",", WH, "\n ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n ", OE, "}");
-		
-//		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", OB, "{", WH, "\n", NB, "\"", NA, "n", NE, "\"", SP, ":", VA, "true", OE, "}", CO, ",", WH, "\n ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n ", OE, "}");
-//		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", WH, "\n", VA, "1", WH, " ", CA, ",", WH, " ", VA, "2", WH, " ", AE, "]", WH, " ", OE, "}");
-//		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", WH, "\n", VA, "1", WH, " ", CA, ",", WH, " ", VA, "2", WH, " ", AE, "]", WH, " ", OE, "}");
-//		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "s", SE, "\"", AE, "]");
-//		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "s", SE, "\"", CA, ",", VA, "3", AE, "]");
-//		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
-//		t(AB, "[", WH, " ", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
-//		t(AB, "[", WH, " ", VA, "1", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", WH, "\n");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", OB, "{", WH, "\n", NB, "\"", NA, "n", NE, "\"", SP, ":", VA, "true", OE, "}", CO, ",", WH, "\n ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", AE, "]", WH, "\n ", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", WH, "\n", VA, "1", WH, " ", CA, ",", WH, " ", VA, "2", WH, " ", AE, "]", WH, " ", OE, "}");
+		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", WH, "\n", VA, "1", WH, " ", CA, ",", WH, " ", VA, "2", WH, " ", AE, "]", WH, " ", OE, "}");
+		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "s", SE, "\"", AE, "]");
+		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "s", SE, "\"", CA, ",", VA, "3", AE, "]");
+		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", IG, "\n");
+		t(AB, "[", WH, " ", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", IG, "\n");
+		t(AB, "[", WH, " ", VA, "1", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", IG, "\n");
 	}
 
 
