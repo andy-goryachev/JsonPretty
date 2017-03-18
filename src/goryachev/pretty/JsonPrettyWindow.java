@@ -73,6 +73,11 @@ public class JsonPrettyWindow
 
 	protected List<Segment> parseAndFormat(String text)
 	{
+		if(text == null)
+		{
+			return new CList();
+		}
+		
 		try
 		{
 			// parse
