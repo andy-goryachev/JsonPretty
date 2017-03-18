@@ -3,6 +3,7 @@ package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
+import goryachev.pretty.format.JsonPrettyFormatter;
 import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonParser;
 import goryachev.pretty.parser.Segment;
@@ -56,18 +57,11 @@ public class StyleProcessor
 	}
 	
 	
-	// TODO format
 	protected CList<Segment> format(List<Segment> cs)
 	{
-		int sz = cs.size() * 2;
-		CList<Segment> rv = new CList<>(sz);
-		
-		for(Segment c: cs)
-		{
-			rv.add(c);
-		}
-		
-		return rv;
+		JsonPrettyFormatter f = new JsonPrettyFormatter(cs);
+		// TODO set options
+		return f.format();
 	}
 
 
