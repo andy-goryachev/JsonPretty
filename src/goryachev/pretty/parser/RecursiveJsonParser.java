@@ -192,6 +192,13 @@ public class RecursiveJsonParser
 				}
 				
 				skipWhitespace();
+				break;
+			case EOF:
+				return;
+			default:
+				setState(Type.ERROR);
+				next();
+				break;
 			}
 		}
 	}

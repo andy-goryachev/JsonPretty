@@ -2,6 +2,7 @@ General
 	json/xml pretty previewer
 	monitors clipboard
 	syntax highlight of even malformed or mixed text
+	alerts if invalid json
 	
 Data Conversion
 	parses dates numbers on click
@@ -9,13 +10,14 @@ Data Conversion
 	run arbitrary command from context menu
 	at the bottom value display:
 	unicode
-		int -> char
-		\uxxxx -> char
+		int -> unicode, hex
+		\uxxxx -> unicode, decimal
 	hex 
 	java time 
 	linux time 
 	base64
 	color values
+	json-escaped string
 		
 History
 	keeps history

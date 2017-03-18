@@ -18,6 +18,7 @@ public class TestRecursiveJsonParser
 	public static final Type AE = Type.ARRAY_END;
 	public static final Type CA = Type.COMMA_ARRAY;
 	public static final Type CO = Type.COMMA;
+	public static final Type ER = Type.ERROR;
 	public static final Type IG = Type.IGNORE;
 	public static final Type NA = Type.NAME;
 	public static final Type NB = Type.NAME_BEGIN;
@@ -136,5 +137,6 @@ public class TestRecursiveJsonParser
 	@Test
 	public void test()
 	{
+		t(OB, "{", ER, "{");
 	}
 }
