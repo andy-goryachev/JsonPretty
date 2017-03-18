@@ -20,6 +20,7 @@ public class TestRecursiveJsonParser
 	public static final Type CO = Type.COMMA;
 	public static final Type ER = Type.ERROR;
 	public static final Type IG = Type.IGNORE;
+	public static final Type LB = Type.LINEBREAK;
 	public static final Type NA = Type.NAME;
 	public static final Type NB = Type.NAME_BEGIN;
 	public static final Type NE = Type.NAME_END;
@@ -116,7 +117,7 @@ public class TestRecursiveJsonParser
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "x\\r", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "x\\rx", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\rx", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
-		t(AB, "[", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", IG, "\n");
+		t(AB, "[", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", LB, "\n");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "x\\u4fde", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "x\\u4fdex", NE, "\"", WH, "  ", SP, ":", WH, "  ", SB, "\"", ST, "a string", SE, "\"", WH, "\n", OE, "}");
@@ -128,15 +129,17 @@ public class TestRecursiveJsonParser
 		t(IG, "xx  ", OB, "{", WH, " ", NB, "\"", NA, "name", NE, "\"", WH, "  ", SP, ":", WH, "  ", AB, "[", WH, "\n", VA, "1", WH, " ", CA, ",", WH, " ", VA, "2", WH, " ", AE, "]", WH, " ", OE, "}");
 		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "s", SE, "\"", AE, "]");
 		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "s", SE, "\"", CA, ",", VA, "3", AE, "]");
-		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", IG, "\n");
-		t(AB, "[", WH, " ", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", IG, "\n");
-		t(AB, "[", WH, " ", VA, "1", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", IG, "\n");
+		t(AB, "[", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", LB, "\n", IG, "ignore");
+		t(AB, "[", WH, " ", VA, "1", CA, ",", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", LB, "\n");
+		t(AB, "[", WH, " ", VA, "1", CA, ",", WH, " ", SB, "\"", ST, "1", SE, "\"", WH, " ", AE, "]", LB, "\n");
+		t(OB, "{", ER, "{");
+		t(IG, "ignore", LB, "\r\n", OB, "{", OE, "}");
 	}
 
 
 	@Test
 	public void test()
 	{
-		t(OB, "{", ER, "{");
+		t(OB, "{", OE, "}", LB, "\r\n", IG, "ignore", OB, "{", OE, "}", LB, "\r\n");
 	}
 }

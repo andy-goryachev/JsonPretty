@@ -53,6 +53,13 @@ public class RecursiveJsonParser
 			case '[':
 				jsonObject();
 				setState(Type.IGNORE);
+				continue;
+			case '\r':
+			case '\n':
+				setState(Type.LINEBREAK);
+				break;
+			default:
+				setState(Type.IGNORE);
 				break;
 			}
 			
@@ -123,8 +130,17 @@ public class RecursiveJsonParser
 		for(;;)
 		{
 			int c = peek();
-			if(!Character.isWhitespace(c))
+			switch(c)
 			{
+			case '\r':
+			case '\n':
+				setState(Type.LINEBREAK);
+				break;
+			case ' ':
+			case '\t':
+				setState(Type.WHITESPACE);
+				break;
+			default:
 				return;
 			}
 			

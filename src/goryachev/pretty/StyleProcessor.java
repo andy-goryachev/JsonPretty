@@ -2,7 +2,9 @@
 package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
+import goryachev.common.util.D;
 import goryachev.common.util.Log;
+import goryachev.fx.FX;
 import goryachev.pretty.format.JsonPrettyFormatter;
 import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonParser;
@@ -20,8 +22,41 @@ import javafx.scene.text.Text;
  */
 public class StyleProcessor
 {
+	// TODO from settings
+	private Color commentColor = Color.RED;
+	private Color errorColor = Color.MAGENTA;
+	private Color ignoreColor = Color.GRAY;
+	private Color nameColor = Color.DARKGREEN;
+	private Color stringColor = FX.rgb(0x8d71cf);
+	private Color textColor = Color.BLACK;
+	private Color valueColor = Color.BLUE;
+	
+	
 	public StyleProcessor()
 	{
+	}
+	
+	
+	protected Paint getColor(Type t)
+	{
+		switch(t)
+		{
+		case COMMENT:
+			return commentColor;
+		case ERROR:
+			return errorColor;
+		case IGNORE:
+			return ignoreColor;
+		case NAME:
+			return nameColor;
+		case STRING_BEGIN:
+		case STRING:
+		case STRING_END:
+			return stringColor;
+		case VALUE:
+			return valueColor;
+		}
+		return textColor;
 	}
 
 
@@ -30,10 +65,11 @@ public class StyleProcessor
 		try
 		{
 			// parse
-			List<Segment> cs = parse(s);
+			List<Segment> segments = parse(s);
+			D.list(segments); // FIX
 			
 			// format
-			CList<Segment> formatted = format(cs);
+			CList<Segment> formatted = format(segments);
 				
 			CList<Node> rv = new CList<>(formatted.size());
 			for(Segment c: formatted)
@@ -62,29 +98,6 @@ public class StyleProcessor
 		JsonPrettyFormatter f = new JsonPrettyFormatter(cs);
 		// TODO set options
 		return f.format();
-	}
-
-
-	protected Paint getColor(Type t)
-	{
-		switch(t)
-		{
-		case COMMENT:
-			return Color.RED;
-		case ERROR:
-			return Color.MAGENTA;
-		case IGNORE:
-			return Color.GRAY;
-		case NAME:
-			return Color.DARKGREEN;
-		case STRING_BEGIN:
-		case STRING:
-		case STRING_END:
-			return Color.BLUE;
-		case VALUE:
-			return Color.BLUE;
-		}
-		return Color.BLACK;
 	}
 	
 
