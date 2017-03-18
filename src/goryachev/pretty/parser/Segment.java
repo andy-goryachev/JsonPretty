@@ -1,9 +1,8 @@
-// Copyright (c) 2007-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright (c) 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
 import goryachev.common.util.CKit;
 import goryachev.common.util.FH;
-import goryachev.common.util.Hex;
-import goryachev.common.util.SB;
+import goryachev.common.util.TextTools;
 
 
 public class Segment
@@ -28,47 +27,6 @@ public class Segment
 	public String getText()
 	{
 		return text;
-	}
-	
-	
-	/** escaped text, for debugging only (messes up \ char) */
-	public String getTextEscaped()
-	{
-		SB sb = new SB(text.length() + 64);
-		text.codePoints().forEach((c) ->
-		{
-			if(c < ' ')
-			{
-				String s = printable(c);
-				if(s == null)
-				{
-					sb.append(Hex.toHexString((short)c));
-				}
-				else
-				{
-					sb.append(s);
-				}
-			}
-			else
-			{
-				sb.appendCodePoint(c);
-			}
-		});
-		return sb.toString();
-	}
-	
-	
-	protected String printable(int c)
-	{
-		switch(c)
-		{
-		case '\b': return "\\b";
-		case '\f': return "\\f";
-		case '\n': return "\\n";
-		case '\r': return "\\r";
-		case '\t': return "\\t";
-		}
-		return null;
 	}
 	
 	
@@ -101,6 +59,6 @@ public class Segment
 	
 	public String toString()
 	{
-		return "Segment." + getType() + "<" + getTextEscaped() + ">";
+		return "Segment." + getType() + "<" + TextTools.escapeControlsForPrintout(getText()) + ">";
 	}
 }

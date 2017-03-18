@@ -1,17 +1,20 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
 import goryachev.common.util.CKit;
+import goryachev.common.util.CList;
+import goryachev.common.util.D;
+import goryachev.common.util.Log;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
+import goryachev.pretty.format.JsonPrettyFormatter;
+import goryachev.pretty.parser.ParseResult;
+import goryachev.pretty.parser.RecursiveJsonParser;
+import goryachev.pretty.parser.Segment;
+import goryachev.pretty.parser.Type;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.Clipboard;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Region;
-import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 
@@ -22,10 +25,8 @@ public class JsonPrettyWindow
 	extends FxWindow
 {
 	public static final Duration PERIOD = Duration.millis(200);
-	public final TextFlow textField;
-	public final ScrollPane scroll;
+	public final IContentView view;
 	protected final Clipboard clipboard;
-	protected final StyleProcessor styleProcessor;
 	protected String oldContent;
 	
 	
@@ -33,17 +34,10 @@ public class JsonPrettyWindow
 	{
 		super("JsonPrettyWindow");
 		
-		styleProcessor = new StyleProcessor();
+		view = new BasedOnTextFlow();
 		
-		textField = new TextFlow();
-		textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
-		textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
-		
-		scroll = new ScrollPane(textField);
-		// FIX white background
-		
-		setTitle("Pretty Print JSON/XML " + Version.VERSION);
-		setCenter(scroll);
+		setTitle("Pretty Print JSON " + Version.VERSION);
+		setCenter(view.getNode());
 		setSize(600, 700);
 
 		clipboard = Clipboard.getSystemClipboard();
@@ -63,13 +57,37 @@ public class JsonPrettyWindow
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.play();
 
+		// debugging
 		FxDump.attach(this);
 	}
 	
 	
 	protected void updateContent(String s)
 	{
-		List<Node> cs = styleProcessor.process(s);
-		textField.getChildren().setAll(cs);
+		List<Segment> ss = parseAndFormat(s);
+		view.setParsedSegments(ss);
+	}
+
+
+	protected List<Segment> parseAndFormat(String text)
+	{
+		try
+		{
+			// parse
+			ParseResult r = new RecursiveJsonParser(text).parse();
+			List<Segment> segments = r.getSegments();
+			D.list(segments); // FIX
+			
+			// format
+			JsonPrettyFormatter f = new JsonPrettyFormatter(segments);
+			// TODO set options
+			CList<Segment> formatted = f.format();
+			return formatted;
+		}
+		catch(Exception e)
+		{
+			Log.ex(e);
+			return new CList<Segment>(new Segment(Type.ERROR, CKit.stackTrace(e)));
+		}
 	}
 }
