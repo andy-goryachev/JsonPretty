@@ -1,6 +1,8 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package goryachev.pretty;
+package goryachev.pretty.view;
 import goryachev.common.util.CList;
+import goryachev.pretty.ColorScheme;
+import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;

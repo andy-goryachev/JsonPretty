@@ -11,6 +11,7 @@ import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonParser;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
+import goryachev.pretty.view.BasedOnTextFlow;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
