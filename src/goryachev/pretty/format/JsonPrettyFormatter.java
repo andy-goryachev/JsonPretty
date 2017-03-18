@@ -15,6 +15,7 @@ public class JsonPrettyFormatter
 	private final List<Segment> input;
 	private final CList<Segment> result;
 	private int indent;
+	private Type prev = Type.IGNORE;
 	private int tabSize = 4; // TODO option
 	private boolean egyptian = false; // TODO
 	
@@ -31,9 +32,6 @@ public class JsonPrettyFormatter
 		int sz = input.size();
 		for(int i=0; i<sz; i++)
 		{
-			// TODO use previos to add spaces after comma,
-			// to add newline after OE
-			
 			Segment s = input.get(i);
 			Type t = s.getType();
 			switch(t)
@@ -45,27 +43,67 @@ public class JsonPrettyFormatter
 				indent++;
 				insertLineBreak();
 				break;
+				
 			case ARRAY_END:
+				indent--;
+				switch(prev)
+				{
+				case ARRAY_BEGIN:
+					break;
+				default:
+					insertLineBreak();
+					break;
+				}
+				addSegment(s);
+				break;
+				
 			case OBJECT_END:
 				indent--;
-				insertLineBreak();
+				switch(prev)
+				{
+				case OBJECT_BEGIN:
+					break;
+				default:
+					insertLineBreak(); // FIX conditional
+					break;
+				}
 				addSegment(s);
-//				insertLineBreak();
 				break;
+				
 			case COMMA_ARRAY:
 			case COMMA:
 				addSegment(s);
-				insertLineBreak();
 				break;
+				
 			case SEPARATOR:
 				addSpace(1);
 				addSegment(s);
-				addSpace(1); // FIX conditional
 				break;
+				
 			case WHITESPACE:
-				// ignore
+			case LINEBREAK:
 				continue;
+				
+			case IGNORE:
+				switch(prev)
+				{
+				case OBJECT_END:
+					insertLineBreak();
+				}
+				addSegment(s);
+				break;
+				
 			default:
+				switch(prev)
+				{
+				case COMMA:
+				case COMMA_ARRAY:
+					insertLineBreak();
+					break;
+				case SEPARATOR:
+					addSpace(1);
+					break;
+				}
 				addSegment(s);
 				break;
 			}
@@ -77,6 +115,7 @@ public class JsonPrettyFormatter
 	protected void addSegment(Segment s)
 	{
 		result.add(s);
+		prev = s.getType();
 	}
 	
 	
