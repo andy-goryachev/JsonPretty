@@ -154,34 +154,46 @@ public class RecursiveJsonParser
 		expect('{');
 		skipWhitespace();
 		
-		int c = peek();
-		if(c != '}')
+		for(;;)
 		{
-			setState(Type.NAME);
-			readString(true);
-			skipWhitespace();
-			setState(Type.SEPARATOR);
-			expect(':');
-			skipWhitespace();
-			
-			c = peek();
+			int c = peek();
 			switch(c)
 			{
-			case '[':
-				readArray();
+			case '}':
+				setState(Type.OBJECT_END);
+				next();
+				return;
+			case ',':
+				setState(Type.COMMA);
+				next();
+				skipWhitespace();
 				break;
-			case '{':
-				readObject();
-				break;
-			default:
-				readValue();
-				break;
+			case '"':
+				setState(Type.NAME);
+				readString(true);
+				skipWhitespace();
+				setState(Type.SEPARATOR);
+				expect(':');
+				skipWhitespace();
+				
+				// read field value
+				c = peek();
+				switch(c)
+				{
+				case '[':
+					readArray();
+					break;
+				case '{':
+					readObject();
+					break;
+				default:
+					readValue();
+					break;
+				}
+				
+				skipWhitespace();
 			}
-			
-			skipWhitespace();
 		}
-		setState(Type.OBJECT_END);
-		expect('}');
 	}
 	
 	
@@ -197,6 +209,8 @@ public class RecursiveJsonParser
 			int c = peek();
 			if(c == ']')
 			{
+				setState(Type.ARRAY_END);
+				next();
 				break;
 			}
 			else if(c == EOF)
