@@ -6,6 +6,7 @@ import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Region;
@@ -28,6 +29,7 @@ public class BasedOnTextFlow
 	public BasedOnTextFlow()
 	{
 		textField = new TextFlow();
+		textField.setPadding(new Insets(4));
 		textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
 		// unnecessary
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
