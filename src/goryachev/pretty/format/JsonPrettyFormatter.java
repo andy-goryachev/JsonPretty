@@ -1,6 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.format;
 import goryachev.common.util.CList;
+import goryachev.common.util.D;
 import goryachev.common.util.SB;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
@@ -25,6 +26,86 @@ public class JsonPrettyFormatter
 		this.input = input;
 		result = new CList<>(input.size() + 128);
 	}
+	
+	
+	// returns true if new line is needed before the ARRAY_END token
+	protected boolean processArrayEnd()
+	{
+		int ix = skipBack(Type.ARRAY_BEGIN);
+		if(ix >= 0)
+		{
+			result.prune(ix);
+			addSpace(1);
+			addSegment(new Segment(Type.ARRAY_BEGIN, "["));
+			return false;
+		}
+		return true;
+	}
+	
+	
+	// returns true if new line is needed before the OBJECT_END token
+	protected boolean processObjectEnd()
+	{
+		int ix = skipBack(Type.OBJECT_BEGIN);
+		if(ix >= 0)
+		{
+			result.prune(ix);
+			addSpace(1);
+			addSegment(new Segment(Type.OBJECT_BEGIN, "{"));
+			return false;
+		}
+		return true;
+	}
+	
+	
+	// skip whitespace and newlines until the specified tag is found
+	// then skip any additional whitespace and newline and return 
+	// what effectively is the new result array size.
+	// -1 means that we don't have this condition
+	protected int skipBack(Type type)
+	{
+		boolean leading = false;
+		
+		for(int i=result.size()-1; i>=0; i--)
+		{
+			Segment s = result.get(i);
+			Type t = s.getType();
+			
+			if(!leading)
+			{
+				if(t == type)
+				{
+					leading = true;
+					continue;
+				}
+			}
+			
+			switch(t)
+			{
+			case LINEBREAK:
+			case WHITESPACE:
+				continue;
+			default:
+				if(leading)
+				{
+					return i + 1;
+				}
+				else
+				{
+					return -1;
+				}
+			}
+		}
+		
+		if(leading)
+		{
+			return 0;
+		}
+		else
+		{
+			return -1;
+		}
+	}
 
 
 	public CList<Segment> format()
@@ -38,7 +119,10 @@ public class JsonPrettyFormatter
 			{
 			case ARRAY_BEGIN:
 			case OBJECT_BEGIN:
-				insertLineBreak();
+				if(result.size() > 0)
+				{
+					insertLineBreak();
+				}
 				addSegment(s);
 				indent++;
 				insertLineBreak();
@@ -46,26 +130,18 @@ public class JsonPrettyFormatter
 				
 			case ARRAY_END:
 				indent--;
-				switch(prev)
+				if(processArrayEnd())
 				{
-				case ARRAY_BEGIN:
-					break;
-				default:
 					insertLineBreak();
-					break;
 				}
 				addSegment(s);
 				break;
 				
 			case OBJECT_END:
 				indent--;
-				switch(prev)
+				if(processObjectEnd())
 				{
-				case OBJECT_BEGIN:
-					break;
-				default:
-					insertLineBreak(); // FIX conditional
-					break;
+					insertLineBreak();
 				}
 				addSegment(s);
 				break;
@@ -82,7 +158,15 @@ public class JsonPrettyFormatter
 				
 			case WHITESPACE:
 			case LINEBREAK:
-				continue;
+				switch(prev)
+				{
+				case IGNORE:
+					addSegment(s);
+					break;
+				default:
+					continue;
+				}
+				break;
 				
 			case IGNORE:
 				switch(prev)

@@ -159,6 +159,20 @@ public class CList<T>
 	}
 	
 	
+	/** remove elements from 'fromInclusive' onwards, silently ignoring out-of-bounds argument */
+	public void prune(int fromInclusive)
+	{
+		if(fromInclusive >= 0)
+		{
+			int ct = size() - fromInclusive;
+			if(ct > 0)
+			{
+				removeRange(fromInclusive, size());
+			}
+		}
+	}
+	
+	
 	public static CList parse(Object x)
 	{
 		if(x instanceof CList)

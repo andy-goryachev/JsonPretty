@@ -1,4 +1,4 @@
 TODO
 
 - parser: single AB,OB,AE,OE tags
-- formatter: detect empty arrays, objects
+
