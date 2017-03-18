@@ -36,6 +36,7 @@ public class JsonPrettyWindow
 		super("JsonPrettyWindow");
 		
 		view = new BasedOnTextFlow();
+//		view = new BasedOnFxEditor();
 		
 		setTitle("Pretty Print JSON " + Version.VERSION);
 		setCenter(view.getNode());

@@ -67,20 +67,33 @@ public class FxEditorController
 	{
 		return selection;
 	}
+	
+	
+	public void eventLinesCleared()
+	{
+		// FIX
+		D.print();
+	}
 
 
 	public void eventLinesDeleted(int start, int count)
 	{
+		// FIX
+		D.print(start, count);
 	}
 
 
 	public void eventLinesInserted(int start, int count)
 	{
+		// FIX
+		D.print(start, count);
 	}
 
 
 	public void eventLinesModified(int start, int count)
 	{
+		// FIX
+		D.print(start, count);
 	}
 	
 	
