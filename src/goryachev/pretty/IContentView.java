@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
+import goryachev.fx.CssStyle;
 import goryachev.pretty.parser.Segment;
 import java.util.List;
 import javafx.scene.Node;
@@ -10,6 +11,9 @@ import javafx.scene.Node;
  */
 public interface IContentView
 {
+	public static CssStyle CONTENT_PANE = new CssStyle("IContentView_CONTENT_PANE");
+	
+	
 	/** returns the view FX node */
 	public Node getNode();
 	

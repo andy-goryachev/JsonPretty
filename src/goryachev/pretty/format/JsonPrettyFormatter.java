@@ -106,6 +106,34 @@ public class JsonPrettyFormatter
 			return -1;
 		}
 	}
+	
+	
+	protected Type lastType()
+	{
+		if(result.size() > 0)
+		{
+			return result.getLast().getType();
+		}
+		return Type.IGNORE;
+	}
+	
+	
+	protected boolean needLineBreakBeforeArrayOrObject()
+	{
+		if(result.size() == 0)
+		{
+			return false;
+		}
+		
+		if(lastType() == Type.LINEBREAK)
+		{
+			return false;
+		}
+		
+		// TODO perhaps insert an extra line break between two objects or arrays
+		
+		return true;
+	}
 
 
 	public CList<Segment> format()
@@ -119,7 +147,7 @@ public class JsonPrettyFormatter
 			{
 			case ARRAY_BEGIN:
 			case OBJECT_BEGIN:
-				if(result.size() > 0)
+				if(needLineBreakBeforeArrayOrObject())
 				{
 					insertLineBreak();
 				}

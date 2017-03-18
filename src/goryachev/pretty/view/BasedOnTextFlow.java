@@ -29,12 +29,13 @@ public class BasedOnTextFlow
 	public BasedOnTextFlow()
 	{
 		textField = new TextFlow();
-		textField.setPadding(FX.insets(2.5, 4.5));
+		FX.style(textField, FX.insets(2.5, 4.5));
 		textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
 		// unnecessary
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
 		
 		scroll = new ScrollPane(textField);
+		FX.style(scroll, CONTENT_PANE);
 	}
 
 

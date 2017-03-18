@@ -173,6 +173,21 @@ public class CList<T>
 	}
 	
 	
+	/** 
+	 * returns last element of null if the list is empty.  
+	 * keep in mind this method does not distingush between two scenarios:
+	 * when the list is empty and when the last element is null.
+	 */
+	public T getLast()
+	{
+		if(size() > 0)
+		{
+			return get(size() - 1);
+		}
+		return null;
+	}
+	
+	
 	public static CList parse(Object x)
 	{
 		if(x instanceof CList)

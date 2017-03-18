@@ -1,4 +1,5 @@
-﻿extra text 
+notice how text outside of the valid json is 
+ignored
 {
 	"description": "JSON example shows all possible types",
 	"aNumber": 1e308,

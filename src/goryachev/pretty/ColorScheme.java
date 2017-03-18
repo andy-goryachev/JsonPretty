@@ -15,9 +15,9 @@ public class ColorScheme
 	public static Color errorColor = Color.MAGENTA;
 	public static Color ignoreColor = Color.GRAY;
 	public static Color nameColor = Color.DARKGREEN;
-	public static Color stringColor = FX.rgb(0x8d71cf);
+	public static Color stringColor = Color.BLUE;
 	public static Color textColor = Color.BLACK;
-	public static Color valueColor = Color.BLUE;
+	public static Color valueColor = FX.rgb(0x7d2727); // FX.rgb(0x8d71cf);
 	
 	
 	public static Color getColor(Type t)

@@ -1,7 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
 import goryachev.fx.CommonStyles;
-import goryachev.fx.FX;
 import goryachev.fx.FxStyleSheet;
 import javafx.scene.paint.Color;
 
@@ -33,14 +32,23 @@ public class Styles
 			
 			new Selector(".scroll-pane").defines
 			(
-				new Selector(FOCUSED).defines
-				(
-					backgroundInsets(1)
-				),
+//				new Selector(FOCUSED).defines
+//				(
+//					// removes focused border from scroll pane
+//					// TODO do it specifically for the content pane
+//					backgroundInsets(1)
+//				),
 				new Selector(" > .viewport").defines
 				(
 					backgroundColor(Color.WHITE)
 				)
+			),
+			
+			new Selector(IContentView.CONTENT_PANE, FOCUSED).defines
+			(
+				// removes focused border from scroll pane
+				// TODO do it specifically for the content pane
+				backgroundInsets(1)
 			),
 			
 			// common fx styles
