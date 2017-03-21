@@ -188,6 +188,18 @@ public class CList<T>
 	}
 	
 	
+	/** removes last element */
+	public T removeLast()
+	{
+		int ix = size() - 1;
+		if(ix >= 0)
+		{
+			return remove(ix);
+		}
+		return null;
+	}
+	
+	
 	public static CList parse(Object x)
 	{
 		if(x instanceof CList)
