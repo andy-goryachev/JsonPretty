@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package goryachev.pretty.view;
+package goryachev.pretty.view.fxeditor;
 import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
 import java.util.List;
