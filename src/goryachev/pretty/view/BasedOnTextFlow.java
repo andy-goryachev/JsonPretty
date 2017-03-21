@@ -54,6 +54,7 @@ public class BasedOnTextFlow
 		}
 		
 		textField.getChildren().setAll(rv);
+		scroll.setVvalue(0);
 	}
 	
 	

@@ -3,8 +3,12 @@ package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
+import goryachev.fx.CMenu;
+import goryachev.fx.CMenuBar;
+import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
+import goryachev.fx.HPane;
 import goryachev.pretty.format.JsonPrettyFormatter;
 import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonParser;
@@ -14,7 +18,10 @@ import goryachev.pretty.view.BasedOnTextFlow;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.input.Clipboard;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 
@@ -38,7 +45,9 @@ public class JsonPrettyWindow
 //		view = new BasedOnFxEditor();
 		
 		setTitle("Pretty Print JSON " + Version.VERSION);
+		setTop(createMenu());
 		setCenter(view.getNode());
+		setBottom(createStatusBar());
 		setSize(600, 700);
 
 		clipboard = Clipboard.getSystemClipboard();
@@ -60,6 +69,31 @@ public class JsonPrettyWindow
 
 		// debugging
 		FxDump.attach(this);
+	}
+	
+	
+	protected CMenuBar createMenu()
+	{
+		CMenu m;
+		CMenuBar mb = new CMenuBar();
+		// file
+		mb.add(m = new CMenu("File"));
+		m.add("Quit", FX.exitAction());
+		// edit
+		mb.add(m = new CMenu("Edit"));
+		// help
+		mb.add(m = new CMenu("Help"));
+		m.add("About");
+		return mb;
+	}
+	
+	
+	protected Node createStatusBar()
+	{
+		HPane p = new HPane();
+		p.fill();
+		p.add(FX.label("copyright © andy goryachev", Color.GRAY, new Insets(1, 10, 1, 2)));
+		return p;
 	}
 	
 	
