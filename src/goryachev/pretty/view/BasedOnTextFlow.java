@@ -11,7 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import research.fx.edit.CTextFlow;
 
 
 /**
@@ -22,17 +22,20 @@ import javafx.scene.text.TextFlow;
 public class BasedOnTextFlow
 	implements IContentView
 {
-	public final TextFlow textField;
+	public final CTextFlow textField;
 	public final ScrollPane scroll;
+	public final MouseController controller;
 
 	
 	public BasedOnTextFlow()
 	{
-		textField = new TextFlow();
+		textField = new CTextFlow();
 		FX.style(textField, FX.insets(2.5, 4.5));
 		textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
 		// unnecessary
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
+		
+		controller = new MouseController(textField);
 		
 		scroll = new ScrollPane(textField);
 		FX.style(scroll, CONTENT_PANE);

@@ -19,7 +19,9 @@ import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
+import javafx.scene.control.SplitPane;
 import javafx.scene.input.Clipboard;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -33,6 +35,8 @@ public class MainWindow
 {
 	public static final Duration PERIOD = Duration.millis(200);
 	public final IContentView view;
+	public final DetailPane detailPane;
+	public final SplitPane split;
 	protected final Clipboard clipboard;
 	protected String oldContent;
 	
@@ -44,9 +48,15 @@ public class MainWindow
 		view = new BasedOnTextFlow();
 //		view = new BasedOnFxEditor();
 		
+		detailPane = new DetailPane();
+		
+		split = new SplitPane(view.getNode(), detailPane);
+		split.setOrientation(Orientation.HORIZONTAL);
+		split.setDividerPositions(0.8);
+		
 		setTitle("Pretty Print JSON " + Version.VERSION);
 		setTop(createMenu());
-		setCenter(view.getNode());
+		setCenter(split);
 		setBottom(createStatusBar());
 		setSize(600, 700);
 
