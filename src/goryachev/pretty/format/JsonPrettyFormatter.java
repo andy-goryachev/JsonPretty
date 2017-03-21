@@ -240,8 +240,11 @@ public class JsonPrettyFormatter
 	
 	protected void addSpace(int spaces)
 	{
-		SB sb = new SB(spaces);
-		sb.sp(spaces);
-		addSegment(new Segment(Type.WHITESPACE, sb.toString()));
+		if(spaces > 0)
+		{
+			SB sb = new SB(spaces);
+			sb.sp(spaces);
+			addSegment(new Segment(Type.WHITESPACE, sb.toString()));
+		}
 	}
 }

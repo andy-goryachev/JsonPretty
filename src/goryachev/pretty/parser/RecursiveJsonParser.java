@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
+import goryachev.common.util.D;
 import goryachev.common.util.Rex;
 
 
@@ -21,6 +22,10 @@ public class RecursiveJsonParser
 	private int startOffset;
 	private int symbolLength;
 	private ParseResult result;
+
+	private final int maxSameOffsetCount = 50;
+	private int sameOffsetCount;
+	private int prevOffset = -1;
 	
 	
 	public RecursiveJsonParser(String text)
@@ -99,12 +104,37 @@ public class RecursiveJsonParser
 	}
 	
 	
+	protected void detectInfiniteLoop()
+	{
+		// this code detects errors in the parser that cause infinite loops
+		if(offset == prevOffset)
+		{
+			sameOffsetCount++;
+			if(sameOffsetCount == maxSameOffsetCount - 20)
+			{
+				D.print("oops:\n" + text.substring(0, offset + 1));
+			}
+			else if(sameOffsetCount > maxSameOffsetCount)
+			{
+				throw new Rex("stuck at offset " + offset);
+			}
+		}
+		else
+		{
+			prevOffset = offset;
+			sameOffsetCount = 0;
+		}
+	}
+	
+	
 	protected int peek()
 	{
 		if(offset >= text.length())
 		{
 			return EOF;
 		}
+		
+		detectInfiniteLoop();
 		
 		int c = text.codePointAt(offset);
 		symbolLength = Character.charCount(c);
@@ -212,6 +242,7 @@ public class RecursiveJsonParser
 			case EOF:
 				return;
 			default:
+				// TODO backtrack to { and turn everything in between into an error
 				setState(Type.ERROR);
 				next();
 				break;
@@ -255,6 +286,10 @@ public class RecursiveJsonParser
 				break;
 			default:
 				readValue();
+				if(state == Type.ERROR)
+				{
+					return;
+				}
 				break;
 			}
 		}
@@ -338,6 +373,7 @@ public class RecursiveJsonParser
 	protected void readValue()
 	{
 		setState(Type.VALUE);
+		int count = 0;
 		
 		for(;;)
 		{
@@ -351,14 +387,21 @@ public class RecursiveJsonParser
 			case '\f':
 			case '}':
 			case ']':
+				if(count == 0)
+				{
+					setState(Type.ERROR);
+				}
+				return;
 			case EOF:
 				return;
 			case '"':
 				readString(false);
+				count++;
 				return;
 			}
 			
 			next();
+			count++;
 		}
 	}
 	
