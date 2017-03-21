@@ -28,7 +28,7 @@ import javafx.util.Duration;
 /**
  * JsonPretty Window.
  */
-public class JsonPrettyWindow
+public class MainWindow
 	extends FxWindow
 {
 	public static final Duration PERIOD = Duration.millis(200);
@@ -37,9 +37,9 @@ public class JsonPrettyWindow
 	protected String oldContent;
 	
 	
-	public JsonPrettyWindow()
+	public MainWindow()
 	{
-		super("JsonPrettyWindow");
+		super("MainWindow");
 		
 		view = new BasedOnTextFlow();
 //		view = new BasedOnFxEditor();

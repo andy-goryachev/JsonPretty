@@ -39,7 +39,7 @@ public class JsonPrettyApp
 
 	public void start(Stage stage) throws Exception
 	{
-		new JsonPrettyWindow().open();
+		new MainWindow().open();
 		CssLoader.setStyles(() -> new Styles());
 	}
 }
