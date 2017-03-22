@@ -11,14 +11,22 @@ import javafx.scene.paint.Color;
 public class ColorScheme
 {
 	// TODO from settings
+//	public static Color commentColor = Color.RED;
+//	public static Color errorColor = Color.MAGENTA;
+//	public static Color ignoreColor = Color.GRAY;
+//	public static Color nameColor = Color.DARKGREEN;
+//	public static Color stringColor = Color.BLUE;
+//	public static Color textColor = Color.BLACK;
+//	public static Color valueColor = FX.rgb(0x7d2727); // FX.rgb(0x8d71cf);
+	
 	public static Color commentColor = Color.RED;
 	public static Color errorColor = Color.MAGENTA;
 	public static Color ignoreColor = Color.GRAY;
-	public static Color nameColor = Color.DARKGREEN;
-	public static Color stringColor = Color.BLUE;
+	public static Color nameColor = FX.rgb(0xa6e22e);
+	public static Color stringColor = FX.rgb(0x66d9ef);
 	public static Color textColor = Color.BLACK;
-	public static Color valueColor = FX.rgb(0x7d2727); // FX.rgb(0x8d71cf);
-	
+	public static Color valueColor = FX.rgb(0xae81ff);
+
 	
 	public static Color getColor(Type t)
 	{
