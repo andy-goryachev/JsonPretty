@@ -3,7 +3,8 @@
 
 **0.00.02**
 - fixed infinite loop in parser
-- added menu and status bar
+- added menu, status bar, detail pane
+- updated color scheme
 
 **0.00.01**
 - initial public release
