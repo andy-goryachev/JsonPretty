@@ -44,7 +44,11 @@ public class StyledTextPane
 		
 		caretTimeline = new Timeline();
 		caretTimeline.setCycleCount(Animation.INDEFINITE);
+		// TODO property
 		updateBlinkRate(Duration.millis(500));
+		
+		// FIX allow custom handlers
+		new MouseController(this);
 	}
 	
 	

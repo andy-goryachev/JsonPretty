@@ -7,11 +7,11 @@ import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import research.fx.edit.MouseController;
 import research.fx.edit.StyledTextPane;
 
 
@@ -25,7 +25,6 @@ public class BasedOnTextFlow
 {
 	public final StyledTextPane textField;
 	public final ScrollPane scroll;
-	public final MouseController controller;
 
 	
 	public BasedOnTextFlow()
@@ -33,13 +32,15 @@ public class BasedOnTextFlow
 		textField = new StyledTextPane();
 		FX.style(textField, FX.insets(2.5, 4.5));
 		textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
-		// unnecessary
-		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
-		
-		controller = new MouseController(textField);
 		
 		scroll = new ScrollPane(textField);
 		FX.style(scroll, CONTENT_PANE);
+	}
+	
+	
+	public ReadOnlyIntegerProperty selectionIndexProperty()
+	{
+		return textField.selectionIndexProperty();
 	}
 
 
@@ -67,5 +68,12 @@ public class BasedOnTextFlow
 		Text t = new Text(text);
 		t.setFill(ColorScheme.getColor(type));
 		return t;
+	}
+
+
+	public String getLineAtCaret()
+	{
+		// FIX
+		return null;
 	}
 }

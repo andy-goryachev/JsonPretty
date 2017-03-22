@@ -3,6 +3,7 @@ package goryachev.pretty.view.fxeditor;
 import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
 import java.util.List;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.scene.Node;
 import research.fx.edit.FxEditor;
 
@@ -36,5 +37,19 @@ public class BasedOnFxEditor
 	public void setParsedSegments(List<Segment> formatted)
 	{
 		model.setSegments(formatted);
+	}
+
+
+	public ReadOnlyIntegerProperty selectionIndexProperty()
+	{
+		// FIX
+		return null;
+	}
+
+
+	public String getLineAtCaret()
+	{
+		// FIX
+		return null;
 	}
 }
