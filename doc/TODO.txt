@@ -2,4 +2,7 @@ TODO
 
 - parser: single AB,OB,AE,OE tags
 - show invalud values maybe
+- handle [[[]]] right
+- bad formatting in nested objects
+- format [,,,,] properly
 

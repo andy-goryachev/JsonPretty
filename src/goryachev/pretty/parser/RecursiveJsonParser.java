@@ -56,7 +56,7 @@ public class RecursiveJsonParser
 			{
 			case '{':
 			case '[':
-				jsonObject();
+				readMain();
 				setState(Type.IGNORE);
 				continue;
 			case '\r':
@@ -406,7 +406,7 @@ public class RecursiveJsonParser
 	}
 	
 	
-	protected void jsonObject()
+	protected void readMain()
 	{
 		skipWhitespace();
 		

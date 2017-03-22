@@ -25,7 +25,9 @@ ignored:
 		"string with embedded \/ slash",
 		"string with embedded \t tab",
 		"string with an 😂 emoji",
-		"string with an \uD83D\uDE02 unicode emoji"
+		"string with an \uD83D\uDE02 unicode emoji",
+		[[[]]],
+		[,,,,]
 	]
 }
 extra text
