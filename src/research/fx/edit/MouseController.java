@@ -54,7 +54,7 @@ public class MouseController
 		// FIX problem: misses mouse clicks on the empty margin
 		// when a non-zero padding is set on styled pane
 		int ix = editor.getTextPos(ev.getScreenX(), ev.getScreenY());
-		editor.setCaret(ix);
+		editor.setSelection(ix);
 	}
 	
 	

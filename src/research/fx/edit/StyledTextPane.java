@@ -84,7 +84,7 @@ public class StyledTextPane
 	}
 
 	
-	public void setCaret(int ix)
+	public void setSelection(int ix)
 	{
 		if(ix < 0)
 		{
@@ -93,23 +93,17 @@ public class StyledTextPane
 		}
 		else
 		{
-			checkCaret();
+			if(caret.getParent() == null)
+			{
+				textField.getChildren().add(caret);
+			}
 			
 			PathElement[] es = getCaretShape(ix, true);
 			caret.getElements().setAll(es);
 			setCaretVisible(true);
 		}
+		
 		selectionIndex.set(ix);
-	}
-	
-	
-	@Deprecated // fix when selection is done
-	protected void checkCaret()
-	{
-		if(caret.getParent() == null)
-		{
-			textField.getChildren().add(caret);
-		}
 	}
 	
 	
@@ -130,7 +124,6 @@ public class StyledTextPane
 	public void setText(CList<Node> textNodes)
 	{
 		textField.getChildren().setAll(textNodes);
-		checkCaret();
-		// TODO clear selection
+		setSelection(0);
 	}
 }
