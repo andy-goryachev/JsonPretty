@@ -10,6 +10,7 @@ import java.util.List;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import research.fx.edit.StyledTextPane;
@@ -73,7 +74,7 @@ public class BasedOnTextFlow
 
 	public String getLineAtCaret()
 	{
-		// FIX
-		return null;
+		int ix = textField.selectionIndexProperty().get();
+		return textField.getLineAt(ix);
 	}
 }

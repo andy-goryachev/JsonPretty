@@ -130,4 +130,11 @@ public class StyledTextPane
 		textField.getChildren().setAll(textNodes);
 		setSelection(0);
 	}
+
+
+	public String getLineAt(int ix)
+	{
+		// FIX
+		return null;
+	}
 }
