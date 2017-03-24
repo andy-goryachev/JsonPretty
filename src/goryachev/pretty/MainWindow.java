@@ -15,7 +15,7 @@ import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonParser;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
-import goryachev.pretty.view.BasedOnTextFlow;
+import goryachev.pretty.view.fxeditor.BasedOnFxEditor;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -46,12 +46,13 @@ public class MainWindow
 	{
 		super("MainWindow");
 		
-		view = new BasedOnTextFlow();
-//		view = new BasedOnFxEditor();
+//		view = new BasedOnTextFlow();
+		view = new BasedOnFxEditor();
 		
 		detailPane = new DetailPane();
 		
-		view.selectionIndexProperty().addListener((src) -> updateDetailPane());
+		// FIX
+//		view.selectionIndexProperty().addListener((src) -> updateDetailPane());
 		
 		split = new SplitPane(view.getNode(), detailPane);
 		split.setOrientation(Orientation.HORIZONTAL);
@@ -147,8 +148,9 @@ public class MainWindow
 	
 	protected void updateDetailPane()
 	{
-		int ix = view.selectionIndexProperty().get();
-		String line = view.getLineAtCaret();
-		D.print(ix, line);
+		// FIX
+//		int ix = view.selectionIndexProperty().get();
+//		String line = view.getLineAtCaret();
+//		D.print(ix, line);
 	}
 }

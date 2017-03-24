@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view.fxeditor;
+import goryachev.fx.FX;
 import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
 import java.util.List;
@@ -23,6 +24,7 @@ public class BasedOnFxEditor
 		model = new SegmentEditorModel();
 		
 		textField = new FxEditor(model);
+		FX.style(textField, FX.insets(2.5, 4.5));
 		// TODO disable editing
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
 	}

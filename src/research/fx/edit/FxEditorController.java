@@ -7,7 +7,6 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.shape.PathElement;
 
 
 /**
@@ -16,7 +15,7 @@ import javafx.scene.shape.PathElement;
 public class FxEditorController
 	implements FxEditorModel.Listener
 {
-	public final FxEditorSelectionModel selection;
+	public final FxEditorSelectionShapes selection;
 	protected final FxEditor editor;
 	protected ScrollBar vscroll;
 	protected ScrollBar hscroll;
@@ -27,7 +26,7 @@ public class FxEditorController
 	{
 		this.editor = ed;
 		
-		selection = new FxEditorSelectionModel(ed);
+		selection = new FxEditorSelectionShapes(ed);
 		
 		ed.getChildren().addAll(selection.highlight, vscroll(), selection.caret);
 		
@@ -63,16 +62,16 @@ public class FxEditorController
 	}
 	
 	
-	public FxEditorSelectionModel selection()
+	public FxEditorSelectionShapes selection()
 	{
 		return selection;
 	}
 	
 	
-	public void eventLinesCleared()
+	public void eventAllChanged()
 	{
-		// FIX
-		D.print();
+		selection.clear();
+		editor.requestLayout();
 	}
 
 
@@ -181,6 +180,12 @@ public class FxEditorController
 	
 	protected void handleMousePressed(MouseEvent ev)
 	{
+		// on scrollbar
+		if(ev.getX() >= vscroll().getLayoutX())
+		{
+			return;
+		}
+			
 		// TODO property: multiple selection
 		TextPos pos = getTextPos(ev);
 		
@@ -219,6 +224,12 @@ public class FxEditorController
 	
 	protected void handleMouseDragged(MouseEvent ev)
 	{
+		// on scrollbar
+		if(ev.getX() >= vscroll().getLayoutX())
+		{
+			return;
+		}
+		
 		dragging = true;
 		
 		TextPos pos = getTextPos(ev);
@@ -228,6 +239,12 @@ public class FxEditorController
 	
 	protected void handleMouseReleased(MouseEvent ev)
 	{
+		// on scrollbar
+		if(ev.getX() >= vscroll().getLayoutX())
+		{
+			return;
+		}
+		
 		dragging = false;
 		
 		D.print(selection); // FIX

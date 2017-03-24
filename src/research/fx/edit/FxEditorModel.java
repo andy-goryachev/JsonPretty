@@ -6,13 +6,13 @@ import javafx.scene.layout.Region;
 
 
 /**
- * FxEditor Model.
+ * FxEditor Model Base Class.
  */
 public abstract class FxEditorModel
 {
 	public interface Listener
 	{
-		public void eventLinesCleared();
+		public void eventAllChanged();
 		
 		public void eventLinesDeleted(int start, int count);
 		
@@ -106,13 +106,7 @@ public abstract class FxEditorModel
 	
 	public void fireAllChanged()
 	{
-		fireEvent((li) -> li.eventLinesCleared());
-		
-		int sz = getLineCount();
-		if(sz > 0)
-		{
-			fireEvent((li) -> li.eventLinesInserted(0, sz));
-		}
+		fireEvent((li) -> li.eventAllChanged());
 	}
 	
 	

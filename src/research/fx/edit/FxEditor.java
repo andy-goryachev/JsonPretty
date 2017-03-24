@@ -6,6 +6,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
@@ -98,6 +99,7 @@ public class FxEditor
 	{
 		startIndex = x;
 		requestLayout();
+		// FIX update selection
 	}
 	
 	
@@ -110,7 +112,7 @@ public class FxEditor
 		
 		double width = getWidth();
 		double height = getHeight();
-
+		
 		// position the scrollbar(s)
 		ScrollBar vscroll = control.vscroll();
 		if(vscroll.isVisible())
@@ -124,23 +126,27 @@ public class FxEditor
 		int lines = m.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(startIndex, offsety);
 		
-		double y = 0;
+		Insets pad = getInsets();
+		double maxy = height - pad.getBottom();
+		double y = pad.getTop();
+		double x0 = pad.getLeft();
 		
 		for(int ix=startIndex; ix<lines; ix++)
 		{
 			Region n = m.getDecoratedLine(ix);
 			n.setManaged(true);
 			
+			// TODO wrapping
 			double w = n.prefWidth(-1);
 			double h = n.prefHeight(w);
 			
 			LineBox b = new LineBox(ix, n);
 			la.add(b);
 			
-			layoutInArea(n, 0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			layoutInArea(n, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			
 			y += h;
-			if(y > height)
+			if(y > maxy)
 			{
 				break;
 			}

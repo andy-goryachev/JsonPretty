@@ -6,10 +6,9 @@ import goryachev.pretty.ColorScheme;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;
-import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import research.fx.edit.CTextFlow;
 import research.fx.edit.FxEditorModel;
 
 
@@ -19,7 +18,7 @@ import research.fx.edit.FxEditorModel;
 public class SegmentEditorModel
 	extends FxEditorModel
 {
-	private final CList<Line> lines = new CList<>();
+	private CList<Line> lines = new CList<>();
 	
 	
 	public SegmentEditorModel()
@@ -48,7 +47,7 @@ public class SegmentEditorModel
 	public Region getDecoratedLine(int ix)
 	{
 		Line line = lines.get(ix);
-		TextFlow flow = new TextFlow();
+		CTextFlow flow = new CTextFlow();
 		for(Segment s: line.segments)
 		{
 			flow.getChildren().add(createText(s.getText(), s.getType()));
@@ -67,12 +66,32 @@ public class SegmentEditorModel
 
 	public void setSegments(List<Segment> formatted)
 	{
-		CList<Node> rv = new CList<>(formatted.size());
+		CList<Line> ln = new CList<>(256);
+		CList<Segment> segs = new CList<>();
 		for(Segment c: formatted)
 		{
-			rv.add(createText(c.getText(), c.getType()));
+			switch(c.getType())
+			{
+			case LINEBREAK:
+				Segment[] ss = new Segment[segs.size()];
+				segs.toArray(ss);
+				ln.add(new Line(ss));
+				segs.clear();
+				break;
+			default:
+				segs.add(c);
+				break;
+			}
 		}
 		
+		if(segs.size() > 0)
+		{
+			Segment[] ss = new Segment[segs.size()];
+			segs.toArray(ss);
+			ln.add(new Line(ss));
+		}
+		
+		lines = ln;
 		fireAllChanged();
 	}
 	
