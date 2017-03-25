@@ -6,4 +6,6 @@ TODO
 - format [,,,,] properly
 - fix format: { "array":[ { }] }
 - fix format: { "array":[{ "n":null }] }
+- wrap
+- horizontal panning
 

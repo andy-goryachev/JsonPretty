@@ -15,10 +15,12 @@ import javafx.scene.input.ScrollEvent;
 public class FxEditorController
 	implements FxEditorModel.Listener
 {
+	// TODO move to editor
 	public final FxEditorSelectionShapes selection;
-	protected final FxEditor editor;
 	protected ScrollBar vscroll;
 	protected ScrollBar hscroll;
+	
+	protected final FxEditor editor;
 	protected boolean dragging;
 
 
@@ -50,6 +52,16 @@ public class FxEditorController
 	}
 	
 	
+	protected ScrollBar hscroll()
+	{
+		if(hscroll == null)
+		{
+			hscroll = createHScrollBar();
+		}
+		return hscroll;
+	}
+	
+	
 	protected ScrollBar createVScrollBar()
 	{
 		ScrollBar s = new ScrollBar();
@@ -57,7 +69,20 @@ public class FxEditorController
 		s.setManaged(true);
 		s.setMin(0.0);
 		s.setMax(1.0);
-		s.valueProperty().addListener((src,old,val) -> setAbsolutePosition(val.doubleValue()));
+		s.valueProperty().addListener((src,old,val) -> setVerticalAbsolutePosition(val.doubleValue()));
+		return s;
+	}
+	
+	
+	// TODO
+	protected ScrollBar createHScrollBar()
+	{
+		ScrollBar s = new ScrollBar();
+		s.setOrientation(Orientation.HORIZONTAL);
+		s.setManaged(true);
+		s.setMin(0.0);
+		s.setMax(1.0);
+		//s.valueProperty().addListener((src,old,val) -> setHAbsolutePosition(val.doubleValue()));
 		return s;
 	}
 	
@@ -72,6 +97,16 @@ public class FxEditorController
 	{
 		selection.clear();
 		editor.requestLayout();
+		
+		if(vscroll != null)
+		{
+			vscroll.setValue(0);
+		}
+		
+		if(hscroll != null)
+		{
+			hscroll.setValue(0);
+		}
 	}
 
 
@@ -96,7 +131,7 @@ public class FxEditorController
 	}
 	
 	
-	public void setAbsolutePosition(double pos)
+	public void setVerticalAbsolutePosition(double pos)
 	{
 		// TODO account for visible line count
 		int start = FX.round(editor.getModel().getLineCount() * pos);
