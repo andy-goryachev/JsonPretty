@@ -1112,6 +1112,11 @@ public class TextTools
 	/** escape control characters (<0x20) and backslash for debugging. */
 	public static String escapeControlsForPrintout(String text)
 	{
+		if(text == null)
+		{
+			return null;
+		}
+		
 		SB sb = new SB(text.length() + 64);
 		text.codePoints().forEach((c) ->
 		{

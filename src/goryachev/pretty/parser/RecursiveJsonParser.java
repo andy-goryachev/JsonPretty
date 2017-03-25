@@ -170,6 +170,8 @@ public class RecursiveJsonParser
 			case '\t':
 				setState(Type.WHITESPACE);
 				break;
+			case EOF:
+				return;
 			default:
 				return;
 			}
@@ -312,6 +314,10 @@ public class RecursiveJsonParser
 			{
 				break;
 			}
+			else if(c == EOF)
+			{
+				break;
+			}
 			
 			switch(c)
 			{
@@ -419,6 +425,7 @@ public class RecursiveJsonParser
 		case '[':
 			readArray();
 			break;
+		case EOF:
 		default:
 			// FIX? error?
 			break;

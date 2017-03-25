@@ -1,3 +1,6 @@
+{ "array":[ { }] }
+{ "array":[{ "n":null }] }
+
 notice how text outside of the valid json is 
 ignored{"description": "JSON example shows all possible types","aNumber": +1e308, "emptyArray":    [],"emptyObject"  :  {  }  ,  "anObject":{"description": "(JSON object &nbsp;)"},"anArray":[0,1,"2",-1.23456789,true],"aBoolean":true,"aNull":null}trailing text is also ignored
 extra line

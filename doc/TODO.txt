@@ -1,8 +1,9 @@
 TODO
 
 - parser: single AB,OB,AE,OE tags
-- show invalud values maybe
+- check for valid values maybe
 - handle [[[]]] right
-- bad formatting in nested objects
 - format [,,,,] properly
+- fix format: { "array":[ { }] }
+- fix format: { "array":[{ "n":null }] }
 
