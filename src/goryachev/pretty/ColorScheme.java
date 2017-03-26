@@ -19,36 +19,84 @@ public class ColorScheme
 //	public static Color textColor = Color.BLACK;
 //	public static Color valueColor = FX.rgb(0x7d2727); // FX.rgb(0x8d71cf);
 	
-	public static Color commentColor = Color.RED;
-	public static Color errorColor = Color.MAGENTA;
-	public static Color ignoreColor = Color.GRAY;
-	public static Color nameColor = FX.rgb(0xa6e22e);
-	public static Color stringColor = FX.rgb(0x66d9ef);
-	public static Color textColor = Color.BLACK;
-	public static Color valueColor = FX.rgb(0xae81ff);
+	// too light
+//	private Color commentColor = Color.RED;
+//	private Color errorColor = Color.MAGENTA;
+//	private Color ignoreColor = Color.GRAY;
+//	private Color nameColor = FX.rgb(0xa6e22e);
+//	private Color stringColor = FX.rgb(0x66d9ef);
+//	private Color textColor = Color.BLACK;
+//	private Color valueColor = FX.rgb(0xae81ff);
+	
+	private Color commentColor = Color.RED;
+	private Color errorColor = Color.MAGENTA;
+	private Color ignoreColor = Color.GRAY;
+	private Color nameColor = FX.rgb(0xa6e22e);
+	private Color stringColor = FX.rgb(0x66d9ef);
+	private Color textColor = Color.BLACK;
+	private Color valueColor = FX.rgb(0xae81ff);
+
+	
+	//
+	
+	private final String name;
+	private static ColorScheme current;
+	
+	
+	public ColorScheme(String name)
+	{
+		this.name = name;
+	}
+	
+	
+	private static ColorScheme getScheme()
+	{
+		if(current == null)
+		{
+			// TODO from settings
+			current = createSolarizedScheme();
+		}
+		return current;
+	}
+	
+	
+	private static ColorScheme createSolarizedScheme()
+	{
+		ColorScheme s = new ColorScheme("Solarized");
+		s.commentColor = FX.rgb(0xdc322f);; // red
+		s.errorColor = FX.rgb(0xd33682); // magenta
+		s.ignoreColor = FX.rgb(0x657b83); // base00
+		s.nameColor = FX.rgb(0x859900); // green
+		s.stringColor = FX.rgb(0x6c71c4); // violet
+		s.textColor = FX.rgb(0x002b36); // base03
+		s.valueColor = FX.rgb(0xcb4b16); // orange
+		return s;
+	}
 
 	
 	public static Color getColor(Type t)
 	{
+		ColorScheme s = getScheme();
+		
 		switch(t)
 		{
 		case COMMENT:
-			return commentColor;
+			return s.commentColor;
 		case ERROR:
-			return errorColor;
+			return s.errorColor;
 		case IGNORE:
-			return ignoreColor;
+			return s.ignoreColor;
 		case NAME:
 		case NAME_BEGIN:
 		case NAME_END:
-			return nameColor;
+			return s.nameColor;
 		case STRING_BEGIN:
 		case STRING:
 		case STRING_END:
-			return stringColor;
+			return s.stringColor;
 		case VALUE:
-			return valueColor;
+			return s.valueColor;
 		}
-		return textColor;
+		return s.textColor;
 	}
 }
