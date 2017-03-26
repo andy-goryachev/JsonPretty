@@ -92,9 +92,16 @@ public class MainWindow
 		CMenuBar mb = new CMenuBar();
 		// file
 		mb.add(m = new CMenu("File"));
+		m.add("Preferences");
+		m.separator();
 		m.add("Quit", FX.exitAction());
 		// edit
 		mb.add(m = new CMenu("Edit"));
+		m.add("Copy");
+		m.add("Save Selection As...");
+		// view
+		mb.add(m = new CMenu("View"));
+		m.add("Layout");
 		// help
 		mb.add(m = new CMenu("Help"));
 		m.add("About");
