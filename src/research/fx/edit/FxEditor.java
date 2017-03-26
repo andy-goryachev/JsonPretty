@@ -30,7 +30,13 @@ public class FxEditor
 	
 	private final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
 	private final ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
-	private final ReadOnlyObjectWrapper<Boolean> wrap = new ReadOnlyObjectWrapper<>();
+	private final ReadOnlyObjectWrapper<Boolean> wrap = new ReadOnlyObjectWrapper<Boolean>(true)
+	{
+		protected void invalidated()
+		{
+			requestLayout();
+		}
+	};
 	private final ReadOnlyObjectWrapper<Boolean> singleSelection = new ReadOnlyObjectWrapper<>();
 	private final ReadOnlyObjectWrapper<Duration> blinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	// TODO multiple selection
@@ -83,6 +89,12 @@ public class FxEditor
 	}
 	
 	
+	public boolean isWrapText()
+	{
+		return wrap.get();
+	}
+	
+	
 	public ReadOnlyObjectProperty<FxEditorModel> modelProperty()
 	{
 		return model.getReadOnlyProperty();
@@ -130,6 +142,8 @@ public class FxEditor
 		double maxy = height - pad.getBottom();
 		double y = pad.getTop();
 		double x0 = pad.getLeft();
+		double wid = width - x0 - pad.getRight() - vscroll.getWidth(); // TODO leading, trailing components
+		boolean wrap = isWrapText();
 		
 		for(int ix=startIndex; ix<lines; ix++)
 		{
@@ -137,7 +151,8 @@ public class FxEditor
 			n.setManaged(true);
 			
 			// TODO wrapping
-			double w = n.prefWidth(-1);
+			double w = wrap ? wid : n.prefWidth(-1);
+			n.setMaxWidth(wrap ? wid : Double.MAX_VALUE); 
 			double h = n.prefHeight(w);
 			
 			LineBox b = new LineBox(ix, n);
