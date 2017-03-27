@@ -2,7 +2,6 @@
 package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.D;
 import goryachev.common.util.Log;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
@@ -120,7 +119,7 @@ public class MainWindow
 	protected void updateContent(String s)
 	{
 		List<Segment> ss = parseAndFormat(s);
-		view.setParsedSegments(ss);
+		view.setTextSegments(ss);
 	}
 
 
@@ -154,10 +153,17 @@ public class MainWindow
 	
 	protected void updateDetailPane()
 	{
+//		D.print(sp);
 		CaretSpot sp = view.caretSpotProperty().get();
-		// FIX
-//		int ix = view.selectionIndexProperty().get();
-//		String line = view.getLineAtCaret();
-		D.print(sp);
+		List<Segment> segments = analyze(sp.getPosition(), sp.getText());
+		detailPane.setTextSegments(segments);
+	}
+
+
+	protected List<Segment> analyze(int position, String text)
+	{
+		CList<Segment> rv = new CList<>();
+		rv.add(new Segment(Type.COMMENT, "position: " + position));
+		return rv;
 	}
 }

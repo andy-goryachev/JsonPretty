@@ -30,6 +30,7 @@ public class BasedOnFxEditor
 		FX.style(textField, FX.insets(2.5, 4.5));
 		// TODO disable editing
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
+		// TODO selection listener
 	}
 
 
@@ -39,7 +40,7 @@ public class BasedOnFxEditor
 	}
 
 
-	public void setParsedSegments(List<Segment> formatted)
+	public void setTextSegments(List<Segment> formatted)
 	{
 		model.setSegments(formatted);
 	}
@@ -47,7 +48,12 @@ public class BasedOnFxEditor
 
 	public ReadOnlyObjectProperty<CaretSpot> caretSpotProperty()
 	{
-		// FIX
-		return null;
+		return caretSpot.getReadOnlyProperty();
+	}
+
+
+	public void setCaretVisible(boolean on)
+	{
+		textField.setCaretVisible(on);
 	}
 }

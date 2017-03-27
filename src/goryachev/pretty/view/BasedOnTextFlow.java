@@ -63,7 +63,7 @@ public class BasedOnTextFlow
 	}
 
 
-	public void setParsedSegments(List<Segment> formatted)
+	public void setTextSegments(List<Segment> formatted)
 	{
 		CList<Node> rv = new CList<>(formatted.size());
 		for(Segment c: formatted)
@@ -81,5 +81,11 @@ public class BasedOnTextFlow
 		Text t = new Text(text);
 		t.setFill(ColorScheme.getColor(type));
 		return t;
+	}
+	
+	
+	public void setCaretVisible(boolean on)
+	{
+		textField.setCaretVisible(on);
 	}
 }

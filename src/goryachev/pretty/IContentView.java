@@ -20,8 +20,11 @@ public interface IContentView
 	
 	
 	/** replaces current content with the list of parsed and formatted segments */
-	public void setParsedSegments(List<Segment> segments);
+	public void setTextSegments(List<Segment> segments);
 	
 	
 	public ReadOnlyObjectProperty<CaretSpot> caretSpotProperty();
+
+
+	public void setCaretVisible(boolean on);
 }

@@ -1,9 +1,10 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
 import goryachev.fx.CPane;
+import goryachev.pretty.parser.Segment;
 import goryachev.pretty.view.BasedOnTextFlow;
 import goryachev.pretty.view.fxeditor.BasedOnFxEditor;
-import javafx.scene.web.WebView;
+import java.util.List;
 
 
 /**
@@ -18,7 +19,14 @@ public class DetailPane
 	public DetailPane()
 	{
 		view = Config.USE_FX_EDITOR ? new BasedOnFxEditor() : new BasedOnTextFlow();
+		view.setCaretVisible(false);
 		
 		setCenter(view.getNode());
+	}
+
+
+	public void setTextSegments(List<Segment> segments)
+	{
+		view.setTextSegments(segments);
 	}
 }

@@ -239,4 +239,10 @@ public class FxEditor
 	{
 		return new LayoutOp(layout);
 	}
+
+
+	public void setCaretVisible(boolean on)
+	{
+		// TODO
+	}
 }
