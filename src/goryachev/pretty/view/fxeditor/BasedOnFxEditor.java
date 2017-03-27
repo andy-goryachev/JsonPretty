@@ -1,10 +1,12 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view.fxeditor;
 import goryachev.fx.FX;
+import goryachev.pretty.CaretSpot;
 import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
 import java.util.List;
-import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.Node;
 import research.fx.edit.FxEditor;
 
@@ -17,7 +19,8 @@ public class BasedOnFxEditor
 {
 	public final FxEditor textField;
 	public final SegmentEditorModel model;
-
+	private final ReadOnlyObjectWrapper<CaretSpot> caretSpot = new ReadOnlyObjectWrapper();
+	
 	
 	public BasedOnFxEditor()
 	{
@@ -42,14 +45,7 @@ public class BasedOnFxEditor
 	}
 
 
-	public ReadOnlyIntegerProperty selectionIndexProperty()
-	{
-		// FIX
-		return null;
-	}
-
-
-	public String getLineAtCaret()
+	public ReadOnlyObjectProperty<CaretSpot> caretSpotProperty()
 	{
 		// FIX
 		return null;

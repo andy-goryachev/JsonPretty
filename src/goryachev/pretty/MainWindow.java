@@ -2,6 +2,7 @@
 package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
+import goryachev.common.util.D;
 import goryachev.common.util.Log;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
@@ -50,8 +51,7 @@ public class MainWindow
 		
 		detailPane = new DetailPane();
 		
-		// FIX
-//		view.selectionIndexProperty().addListener((src) -> updateDetailPane());
+		view.caretSpotProperty().addListener((src) -> updateDetailPane());
 		
 		split = new SplitPane(view.getNode(), detailPane);
 		split.setOrientation(Orientation.HORIZONTAL);
@@ -154,9 +154,10 @@ public class MainWindow
 	
 	protected void updateDetailPane()
 	{
+		CaretSpot sp = view.caretSpotProperty().get();
 		// FIX
 //		int ix = view.selectionIndexProperty().get();
 //		String line = view.getLineAtCaret();
-//		D.print(ix, line);
+		D.print(sp);
 	}
 }

@@ -132,9 +132,8 @@ public class StyledTextPane
 	}
 
 
-	public String getLineAt(int ix)
+	public String getText()
 	{
-		// FIX
-		return null;
+		return textField.getText();
 	}
 }

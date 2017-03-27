@@ -2,15 +2,17 @@
 package goryachev.pretty.view;
 import goryachev.common.util.CList;
 import goryachev.fx.FX;
+import goryachev.fx.FxInvalidationListener;
+import goryachev.pretty.CaretSpot;
 import goryachev.pretty.ColorScheme;
 import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;
-import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import research.fx.edit.StyledTextPane;
@@ -26,11 +28,13 @@ public class BasedOnTextFlow
 {
 	public final StyledTextPane textField;
 	public final ScrollPane scroll;
+	private final ReadOnlyObjectWrapper<CaretSpot> caretSpot = new ReadOnlyObjectWrapper();
 
 	
 	public BasedOnTextFlow()
 	{
 		textField = new StyledTextPane();
+		new FxInvalidationListener(textField.selectionIndexProperty(), () -> updateCaret());
 		FX.style(textField, FX.insets(2.5, 4.5));
 		textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
 		
@@ -39,9 +43,17 @@ public class BasedOnTextFlow
 	}
 	
 	
-	public ReadOnlyIntegerProperty selectionIndexProperty()
+	protected void updateCaret()
 	{
-		return textField.selectionIndexProperty();
+		int ix = textField.selectionIndexProperty().get();
+		String text = textField.getText();
+		caretSpot.set(new CaretSpot(ix, text));
+	}
+	
+	
+	public ReadOnlyObjectProperty<CaretSpot> caretSpotProperty()
+	{
+		return caretSpot.getReadOnlyProperty();
 	}
 
 
@@ -69,12 +81,5 @@ public class BasedOnTextFlow
 		Text t = new Text(text);
 		t.setFill(ColorScheme.getColor(type));
 		return t;
-	}
-
-
-	public String getLineAtCaret()
-	{
-		int ix = textField.selectionIndexProperty().get();
-		return textField.getLineAt(ix);
 	}
 }

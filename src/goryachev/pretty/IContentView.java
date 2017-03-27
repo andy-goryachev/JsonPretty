@@ -3,7 +3,7 @@ package goryachev.pretty;
 import goryachev.fx.CssStyle;
 import goryachev.pretty.parser.Segment;
 import java.util.List;
-import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.Node;
 
 
@@ -23,8 +23,5 @@ public interface IContentView
 	public void setParsedSegments(List<Segment> segments);
 	
 	
-	public ReadOnlyIntegerProperty selectionIndexProperty();
-
-
-	public String getLineAtCaret();
+	public ReadOnlyObjectProperty<CaretSpot> caretSpotProperty();
 }

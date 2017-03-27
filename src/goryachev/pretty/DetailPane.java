@@ -1,6 +1,8 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
 import goryachev.fx.CPane;
+import goryachev.pretty.view.BasedOnTextFlow;
+import goryachev.pretty.view.fxeditor.BasedOnFxEditor;
 import javafx.scene.web.WebView;
 
 
@@ -10,13 +12,13 @@ import javafx.scene.web.WebView;
 public class DetailPane
 	extends CPane
 {
-	public final WebView view;
+	public final IContentView view;
 	
 	
 	public DetailPane()
 	{
-		view = new WebView();
+		view = Config.USE_FX_EDITOR ? new BasedOnFxEditor() : new BasedOnTextFlow();
 		
-		setCenter(view);
+		setCenter(view.getNode());
 	}
 }
