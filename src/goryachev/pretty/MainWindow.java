@@ -2,7 +2,6 @@
 package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.D;
 import goryachev.common.util.Log;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
@@ -15,6 +14,7 @@ import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonParser;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
+import goryachev.pretty.view.BasedOnTextFlow;
 import goryachev.pretty.view.fxeditor.BasedOnFxEditor;
 import java.util.List;
 import javafx.animation.KeyFrame;
@@ -46,8 +46,7 @@ public class MainWindow
 	{
 		super("MainWindow");
 		
-//		view = new BasedOnTextFlow();
-		view = new BasedOnFxEditor();
+		view = Config.USE_FX_EDITOR ? new BasedOnFxEditor() : new BasedOnTextFlow();
 		
 		detailPane = new DetailPane();
 		
@@ -113,7 +112,7 @@ public class MainWindow
 	{
 		HPane p = new HPane();
 		p.fill();
-		p.add(FX.label("copyright © andy goryachev", Color.GRAY, new Insets(1, 10, 1, 2)));
+		p.add(FX.label("copyright © 2017 andy goryachev", Color.GRAY, new Insets(1, 10, 1, 2)));
 		return p;
 	}
 	
