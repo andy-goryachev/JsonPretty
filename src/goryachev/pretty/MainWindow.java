@@ -2,6 +2,8 @@
 package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
+import goryachev.common.util.CMap;
+import goryachev.common.util.CSorter;
 import goryachev.common.util.Log;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
@@ -9,6 +11,7 @@ import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
+import goryachev.pretty.analysis.IntegerAnalyzer;
 import goryachev.pretty.format.JsonPrettyFormatter;
 import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonParser;
@@ -160,10 +163,22 @@ public class MainWindow
 	}
 
 
-	protected List<Segment> analyze(int position, String text)
-	{
+	protected List<Segment> analyze(int pos, String text)
+	{		
+		CMap<String,String> rep = new CMap();
+		new IntegerAnalyzer(pos, text).report(rep);
+		
+		CList<String> names = rep.keys();
+		CSorter.sort(names);
+		
 		CList<Segment> rv = new CList<>();
-		rv.add(new Segment(Type.COMMENT, "position: " + position));
+		for(String k: names)
+		{
+			String val = rep.get(k);
+			rv.add(new Segment(Type.IGNORE, k + ": "));
+			rv.add(new Segment(Type.TEXT, val));
+			rv.add(new Segment(Type.LINEBREAK, "\n"));
+		}
 		return rv;
 	}
 }

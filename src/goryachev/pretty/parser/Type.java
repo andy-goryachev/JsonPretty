@@ -21,6 +21,7 @@ public enum Type
 	STRING,
 	STRING_BEGIN,
 	STRING_END,
+	TEXT,
 	VALUE,
 	WHITESPACE
 	;
