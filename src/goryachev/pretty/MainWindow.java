@@ -175,7 +175,9 @@ public class MainWindow
 		for(String k: names)
 		{
 			String val = rep.get(k);
-			rv.add(new Segment(Type.IGNORE, k + ": "));
+			rv.add(new Segment(Type.IGNORE, k + ":"));
+			rv.add(new Segment(Type.LINEBREAK, "\n"));
+			rv.add(new Segment(Type.WHITESPACE, "    "));
 			rv.add(new Segment(Type.TEXT, val));
 			rv.add(new Segment(Type.LINEBREAK, "\n"));
 		}

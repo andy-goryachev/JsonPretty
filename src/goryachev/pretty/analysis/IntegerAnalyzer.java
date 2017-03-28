@@ -1,7 +1,12 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.analysis;
-
+import goryachev.common.util.CCalendar;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
+
 
 /**
  * Integer Analyzer.
@@ -9,9 +14,27 @@ import java.util.Map;
 public class IntegerAnalyzer
 	extends AbstractAnalyzer
 {
+	private static final long MIN_TIME_MS = time(1980, Calendar.JANUARY, 1);
+	private static final long MAX_TIME_MS = time(2100, Calendar.DECEMBER, 31);
+	private static final long MIN_TIME_UNIX = MIN_TIME_MS / 1000;
+	private static final long MAX_TIME_UNIX = MAX_TIME_MS / 1000;
+	private static final SimpleDateFormat javaFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss.SSS");
+	private static final SimpleDateFormat unixFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+	
+	
 	public IntegerAnalyzer(int pos, String text)
 	{
 		super(pos, text);
+	}
+	
+	
+	private static long time(int year, int month, int day)
+	{
+		CCalendar c = CCalendar.getInstance(TimeZone.getTimeZone("GMT"));
+		c.setYear(year);
+		c.setMonth(month);
+		c.setDay(day);
+		return c.getTime();
 	}
 
 
@@ -40,11 +63,19 @@ public class IntegerAnalyzer
 		int val;
 		try
 		{
-			int n = Integer.parseInt(s);
-			result.put("integer", String.valueOf(n)); // FIX
-			
-			// TODO unix time
+			long n = Long.parseLong(s);
+
 			// java time
+			if((n > MIN_TIME_MS) && (n < MAX_TIME_MS))
+			{
+				result.put("timestamp", javaFormat.format(new Date(n)));
+			}
+			
+			// unix time
+			if((n > MIN_TIME_UNIX) && (n < MAX_TIME_UNIX))
+			{
+				result.put("unix time", unixFormat.format(new Date(n * 1000)));
+			}
 		}
 		catch(Exception ignore)
 		{

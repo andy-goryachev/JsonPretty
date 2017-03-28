@@ -1,6 +1,7 @@
 notice how the text outside of the json block is quietly
 ignored:
 {
+	"time": 1389479526796,
 	"aBoolean": true,
 	"aNull": null,
 	"aNumber": 1e308,
