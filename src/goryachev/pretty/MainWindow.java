@@ -11,6 +11,7 @@ import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
+import goryachev.pretty.analysis.Base64Analyzer;
 import goryachev.pretty.analysis.IntegerAnalyzer;
 import goryachev.pretty.format.JsonPrettyFormatter;
 import goryachev.pretty.parser.ParseResult;
@@ -166,6 +167,9 @@ public class MainWindow
 	protected List<Segment> analyze(int pos, String text)
 	{		
 		CMap<String,String> rep = new CMap();
+		
+		// analyzers
+		new Base64Analyzer(pos, text).report(rep);
 		new IntegerAnalyzer(pos, text).report(rep);
 		
 		CList<String> names = rep.keys();
