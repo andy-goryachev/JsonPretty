@@ -7,12 +7,12 @@ import java.util.Map;
 
 
 /**
- * Base64 Analyzer.
+ * Hex Analyzer.
  */
-public class Base64Analyzer
+public class HexAnalyzer
 	extends AbstractAnalyzer
 {
-	public Base64Analyzer(int pos, String text)
+	public HexAnalyzer(int pos, String text)
 	{
 		super(pos, text);
 	}
@@ -28,52 +28,12 @@ public class Base64Analyzer
 		case 'D':
 		case 'E':
 		case 'F':
-		case 'G':
-		case 'H':
-		case 'I':
-		case 'J':
-		case 'K':
-		case 'L':
-		case 'M':
-		case 'N':
-		case 'O':
-		case 'P':
-		case 'Q':
-		case 'R':
-		case 'S':
-		case 'T':
-		case 'U':
-		case 'V':
-		case 'W':
-		case 'X':
-		case 'Y':
-		case 'Z':
 		case 'a':
 		case 'b':
 		case 'c':
 		case 'd':
 		case 'e':
 		case 'f':
-		case 'g':
-		case 'h':
-		case 'i':
-		case 'j':
-		case 'k':
-		case 'l':
-		case 'm':
-		case 'n':
-		case 'o':
-		case 'p':
-		case 'q':
-		case 'r':
-		case 's':
-		case 't':
-		case 'u':
-		case 'v':
-		case 'w':
-		case 'x':
-		case 'y':
-		case 'z':
 		case '0':
 		case '1':
 		case '2':
@@ -84,9 +44,6 @@ public class Base64Analyzer
 		case '7':
 		case '8':
 		case '9':
-		case '+':
-		case '/':
-		case '=':
 			return true;
 		}
 		return false;
@@ -95,17 +52,16 @@ public class Base64Analyzer
 	
 	protected void analyze(String s, Map<String,String> result)
 	{
-		if((s.length() % 3) != 0)
+		if((s.length() % 2) != 0)
 		{
-			// not base-64
+			// not hex
 			return;
 		}
 		
 		try
 		{
-			byte[] b = Base64.decode(s);
+			byte[] b = Hex.parseByteArray(s);
 			String hex = Hex.toHexString(b);
-			result.put("base64", hex);
 			
 			// TODO try to decode as a utf8 string
 			try
@@ -113,7 +69,7 @@ public class Base64Analyzer
 				String dec = new String(b, CKit.CHARSET_UTF8);
 				if(checkPrintableString(dec))
 				{
-					result.put("base64 decoded as UTF-8", dec);
+					result.put("hex decoded as UTF-8", dec);
 				}
 			}
 			catch(Exception e)

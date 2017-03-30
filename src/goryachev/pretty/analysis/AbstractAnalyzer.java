@@ -82,4 +82,47 @@ public abstract class AbstractAnalyzer
 			analyze(s, result);
 		}
 	}
+	
+	
+	protected boolean checkPrintableString(String s)
+	{
+		if(s == null)
+		{
+			return false;
+		}
+		
+		for(int i=0; i<s.length(); )
+		{
+			int c = s.codePointAt(i);
+			i += Character.charCount(c);
+				
+			if(c < 0x20)
+			{
+				switch(c)
+				{
+				case '\t':
+				case '\r':
+				case '\n':
+					break;
+				default:
+					return false;
+				}
+			}
+			else
+			{
+				if(!Character.isValidCodePoint(c))
+				{
+					return false;
+				}
+				
+				switch(c)
+				{
+				case 0xfffd:
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
 }

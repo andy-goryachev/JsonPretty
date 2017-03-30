@@ -12,6 +12,7 @@ import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
 import goryachev.pretty.analysis.Base64Analyzer;
+import goryachev.pretty.analysis.HexAnalyzer;
 import goryachev.pretty.analysis.IntegerAnalyzer;
 import goryachev.pretty.format.JsonPrettyFormatter;
 import goryachev.pretty.parser.ParseResult;
@@ -170,6 +171,7 @@ public class MainWindow
 		
 		// analyzers
 		new Base64Analyzer(pos, text).report(rep);
+		new HexAnalyzer(pos, text).report(rep);
 		new IntegerAnalyzer(pos, text).report(rep);
 		
 		CList<String> names = rep.keys();
@@ -179,7 +181,7 @@ public class MainWindow
 		for(String k: names)
 		{
 			String val = rep.get(k);
-			rv.add(new Segment(Type.IGNORE, k + ":"));
+			rv.add(new Segment(Type.NAME, k + ":"));
 			rv.add(new Segment(Type.LINEBREAK, "\n"));
 			rv.add(new Segment(Type.WHITESPACE, "    "));
 			rv.add(new Segment(Type.TEXT, val));
