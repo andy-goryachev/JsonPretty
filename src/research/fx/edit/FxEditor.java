@@ -95,6 +95,12 @@ public class FxEditor
 	}
 	
 	
+	public void setWrapText(boolean on)
+	{
+		wrap.set(on);
+	}
+	
+	
 	public ReadOnlyObjectProperty<FxEditorModel> modelProperty()
 	{
 		return model.getReadOnlyProperty();

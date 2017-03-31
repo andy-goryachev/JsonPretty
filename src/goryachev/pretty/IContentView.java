@@ -27,4 +27,7 @@ public interface IContentView
 
 
 	public void setCaretVisible(boolean on);
+	
+	
+	public void setWrapText(boolean on);
 }

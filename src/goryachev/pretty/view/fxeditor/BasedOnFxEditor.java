@@ -56,4 +56,10 @@ public class BasedOnFxEditor
 	{
 		textField.setCaretVisible(on);
 	}
+	
+	
+	public void setWrapText(boolean on)
+	{
+		textField.setWrapText(on);
+	}
 }

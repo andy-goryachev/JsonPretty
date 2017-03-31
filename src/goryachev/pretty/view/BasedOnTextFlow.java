@@ -88,4 +88,10 @@ public class BasedOnTextFlow
 	{
 		textField.setCaretVisible(on);
 	}
+	
+	
+	public void setWrapText(boolean on)
+	{
+		scroll.setFitToWidth(on);
+	}
 }
