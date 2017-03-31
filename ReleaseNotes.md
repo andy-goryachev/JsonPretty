@@ -1,6 +1,11 @@
 # JsonPretty Release Notes
 
 
+**0.00.03**
+- base64 value parser
+- hex value parser
+- timestamp value parser
+
 **0.00.02**
 - fixed infinite loop in parser
 - added menu, status bar, detail pane

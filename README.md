@@ -6,7 +6,7 @@ Detect and pretty print JSON text copied to the clipboard.
 
 ## Download
 
-[JsonPretty.jar](https://github.com/andy-goryachev/JsonPretty/raw/master/releases/JsonPretty.0.00.02.jar)
+[JsonPretty.jar](https://github.com/andy-goryachev/JsonPretty/raw/master/releases/JsonPretty.0.00.03.jar)
 
 ## License
 
