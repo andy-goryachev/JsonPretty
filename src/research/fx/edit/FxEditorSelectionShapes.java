@@ -24,7 +24,7 @@ public class FxEditorSelectionShapes
 {
 	protected final FxEditor editor;
 	protected final Timeline caretTimeline;
-	protected final Path caret;
+	protected final Path caretPath;
 	protected final Path highlight;
 	/** multiple selection segments: the end position corresponds to the caret */ 
 	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
@@ -40,10 +40,10 @@ public class FxEditorSelectionShapes
 		highlight.setStroke(null);
 		highlight.setFill(Color.rgb(255, 255, 0, 0.25));
 		
-		caret = new Path();
-		FX.style(caret, FxEditor.CARET);
-		caret.setManaged(false);
-		caret.setStroke(Color.BLACK);
+		caretPath = new Path();
+		FX.style(caretPath, FxEditor.CARET);
+		caretPath.setManaged(false);
+		caretPath.setStroke(Color.BLACK);
 		
 		caretTimeline = new Timeline();
 		caretTimeline.setCycleCount(Animation.INDEFINITE);
@@ -68,7 +68,7 @@ public class FxEditorSelectionShapes
 	
 	public void clear()
 	{
-		caret.getElements().clear();
+		caretPath.getElements().clear();
 		highlight.getElements().clear();
 		segments.clear();
 	}
@@ -76,7 +76,7 @@ public class FxEditorSelectionShapes
 	
 	protected void setCaretVisible(boolean on)
 	{
-		caret.setVisible(on);
+		caretPath.setVisible(on);
 	}
 	
 
@@ -84,7 +84,7 @@ public class FxEditorSelectionShapes
 	{
 		// reset caret so it's always on when moving, unlike MS Word
 		caretTimeline.stop();
-		caret.getElements().setAll(es);
+		caretPath.getElements().setAll(es);
 		caretTimeline.play();
 	}
 
@@ -107,7 +107,7 @@ public class FxEditorSelectionShapes
 	{
 		segments.add(new SelectionSegment(start, end));
 		highlight.getElements().addAll(createHighlightPath(start, end));
-		caret.getElements().addAll(createCaretPath(end));
+		caretPath.getElements().addAll(createCaretPath(end));
 		
 		// TODO combine overlapping segments
 	}
@@ -179,7 +179,7 @@ public class FxEditorSelectionShapes
 		}
 		
 		highlight.getElements().setAll(hs);
-		caret.getElements().setAll(cs);
+		caretPath.getElements().setAll(cs);
 	}
 	
 	
