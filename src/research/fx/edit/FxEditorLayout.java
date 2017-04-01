@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.PathElement;
 import research.fx.edit.internal.CaretLocation;
+import research.fx.edit.internal.EditorTools;
 import research.fx.edit.internal.Markers;
 
 

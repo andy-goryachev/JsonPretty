@@ -514,8 +514,8 @@ public class FxEditor
 		CaretLocation c = getCaretLocation(p);
 		if(c != null)
 		{
-			a.add(new MoveTo(c.x0, c.y0));
-			a.add(new LineTo(c.x0, c.y1));
+			a.add(new MoveTo(c.x, c.y0));
+			a.add(new LineTo(c.x, c.y1));
 		}
 	}
 	
@@ -553,9 +553,9 @@ public class FxEditor
 		
 		Insets pad = getInsets();
 		double left = pad.getLeft();
-		double right = getWidth() - left - pad.getRight();
-		double top = pad.getTop();
-		double bottom = getHeight() - top - pad.getBottom();
+		double right = getWidth() - left - pad.getRight() - vscroll().getWidth();
+		double top = 0; // no padding 
+		double bottom = getHeight(); // no padding FIX hscroll
 		
 		if(beg == null)
 		{
@@ -571,8 +571,8 @@ public class FxEditor
 			if(end.y0 < offsety) // FIX wrong
 			{
 				// [***   ]
-				a.add(new LineTo(end.x0, end.y0));
-				a.add(new LineTo(end.x0, end.y1));
+				a.add(new LineTo(end.x, end.y0));
+				a.add(new LineTo(end.x, end.y1));
 				a.add(new LineTo(left, end.y1));
 				a.add(new LineTo(left, top));
 			}
@@ -582,8 +582,8 @@ public class FxEditor
 				// [***   ]
 				a.add(new LineTo(right, top));
 				a.add(new LineTo(right, end.y0));
-				a.add(new LineTo(end.x0, end.y0));
-				a.add(new LineTo(end.x1, end.y1));
+				a.add(new LineTo(end.x, end.y0));
+				a.add(new LineTo(end.x, end.y1));
 				a.add(new LineTo(left, end.y1));
 				a.add(new LineTo(left, top));
 				
@@ -600,24 +600,24 @@ public class FxEditor
 		}
 		else
 		{
-			a.add(new MoveTo(beg.x0, beg.y0));
+			a.add(new MoveTo(beg.x, beg.y0));
 			if(FxEditorTools.isNearlySame(beg.y0, end.y0))
 			{
-				a.add(new LineTo(end.x0, beg.y0));
-				a.add(new LineTo(end.x0, end.y1));
-				a.add(new LineTo(beg.x0, end.y1));
-				a.add(new LineTo(beg.x0, beg.y0));
+				a.add(new LineTo(end.x, beg.y0));
+				a.add(new LineTo(end.x, end.y1));
+				a.add(new LineTo(beg.x, end.y1));
+				a.add(new LineTo(beg.x, beg.y0));
 			}
 			else
 			{				
 				a.add(new LineTo(right, beg.y0));
 				a.add(new LineTo(right, end.y0));
-				a.add(new LineTo(end.x0, end.y0));
-				a.add(new LineTo(end.x0, end.y1));
+				a.add(new LineTo(end.x, end.y0));
+				a.add(new LineTo(end.x, end.y1));
 				a.add(new LineTo(left, end.y1));
 				a.add(new LineTo(left, beg.y1));
-				a.add(new LineTo(beg.x0, beg.y1));
-				a.add(new LineTo(beg.x0, beg.y0));
+				a.add(new LineTo(beg.x, beg.y1));
+				a.add(new LineTo(beg.x, beg.y0));
 			}
 		}
 	}
