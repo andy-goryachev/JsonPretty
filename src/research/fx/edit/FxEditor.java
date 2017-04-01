@@ -500,8 +500,8 @@ public class FxEditor
 			Marker start = s.getStart();
 			Marker end = s.getEnd();
 			
-			hs.addAll(createSelectionHighlight(start, end));
-			cs.addAll(createCaretPath(end));
+			createSelectionHighlight(hs, start, end);
+			createCaretPath(cs, end);
 		}
 		
 		selectionHighlight.getElements().setAll(hs);
@@ -509,117 +509,116 @@ public class FxEditor
 	}
 	
 	
-	protected CList<PathElement> createCaretPath(Marker p)
+	protected void createCaretPath(CList<PathElement> a, Marker p)
 	{
-		CList<PathElement> rv = new CList<>();
 		CaretLocation c = getCaretLocation(p);
 		if(c != null)
 		{
-			// TODO insert shape?
-			rv.add(new MoveTo(c.x0, c.y0));
-			rv.add(new LineTo(c.x0, c.y1));
+			a.add(new MoveTo(c.x0, c.y0));
+			a.add(new LineTo(c.x0, c.y1));
 		}
-		return rv;
 	}
 	
 	
-	protected CList<PathElement> createSelectionHighlight(Marker start, Marker end)
+	protected void createSelectionHighlight(CList<PathElement> a, Marker startMarker, Marker endMarker)
 	{		
-		CList<PathElement> rv = new CList<>();
-		
-		if((start == null) || (end == null))
+		if((startMarker == null) || (endMarker == null))
 		{
-			return rv;
+			return;
 		}
 		
-		if(start.compareTo(end) > 0)
+		if(startMarker.compareTo(endMarker) > 0)
 		{
-			Marker tmp = start;
-			start = end;
-			end = tmp;
+			Marker tmp = startMarker;
+			startMarker = endMarker;
+			endMarker = tmp;
 		}
 		
-		if(end.getLine() < topLineIndex)
+		if(endMarker.getLine() < topLineIndex)
 		{
 			// selection is above visible area
-			return rv;
+			return;
 		}
 		
-		if(start.getLine() > (topLineIndex + layout.getVisibleLineCount()))
+		if(startMarker.getLine() > (topLineIndex + layout.getVisibleLineCount()))
 		{
 			// selection is below visible area
-			return rv;
+			return;
 		}
 
-		CaretLocation top = getCaretLocation(start);
-		CaretLocation bot = getCaretLocation(end);
+		CaretLocation beg = getCaretLocation(startMarker);
+		CaretLocation end = getCaretLocation(endMarker);
 		
-		D.print(offsety, top, bot);
-		double right = getWidth(); // FIX padding
-		double left = 0.0; // FIX padding
-		double up = 0.0; // FIX padding
-		double dn = getHeight(); // FIX padding
+		D.print(offsety, beg, end);
 		
-		if(top == null)
+		Insets pad = getInsets();
+		double left = pad.getLeft();
+		double right = getWidth() - left - pad.getRight();
+		double top = pad.getTop();
+		double bottom = getHeight() - top - pad.getBottom();
+		
+		if(beg == null)
 		{
-			if(bot == null)
+			if(end == null)
 			{
 				// can't happen
-				return rv;
+				return;
 			}
 			
-			// start with top left corner
-			rv.add(new MoveTo(left, up));
+			// start with text area top left corner
+			a.add(new MoveTo(left, top));
 			
-			if(bot.y0 < offsety) // FIX wrong
+			if(end.y0 < offsety) // FIX wrong
 			{
 				// [***   ]
-				rv.add(new LineTo(bot.x0, bot.y0));
-				rv.add(new LineTo(bot.x0, bot.y1));
-				rv.add(new LineTo(left, bot.y1));
-				rv.add(new LineTo(left, up));
+				a.add(new LineTo(end.x0, end.y0));
+				a.add(new LineTo(end.x0, end.y1));
+				a.add(new LineTo(left, end.y1));
+				a.add(new LineTo(left, top));
 			}
 			else
 			{
 				// [******]
 				// [***   ]
-				rv.add(new LineTo(right, up));
-				rv.add(new LineTo(right, bot.y0));
-				rv.add(new LineTo(bot.x0, bot.y0));
-				rv.add(new LineTo(bot.x1, bot.y1));
-				rv.add(new LineTo(left, bot.y1));
-				rv.add(new LineTo(left, up));
+				a.add(new LineTo(right, top));
+				a.add(new LineTo(right, end.y0));
+				a.add(new LineTo(end.x0, end.y0));
+				a.add(new LineTo(end.x1, end.y1));
+				a.add(new LineTo(left, end.y1));
+				a.add(new LineTo(left, top));
+				
+				// FIX
+				// [  ***  ]
 			}
 		}
-		else if(bot == null)
+		else if(end == null)
 		{
-			// FIX end with bottom right corner
+			// FIX
+			// end with text area bottom right corner
+//			rv.add(new MoveTo(beg.x0, beg.y0));
+//			rv.add(
 		}
 		else
 		{
-			rv.add(new MoveTo(top.x0, top.y0));
-			if(FxEditorTools.isNearlySame(top.y0, bot.y0))
+			a.add(new MoveTo(beg.x0, beg.y0));
+			if(FxEditorTools.isNearlySame(beg.y0, end.y0))
 			{
-				rv.add(new LineTo(bot.x0, top.y0));
-				rv.add(new LineTo(bot.x0, bot.y1));
-				rv.add(new LineTo(top.x0, bot.y1));
-				//rv.add(new ClosePath());
-				rv.add(new LineTo(top.x0, top.y0));
+				a.add(new LineTo(end.x0, beg.y0));
+				a.add(new LineTo(end.x0, end.y1));
+				a.add(new LineTo(beg.x0, end.y1));
+				a.add(new LineTo(beg.x0, beg.y0));
 			}
 			else
 			{				
-				rv.add(new LineTo(right, top.y0));
-				rv.add(new LineTo(right, bot.y0));
-				rv.add(new LineTo(bot.x0, bot.y0));
-				rv.add(new LineTo(bot.x0, bot.y1));
-				rv.add(new LineTo(left, bot.y1));
-				rv.add(new LineTo(left, top.y1));
-				rv.add(new LineTo(top.x0, top.y1));
-				//rv.add(new ClosePath());
-				rv.add(new LineTo(top.x0, top.y0));
+				a.add(new LineTo(right, beg.y0));
+				a.add(new LineTo(right, end.y0));
+				a.add(new LineTo(end.x0, end.y0));
+				a.add(new LineTo(end.x0, end.y1));
+				a.add(new LineTo(left, end.y1));
+				a.add(new LineTo(left, beg.y1));
+				a.add(new LineTo(beg.x0, beg.y1));
+				a.add(new LineTo(beg.x0, beg.y0));
 			}
 		}
-		
-		return rv;
 	}
 }
