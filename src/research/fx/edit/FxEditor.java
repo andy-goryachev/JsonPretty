@@ -13,10 +13,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import research.fx.edit.internal.CaretLocation;
+import research.fx.edit.internal.Markers;
 
 
 /**
- * Fx Text Editor.
+ * Fx Text Editor, intended to provide capabilities missing in JavaFX, such as:
+ * <pre>
+ * - text editor with syntax highlighing
+ * - capability to display and edit large texts (up to 2 billion rows)
+ * - capability to use external models (disk, net)
+ * - capability to insert arbitrary row widgets
  */
 public class FxEditor
 	extends Pane
@@ -47,6 +54,7 @@ public class FxEditor
 	private int offsetx;
 	private int offsety;
 	private int startIndex;
+	private Markers markers = new Markers(32);
 	
 	
 	public FxEditor()
@@ -156,7 +164,6 @@ public class FxEditor
 			Region n = m.getDecoratedLine(ix);
 			n.setManaged(true);
 			
-			// TODO wrapping
 			double w = wrap ? wid : n.prefWidth(-1);
 			n.setMaxWidth(wrap ? wid : Double.MAX_VALUE); 
 			double h = n.prefHeight(w);
@@ -186,7 +193,7 @@ public class FxEditor
 	}
 	
 	
-	public CaretLocation getCaretLocation(TextPos pos)
+	protected CaretLocation getCaretLocation(TextPos pos)
 	{
 		return layout.getCaretLocation(this, pos);
 	}

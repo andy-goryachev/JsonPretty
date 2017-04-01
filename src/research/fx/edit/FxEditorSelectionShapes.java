@@ -1,7 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
 import goryachev.common.util.CList;
-import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.FxInvalidationListener;
 import javafx.animation.Animation;
@@ -15,6 +14,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
+import research.fx.edit.internal.CaretLocation;
 
 
 /**
@@ -77,22 +77,6 @@ public class FxEditorSelectionShapes
 	protected void setCaretVisible(boolean on)
 	{
 		caret.setVisible(on);
-	}
-	
-	
-	protected void setCaret2(TextPos p)
-	{
-		CaretLocation c = editor.getCaretLocation(p);
-		if(c == null)
-		{
-			return;
-		}
-		
-		// TODO square caret on insert
-		PathElement[] es = new PathElement[2];
-		es[0] = new MoveTo(c.x0, c.y0);
-		es[1] = new LineTo(c.x1, c.y1);
-		setCaretElements(es);
 	}
 	
 
