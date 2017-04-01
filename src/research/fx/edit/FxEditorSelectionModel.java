@@ -9,14 +9,12 @@ import javafx.collections.ObservableList;
  */
 public class FxEditorSelectionModel
 {
-	protected final FxEditor editor;
 	protected final ObservableList<SelectionSegment> selection = FXCollections.observableArrayList();
 	protected final ObservableList<SelectionSegment> unmodifiableSelection = FXCollections.unmodifiableObservableList(selection);
 
 
-	public FxEditorSelectionModel(FxEditor ed)
+	public FxEditorSelectionModel()
 	{
-		this.editor = ed;
 	}
 
 
@@ -49,10 +47,6 @@ public class FxEditorSelectionModel
 	public void addSelectionSegment(Marker start, Marker end)
 	{
 		selection.add(new SelectionSegment(start, end));
-		
-		// FIX move to layout
-//		selectionHighlight.getElements().addAll(createHighlightPath(start, end));
-//		caretPath.getElements().addAll(createCaretPath(end));
 	}
 	
 	
@@ -86,9 +80,6 @@ public class FxEditorSelectionModel
 			SelectionSegment s = selection.get(ix);
 			Marker anchor = s.getStart();
 			selection.set(ix, new SelectionSegment(anchor, pos));
-			
-			// TODO combine overlapping segments
-//			reloadDecorations();
 		}
 	}
 	

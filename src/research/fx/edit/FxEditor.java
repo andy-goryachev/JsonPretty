@@ -78,7 +78,7 @@ public class FxEditor
 	protected final Timeline caretAnimation;
 	protected final Path caretPath;
 	protected final Path selectionHighlight;
-	protected FxEditorSelectionModel selection;
+	protected final FxEditorSelectionModel selection;
 
 	
 	public FxEditor()
@@ -90,7 +90,7 @@ public class FxEditor
 	public FxEditor(FxEditorModel m)
 	{
 		setFocusTraversable(true);
-		setModel(m);
+		setTextModel(m);
 		FX.style(this, PANEL);
 		setBackground(FX.background(Color.WHITE));
 		
@@ -111,7 +111,7 @@ public class FxEditor
 		
 		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
-		initSelectionModel();
+		selection = createSelectionModel();
 		selection.getChildrenUnmodifiable().addListener((Observable src) -> requestLayout());
 		
 		initController();
@@ -119,9 +119,9 @@ public class FxEditor
 	
 	
 	/** override to provide your own selection model */
-	protected void initSelectionModel()
+	protected FxEditorSelectionModel createSelectionModel()
 	{
-		selection = new FxEditorSelectionModel(this);
+		return new FxEditorSelectionModel();
 	}
 	
 	
@@ -146,12 +146,11 @@ public class FxEditor
 	}
 	
 	
-	// FIX rename setTextModel
-	public void setModel(FxEditorModel m)
+	public void setTextModel(FxEditorModel m)
 	{
 		markers.clear();
 		
-		FxEditorModel old = getModel();
+		FxEditorModel old = getTextModel();
 		if(old != null)
 		{
 			old.removeListener(this);
@@ -168,8 +167,7 @@ public class FxEditor
 	}
 	
 	
-	// FIX rename getTextModel
-	public FxEditorModel getModel()
+	public FxEditorModel getTextModel()
 	{
 		return model.get();
 	}
@@ -223,7 +221,7 @@ public class FxEditor
 	protected void setVerticalAbsolutePosition(double pos)
 	{
 		// TODO account for visible line count
-		int start = FX.round(getModel().getLineCount() * pos);
+		int start = FX.round(getTextModel().getLineCount() * pos);
 		setTopLineIndex(start);
 	}
 	
@@ -284,7 +282,7 @@ public class FxEditor
 	protected void layoutChildren()
 	{
 		layout = createLayout(layout);
-		reloadDecorations();
+		reloadSelectionDecorations();
 	}
 	
 	
@@ -307,7 +305,7 @@ public class FxEditor
 		}
 		
 		// TODO is loaded?
-		FxEditorModel m = getModel();
+		FxEditorModel m = getTextModel();
 		int lines = m.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(topLineIndex, offsety);
 		
@@ -468,18 +466,12 @@ public class FxEditor
 	}
 	
 	
-	// FIX
 	public void clearSelection()
 	{
 		selection.clear();
-
-		// FIX move to layout
-		caretPath.getElements().clear();
-		selectionHighlight.getElements().clear();
 	}
 
 	
-	// FIX setCaretEnabled
 	public void setCaretVisible(boolean on)
 	{
 		// FIX property
@@ -496,7 +488,7 @@ public class FxEditor
 	}
 
 	
-	protected void reloadDecorations()
+	protected void reloadSelectionDecorations()
 	{
 		CList<PathElement> hs = new CList<>();
 		CList<PathElement> cs = new CList<>();
