@@ -30,7 +30,7 @@ import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
 import research.fx.Binder;
 import research.fx.edit.internal.CaretLocation;
-import research.fx.edit.internal.FxEditorTools;
+import research.fx.edit.internal.EditorTools;
 import research.fx.edit.internal.Markers;
 
 
@@ -601,7 +601,7 @@ public class FxEditor
 		else
 		{
 			a.add(new MoveTo(beg.x, beg.y0));
-			if(FxEditorTools.isNearlySame(beg.y0, end.y0))
+			if(EditorTools.isNearlySame(beg.y0, end.y0))
 			{
 				a.add(new LineTo(end.x, beg.y0));
 				a.add(new LineTo(end.x, end.y1));
