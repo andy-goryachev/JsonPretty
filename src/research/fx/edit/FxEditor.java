@@ -79,8 +79,7 @@ public class FxEditor
 	protected final Timeline caretAnimation;
 	protected final Path caretPath;
 	protected final Path selectionHighlight;
-	/** multiple selection segments: the end position corresponds to the caret */ 
-	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
+	protected final ObservableList<SelectionSegment> selection = FXCollections.observableArrayList();
 
 
 	
@@ -437,7 +436,7 @@ public class FxEditor
 	}
 	
 	
-	
+	// TODO stop blinking when dragging
 	protected void updateBlinkRate(Duration d)
 	{
 		Duration period = d.multiply(2);
@@ -457,7 +456,7 @@ public class FxEditor
 	{
 		caretPath.getElements().clear();
 		selectionHighlight.getElements().clear();
-		segments.clear();
+		selection.clear();
 	}
 
 	
@@ -480,7 +479,7 @@ public class FxEditor
 	
 	protected boolean isInsideSelection(Marker pos)
 	{
-		for(SelectionSegment s: segments)
+		for(SelectionSegment s: selection)
 		{
 			if(s.contains(pos))
 			{
@@ -494,7 +493,7 @@ public class FxEditor
 	/** adds a new segment from start to end */
 	protected void addSelectionSegment(Marker start, Marker end)
 	{
-		segments.add(new SelectionSegment(start, end));
+		selection.add(new SelectionSegment(start, end));
 		selectionHighlight.getElements().addAll(createHighlightPath(start, end));
 		caretPath.getElements().addAll(createCaretPath(end));
 		
@@ -522,16 +521,16 @@ public class FxEditor
 			return;
 		}
 		
-		int ix = segments.size() - 1;
+		int ix = selection.size() - 1;
 		if(ix < 0)
 		{
 			 addSelectionSegment(pos, pos);
 		}
 		else
 		{
-			SelectionSegment s = segments.get(ix);
+			SelectionSegment s = selection.get(ix);
 			Marker anchor = s.getStart();
-			segments.set(ix, new SelectionSegment(anchor, pos));
+			selection.set(ix, new SelectionSegment(anchor, pos));
 			
 			// TODO combine overlapping segments
 			reloadDecorations();
@@ -541,10 +540,10 @@ public class FxEditor
 	
 	protected Marker lastAnchor()
 	{
-		int ix = segments.size() - 1;
+		int ix = selection.size() - 1;
 		if(ix >= 0)
 		{
-			SelectionSegment s = segments.get(ix);
+			SelectionSegment s = selection.get(ix);
 			return s.getStart();
 		}
 		return null;
@@ -558,7 +557,7 @@ public class FxEditor
 		CList<PathElement> hs = new CList<>();
 		CList<PathElement> cs = new CList<>();
 		
-		for(SelectionSegment s: segments)
+		for(SelectionSegment s: selection)
 		{
 			Marker start = s.getStart();
 			Marker end = s.getEnd();
