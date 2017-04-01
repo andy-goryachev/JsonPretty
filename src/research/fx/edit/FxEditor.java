@@ -1,11 +1,18 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
+import goryachev.common.util.CList;
 import goryachev.common.util.D;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
+import goryachev.fx.FxInvalidationListener;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -17,8 +24,13 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
 import research.fx.edit.internal.CaretLocation;
+import research.fx.edit.internal.FxEditorTools;
 import research.fx.edit.internal.Markers;
 
 
@@ -62,9 +74,14 @@ public class FxEditor
 	/** vertical shift applied to topmost line */
 	protected int offsety;
 	protected Markers markers = new Markers(32);
-	protected final FxEditorSelectionShapes selection;
 	protected ScrollBar vscroll;
 	protected ScrollBar hscroll;
+	protected final Timeline caretAnimation;
+	protected final Path caretPath;
+	protected final Path selectionHighlight;
+	/** multiple selection segments: the end position corresponds to the caret */ 
+	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
+
 
 	
 	public FxEditor()
@@ -80,9 +97,22 @@ public class FxEditor
 		FX.style(this, PANEL);
 		setBackground(FX.background(Color.WHITE));
 		
-		selection = new FxEditorSelectionShapes(this);
+		selectionHighlight = new Path();
+		FX.style(selectionHighlight, FxEditor.HIGHLIGHT);
+		selectionHighlight.setManaged(false);
+		selectionHighlight.setStroke(null);
+		selectionHighlight.setFill(Color.rgb(255, 255, 0, 0.25));
 		
-		getChildren().addAll(selection.highlight, vscroll(), selection.caretPath);
+		caretPath = new Path();
+		FX.style(caretPath, FxEditor.CARET);
+		caretPath.setManaged(false);
+		caretPath.setStroke(Color.BLACK);
+		
+		caretAnimation = new Timeline();
+		caretAnimation.setCycleCount(Animation.INDEFINITE);
+		new FxInvalidationListener(blinkRateProperty(), true, () -> updateBlinkRate(getBlinkRate()));
+		
+		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
 		initController();
 	}
@@ -360,22 +390,15 @@ public class FxEditor
 	}
 
 
-	public LayoutOp newLayoutOp()
+	protected LayoutOp newLayoutOp()
 	{
 		return new LayoutOp(layout);
 	}
 
-
-	public void setCaretVisible(boolean on)
+	
+	protected void eventAllChanged()
 	{
-		// TODO
-	}
-	
-	
-	
-	public void eventAllChanged()
-	{
-		selection.clear();
+		clearSelection();
 		
 		if(vscroll != null)
 		{
@@ -409,5 +432,207 @@ public class FxEditor
 	{
 		// FIX
 		D.print(start, count);
+	}
+	
+	
+	
+	protected void updateBlinkRate(Duration d)
+	{
+		Duration period = d.multiply(2);
+		
+		caretAnimation.stop();
+		caretAnimation.getKeyFrames().setAll
+		(
+			new KeyFrame(Duration.ZERO, (ev) -> setCaretVisible(true)),
+			new KeyFrame(d, (ev) -> setCaretVisible(false)),
+			new KeyFrame(period)
+		);
+		caretAnimation.play();
+	}
+	
+	
+	public void clearSelection()
+	{
+		caretPath.getElements().clear();
+		selectionHighlight.getElements().clear();
+		segments.clear();
+	}
+
+	
+	// FIX setCaretEnabled
+	public void setCaretVisible(boolean on)
+	{
+		// FIX property
+		caretPath.setVisible(on);
+	}
+	
+
+	protected void setCaretElements(PathElement[] es)
+	{
+		// reset caret so it's always on when moving, unlike MS Word
+		caretAnimation.stop();
+		caretPath.getElements().setAll(es);
+		caretAnimation.play();
+	}
+
+	
+	protected boolean isInsideSelection(TextPos pos)
+	{
+		for(SelectionSegment s: segments)
+		{
+			if(s.contains(pos))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+
+	/** adds a new segment from start to end */
+	protected void addSelectionSegment(TextPos start, TextPos end)
+	{
+		segments.add(new SelectionSegment(start, end));
+		selectionHighlight.getElements().addAll(createHighlightPath(start, end));
+		caretPath.getElements().addAll(createCaretPath(end));
+		
+		// TODO combine overlapping segments
+	}
+	
+	
+	protected void clearAndExtendLastSegment(TextPos pos)
+	{
+		TextPos anchor = lastAnchor();
+		if(anchor == null)
+		{
+			anchor = pos;
+		}
+		
+		clearSelection();
+		addSelectionSegment(anchor, pos);
+	}
+	
+	
+	protected void extendLastSegment(TextPos pos)
+	{
+		if(pos == null)
+		{
+			return;
+		}
+		
+		int ix = segments.size() - 1;
+		if(ix < 0)
+		{
+			 addSelectionSegment(pos, pos);
+		}
+		else
+		{
+			SelectionSegment s = segments.get(ix);
+			TextPos anchor = s.getStart();
+			segments.set(ix, new SelectionSegment(anchor, pos));
+			
+			// TODO combine overlapping segments
+			reloadDecorations();
+		}
+	}
+	
+	
+	protected TextPos lastAnchor()
+	{
+		int ix = segments.size() - 1;
+		if(ix >= 0)
+		{
+			SelectionSegment s = segments.get(ix);
+			return s.getStart();
+		}
+		return null;
+	}
+	
+	
+	// this method can possibly be optimized to modify decorations when possible
+	// instead of re-creating them, to minimize flicker
+	protected void reloadDecorations()
+	{
+		CList<PathElement> hs = new CList<>();
+		CList<PathElement> cs = new CList<>();
+		
+		for(SelectionSegment s: segments)
+		{
+			TextPos start = s.getStart();
+			TextPos end = s.getEnd();
+			
+			hs.addAll(createHighlightPath(start, end));
+			cs.addAll(createCaretPath(end));
+		}
+		
+		selectionHighlight.getElements().setAll(hs);
+		caretPath.getElements().setAll(cs);
+	}
+	
+	
+	protected CList<PathElement> createCaretPath(TextPos p)
+	{
+		CList<PathElement> rv = new CList<>();
+		CaretLocation c = getCaretLocation(p);
+		if(c != null)
+		{
+			// TODO insert shape?
+			rv.add(new MoveTo(c.x0, c.y0));
+			rv.add(new LineTo(c.x0, c.y1));
+		}
+		return rv;
+	}
+	
+	
+	protected CList<PathElement> createHighlightPath(TextPos start, TextPos end)
+	{		
+		CList<PathElement> rv = new CList<>();
+		
+		if((start == null) || (end == null))
+		{
+			return rv;
+		}
+		
+		if(start.compareTo(end) > 0)
+		{
+			TextPos tmp = start;
+			start = end;
+			end = tmp;
+		}
+
+		CaretLocation top = getCaretLocation(start);
+		CaretLocation bot = getCaretLocation(end);
+		
+		if((top == null) || (bot == null))
+		{
+			return rv;
+		}
+		
+		rv.add(new MoveTo(top.x0, top.y0));
+		if(FxEditorTools.isNearlySame(top.y0, bot.y0))
+		{
+			rv.add(new LineTo(bot.x0, top.y0));
+			rv.add(new LineTo(bot.x0, bot.y1));
+			rv.add(new LineTo(top.x0, bot.y1));
+			//rv.add(new ClosePath());
+			rv.add(new LineTo(top.x0, top.y0));
+		}
+		else
+		{
+			double right = getWidth();
+			double left = 0.0; // FIX padding
+			
+			rv.add(new LineTo(right, top.y0));
+			rv.add(new LineTo(right, bot.y0));
+			rv.add(new LineTo(bot.x0, bot.y0));
+			rv.add(new LineTo(bot.x0, bot.y1));
+			rv.add(new LineTo(left, bot.y1));
+			rv.add(new LineTo(left, top.y1));
+			rv.add(new LineTo(top.x0, top.y1));
+			//rv.add(new ClosePath());
+			rv.add(new LineTo(top.x0, top.y0));
+		}
+		
+		return rv;
 	}
 }

@@ -84,28 +84,28 @@ public class FxEditorController
 			
 			// expand selection from the anchor point to the current position
 			// clearing existing (possibly multiple) selection
-			editor.selection.clearAndExtendLastSegment(pos);
+			editor.clearAndExtendLastSegment(pos);
 		}
 		else if(ev.isShortcutDown())
 		{
-			if(editor.selection.isInsideSelection(pos))
+			if(editor.isInsideSelection(pos))
 			{
 				// replace selection with a single caret
-				editor.selection.clear();
-				editor.selection.addSegment(pos, pos);
+				editor.clearSelection();
+				editor.addSelectionSegment(pos, pos);
 			}
 			else
 			{
 				// FIX add a new caret
-				editor.selection.addSegment(pos, pos);
+				editor.addSelectionSegment(pos, pos);
 			}
 		}
 		else
 		{
-			editor.selection.clear();
+			editor.clearSelection();
 			if(pos != null)
 			{
-				editor.selection.addSegment(pos, pos);
+				editor.addSelectionSegment(pos, pos);
 			}
 		}
 	}
@@ -122,7 +122,7 @@ public class FxEditorController
 		dragging = true;
 		
 		TextPos pos = getTextPos(ev);
-		editor.selection.extendLastSegment(pos);
+		editor.extendLastSegment(pos);
 	}
 	
 	
@@ -135,8 +135,6 @@ public class FxEditorController
 		}
 		
 		dragging = false;
-		
-		D.print(editor.selection); // FIX
 	}
 	
 	
