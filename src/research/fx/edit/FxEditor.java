@@ -68,9 +68,9 @@ public class FxEditor
 	protected FxEditorLayout layout;
 	/** index of the topmost visible line */
 	protected int topLineIndex;
-	/** defines horizontal shift */
+	/** horizontal shift in pixels */
 	protected int offsetx;
-	/** vertical shift applied to topmost line */
+	/** vertical shift in pixels, applied to topmost line */
 	protected int offsety;
 	protected Markers markers = new Markers(32);
 	protected ScrollBar vscroll;
@@ -500,7 +500,7 @@ public class FxEditor
 			Marker start = s.getStart();
 			Marker end = s.getEnd();
 			
-			hs.addAll(createHighlightPath(start, end));
+			hs.addAll(createSelectionHighlight(start, end));
 			cs.addAll(createCaretPath(end));
 		}
 		
@@ -523,7 +523,7 @@ public class FxEditor
 	}
 	
 	
-	protected CList<PathElement> createHighlightPath(Marker start, Marker end)
+	protected CList<PathElement> createSelectionHighlight(Marker start, Marker end)
 	{		
 		CList<PathElement> rv = new CList<>();
 		
@@ -538,38 +538,86 @@ public class FxEditor
 			start = end;
 			end = tmp;
 		}
+		
+		if(end.getLine() < topLineIndex)
+		{
+			// selection is above visible area
+			return rv;
+		}
+		
+		if(start.getLine() > (topLineIndex + layout.getVisibleLineCount()))
+		{
+			// selection is below visible area
+			return rv;
+		}
 
 		CaretLocation top = getCaretLocation(start);
 		CaretLocation bot = getCaretLocation(end);
 		
-		if((top == null) || (bot == null))
-		{
-			return rv;
-		}
+		D.print(offsety, top, bot);
+		double right = getWidth(); // FIX padding
+		double left = 0.0; // FIX padding
+		double up = 0.0; // FIX padding
+		double dn = getHeight(); // FIX padding
 		
-		rv.add(new MoveTo(top.x0, top.y0));
-		if(FxEditorTools.isNearlySame(top.y0, bot.y0))
+		if(top == null)
 		{
-			rv.add(new LineTo(bot.x0, top.y0));
-			rv.add(new LineTo(bot.x0, bot.y1));
-			rv.add(new LineTo(top.x0, bot.y1));
-			//rv.add(new ClosePath());
-			rv.add(new LineTo(top.x0, top.y0));
+			if(bot == null)
+			{
+				// can't happen
+				return rv;
+			}
+			
+			// start with top left corner
+			rv.add(new MoveTo(left, up));
+			
+			if(bot.y0 < offsety) // FIX wrong
+			{
+				// [***   ]
+				rv.add(new LineTo(bot.x0, bot.y0));
+				rv.add(new LineTo(bot.x0, bot.y1));
+				rv.add(new LineTo(left, bot.y1));
+				rv.add(new LineTo(left, up));
+			}
+			else
+			{
+				// [******]
+				// [***   ]
+				rv.add(new LineTo(right, up));
+				rv.add(new LineTo(right, bot.y0));
+				rv.add(new LineTo(bot.x0, bot.y0));
+				rv.add(new LineTo(bot.x1, bot.y1));
+				rv.add(new LineTo(left, bot.y1));
+				rv.add(new LineTo(left, up));
+			}
+		}
+		else if(bot == null)
+		{
+			// FIX end with bottom right corner
 		}
 		else
 		{
-			double right = getWidth();
-			double left = 0.0; // FIX padding
-			
-			rv.add(new LineTo(right, top.y0));
-			rv.add(new LineTo(right, bot.y0));
-			rv.add(new LineTo(bot.x0, bot.y0));
-			rv.add(new LineTo(bot.x0, bot.y1));
-			rv.add(new LineTo(left, bot.y1));
-			rv.add(new LineTo(left, top.y1));
-			rv.add(new LineTo(top.x0, top.y1));
-			//rv.add(new ClosePath());
-			rv.add(new LineTo(top.x0, top.y0));
+			rv.add(new MoveTo(top.x0, top.y0));
+			if(FxEditorTools.isNearlySame(top.y0, bot.y0))
+			{
+				rv.add(new LineTo(bot.x0, top.y0));
+				rv.add(new LineTo(bot.x0, bot.y1));
+				rv.add(new LineTo(top.x0, bot.y1));
+				//rv.add(new ClosePath());
+				rv.add(new LineTo(top.x0, top.y0));
+			}
+			else
+			{				
+				rv.add(new LineTo(right, top.y0));
+				rv.add(new LineTo(right, bot.y0));
+				rv.add(new LineTo(bot.x0, bot.y0));
+				rv.add(new LineTo(bot.x0, bot.y1));
+				rv.add(new LineTo(left, bot.y1));
+				rv.add(new LineTo(left, top.y1));
+				rv.add(new LineTo(top.x0, top.y1));
+				//rv.add(new ClosePath());
+				rv.add(new LineTo(top.x0, top.y0));
+			}
 		}
 		
 		return rv;

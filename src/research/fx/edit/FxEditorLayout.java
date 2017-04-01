@@ -119,4 +119,10 @@ public class FxEditorLayout
 	{
 		return topLine;
 	}
+
+
+	public int getVisibleLineCount()
+	{
+		return lines.size();
+	}
 }
