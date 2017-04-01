@@ -35,7 +35,7 @@ public class BasedOnTextFlow
 	{
 		textField = new StyledTextPane();
 		new FxInvalidationListener(textField.selectionIndexProperty(), () -> updateCaret());
-		FX.style(textField, FX.insets(2.5, 4.5));
+		FX.style(textField, FX.insets(2.5, 4.5), CONTENT_TEXT);
 		textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
 		
 		scroll = new ScrollPane(textField);

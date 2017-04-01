@@ -59,7 +59,7 @@ public class FxEditorController
 	}
 	
 	
-	protected TextPos getTextPos(MouseEvent ev)
+	protected Marker getTextPos(MouseEvent ev)
 	{
 		double x = ev.getScreenX();
 		double y = ev.getScreenY();
@@ -76,7 +76,7 @@ public class FxEditorController
 		}
 			
 		// TODO property: multiple selection
-		TextPos pos = getTextPos(ev);
+		Marker pos = getTextPos(ev);
 		
 		if(ev.isShiftDown())
 		{
@@ -121,7 +121,7 @@ public class FxEditorController
 		
 		dragging = true;
 		
-		TextPos pos = getTextPos(ev);
+		Marker pos = getTextPos(ev);
 		editor.extendLastSegment(pos);
 	}
 	

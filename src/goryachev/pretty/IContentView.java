@@ -13,6 +13,7 @@ import javafx.scene.Node;
 public interface IContentView
 {
 	public static CssStyle CONTENT_PANE = new CssStyle("IContentView_CONTENT_PANE");
+	public static CssStyle CONTENT_TEXT = new CssStyle("IContentView_CONTENT_TEXT");
 	
 	
 	/** returns the view FX node */

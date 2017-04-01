@@ -48,7 +48,12 @@ public class Styles
 			(
 				// removes focused border from scroll pane
 				// TODO do it specifically for the content pane
-				backgroundInsets(1)
+//				backgroundInsets(1)
+			),
+			
+			new Selector(IContentView.CONTENT_TEXT).defines
+			(
+				fontSize("210%")
 			),
 			
 			// common fx styles

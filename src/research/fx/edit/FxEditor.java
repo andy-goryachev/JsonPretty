@@ -135,6 +135,8 @@ public class FxEditor
 	
 	public void setModel(FxEditorModel m)
 	{
+		markers.clear();
+		
 		FxEditorModel old = getModel();
 		if(old != null)
 		{
@@ -275,7 +277,7 @@ public class FxEditor
 	{
 		if(prev != null)
 		{
-			prev.removeFrom(getChildren());
+			prev.removeFrom(this);
 		}
 		
 		double width = getWidth();
@@ -304,6 +306,8 @@ public class FxEditor
 		for(int ix=topLineIndex; ix<lines; ix++)
 		{
 			Region n = m.getDecoratedLine(ix);
+			getChildren().add(n);
+			n.applyCss();
 			n.setManaged(true);
 			
 			double w = wrap ? wid : n.prefWidth(-1);
@@ -311,7 +315,7 @@ public class FxEditor
 			double h = n.prefHeight(w);
 			
 			LineBox b = new LineBox(ix, n);
-			la.add(b);
+			la.addLineBox(b);
 			
 			layoutInArea(n, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			
@@ -322,20 +326,18 @@ public class FxEditor
 			}
 		}
 		
-		la.addTo(getChildren());
-		
 		return la;
 	}
 	
 	
 	/** returns text position at the specified screen coordinates */
-	public TextPos getTextPos(double screenx, double screeny)
+	public Marker getTextPos(double screenx, double screeny)
 	{
-		return layout.getTextPos(screenx, screeny);
+		return layout.getTextPos(screenx, screeny, markers);
 	}
 	
 	
-	protected CaretLocation getCaretLocation(TextPos pos)
+	protected CaretLocation getCaretLocation(Marker pos)
 	{
 		return layout.getCaretLocation(this, pos);
 	}
@@ -476,7 +478,7 @@ public class FxEditor
 	}
 
 	
-	protected boolean isInsideSelection(TextPos pos)
+	protected boolean isInsideSelection(Marker pos)
 	{
 		for(SelectionSegment s: segments)
 		{
@@ -490,7 +492,7 @@ public class FxEditor
 	
 
 	/** adds a new segment from start to end */
-	protected void addSelectionSegment(TextPos start, TextPos end)
+	protected void addSelectionSegment(Marker start, Marker end)
 	{
 		segments.add(new SelectionSegment(start, end));
 		selectionHighlight.getElements().addAll(createHighlightPath(start, end));
@@ -500,9 +502,9 @@ public class FxEditor
 	}
 	
 	
-	protected void clearAndExtendLastSegment(TextPos pos)
+	protected void clearAndExtendLastSegment(Marker pos)
 	{
-		TextPos anchor = lastAnchor();
+		Marker anchor = lastAnchor();
 		if(anchor == null)
 		{
 			anchor = pos;
@@ -513,7 +515,7 @@ public class FxEditor
 	}
 	
 	
-	protected void extendLastSegment(TextPos pos)
+	protected void extendLastSegment(Marker pos)
 	{
 		if(pos == null)
 		{
@@ -528,7 +530,7 @@ public class FxEditor
 		else
 		{
 			SelectionSegment s = segments.get(ix);
-			TextPos anchor = s.getStart();
+			Marker anchor = s.getStart();
 			segments.set(ix, new SelectionSegment(anchor, pos));
 			
 			// TODO combine overlapping segments
@@ -537,7 +539,7 @@ public class FxEditor
 	}
 	
 	
-	protected TextPos lastAnchor()
+	protected Marker lastAnchor()
 	{
 		int ix = segments.size() - 1;
 		if(ix >= 0)
@@ -558,8 +560,8 @@ public class FxEditor
 		
 		for(SelectionSegment s: segments)
 		{
-			TextPos start = s.getStart();
-			TextPos end = s.getEnd();
+			Marker start = s.getStart();
+			Marker end = s.getEnd();
 			
 			hs.addAll(createHighlightPath(start, end));
 			cs.addAll(createCaretPath(end));
@@ -570,7 +572,7 @@ public class FxEditor
 	}
 	
 	
-	protected CList<PathElement> createCaretPath(TextPos p)
+	protected CList<PathElement> createCaretPath(Marker p)
 	{
 		CList<PathElement> rv = new CList<>();
 		CaretLocation c = getCaretLocation(p);
@@ -584,7 +586,7 @@ public class FxEditor
 	}
 	
 	
-	protected CList<PathElement> createHighlightPath(TextPos start, TextPos end)
+	protected CList<PathElement> createHighlightPath(Marker start, Marker end)
 	{		
 		CList<PathElement> rv = new CList<>();
 		
@@ -595,7 +597,7 @@ public class FxEditor
 		
 		if(start.compareTo(end) > 0)
 		{
-			TextPos tmp = start;
+			Marker tmp = start;
 			start = end;
 			end = tmp;
 		}

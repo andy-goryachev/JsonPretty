@@ -27,7 +27,7 @@ public class BasedOnFxEditor
 		model = new SegmentEditorModel();
 		
 		textField = new FxEditor(model);
-		FX.style(textField, FX.insets(2.5, 4.5));
+		FX.style(textField, FX.insets(2.5, 4.5), CONTENT_TEXT);
 		// TODO disable editing
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
 		// TODO selection listener
