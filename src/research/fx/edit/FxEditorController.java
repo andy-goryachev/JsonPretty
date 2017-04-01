@@ -77,6 +77,7 @@ public class FxEditorController
 			
 		// TODO property: multiple selection
 		Marker pos = getTextPos(ev);
+		FxEditorSelectionModel sel = editor.getSelectionModel();
 		
 		if(ev.isShiftDown())
 		{
@@ -84,20 +85,20 @@ public class FxEditorController
 			
 			// expand selection from the anchor point to the current position
 			// clearing existing (possibly multiple) selection
-			editor.clearAndExtendLastSegment(pos);
+			sel.clearAndExtendLastSegment(pos);
 		}
 		else if(ev.isShortcutDown())
 		{
-			if(editor.isInsideSelection(pos))
+			if(sel.isInsideSelection(pos))
 			{
 				// replace selection with a single caret
-				editor.clearSelection();
-				editor.addSelectionSegment(pos, pos);
+				sel.clear();
+				sel.addSelectionSegment(pos, pos);
 			}
 			else
 			{
 				// FIX add a new caret
-				editor.addSelectionSegment(pos, pos);
+				sel.addSelectionSegment(pos, pos);
 			}
 		}
 		else
@@ -105,7 +106,7 @@ public class FxEditorController
 			editor.clearSelection();
 			if(pos != null)
 			{
-				editor.addSelectionSegment(pos, pos);
+				sel.addSelectionSegment(pos, pos);
 			}
 		}
 	}
@@ -122,7 +123,7 @@ public class FxEditorController
 		dragging = true;
 		
 		Marker pos = getTextPos(ev);
-		editor.extendLastSegment(pos);
+		editor.getSelectionModel().extendLastSegment(pos);
 	}
 	
 	
@@ -135,6 +136,8 @@ public class FxEditorController
 		}
 		
 		dragging = false;
+		
+		// TODO optimize selection: combine overlapping segments
 	}
 	
 	

@@ -8,11 +8,10 @@ import goryachev.fx.FxInvalidationListener;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -79,8 +78,7 @@ public class FxEditor
 	protected final Timeline caretAnimation;
 	protected final Path caretPath;
 	protected final Path selectionHighlight;
-	protected final ObservableList<SelectionSegment> selection = FXCollections.observableArrayList();
-
+	protected FxEditorSelectionModel selection;
 
 	
 	public FxEditor()
@@ -113,7 +111,17 @@ public class FxEditor
 		
 		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
+		initSelectionModel();
+		selection.getChildrenUnmodifiable().addListener((Observable src) -> requestLayout());
+		
 		initController();
+	}
+	
+	
+	/** override to provide your own selection model */
+	protected void initSelectionModel()
+	{
+		selection = new FxEditorSelectionModel(this);
 	}
 	
 	
@@ -132,6 +140,13 @@ public class FxEditor
 	}
 	
 	
+	public FxEditorSelectionModel getSelectionModel()
+	{
+		return selection;
+	}
+	
+	
+	// FIX rename setTextModel
 	public void setModel(FxEditorModel m)
 	{
 		markers.clear();
@@ -153,6 +168,7 @@ public class FxEditor
 	}
 	
 	
+	// FIX rename getTextModel
 	public FxEditorModel getModel()
 	{
 		return model.get();
@@ -258,21 +274,21 @@ public class FxEditor
 	}
 	
 	
-	protected void layoutChildren()
-	{
-		layout = updateLayout(layout);
-	}
-	
-	
 	protected void setTopLineIndex(int x)
 	{
 		topLineIndex = x;
 		requestLayout();
-		// FIX update selection
 	}
 	
 	
-	protected FxEditorLayout updateLayout(FxEditorLayout prev)
+	protected void layoutChildren()
+	{
+		layout = createLayout(layout);
+		reloadDecorations();
+	}
+	
+	
+	protected FxEditorLayout createLayout(FxEditorLayout prev)
 	{
 		if(prev != null)
 		{
@@ -452,11 +468,14 @@ public class FxEditor
 	}
 	
 	
+	// FIX
 	public void clearSelection()
 	{
+		selection.clear();
+
+		// FIX move to layout
 		caretPath.getElements().clear();
 		selectionHighlight.getElements().clear();
-		selection.clear();
 	}
 
 	
@@ -477,87 +496,12 @@ public class FxEditor
 	}
 
 	
-	protected boolean isInsideSelection(Marker pos)
-	{
-		for(SelectionSegment s: selection)
-		{
-			if(s.contains(pos))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
-
-	/** adds a new segment from start to end */
-	protected void addSelectionSegment(Marker start, Marker end)
-	{
-		selection.add(new SelectionSegment(start, end));
-		selectionHighlight.getElements().addAll(createHighlightPath(start, end));
-		caretPath.getElements().addAll(createCaretPath(end));
-		
-		// TODO combine overlapping segments
-	}
-	
-	
-	protected void clearAndExtendLastSegment(Marker pos)
-	{
-		Marker anchor = lastAnchor();
-		if(anchor == null)
-		{
-			anchor = pos;
-		}
-		
-		clearSelection();
-		addSelectionSegment(anchor, pos);
-	}
-	
-	
-	protected void extendLastSegment(Marker pos)
-	{
-		if(pos == null)
-		{
-			return;
-		}
-		
-		int ix = selection.size() - 1;
-		if(ix < 0)
-		{
-			 addSelectionSegment(pos, pos);
-		}
-		else
-		{
-			SelectionSegment s = selection.get(ix);
-			Marker anchor = s.getStart();
-			selection.set(ix, new SelectionSegment(anchor, pos));
-			
-			// TODO combine overlapping segments
-			reloadDecorations();
-		}
-	}
-	
-	
-	protected Marker lastAnchor()
-	{
-		int ix = selection.size() - 1;
-		if(ix >= 0)
-		{
-			SelectionSegment s = selection.get(ix);
-			return s.getStart();
-		}
-		return null;
-	}
-	
-	
-	// this method can possibly be optimized to modify decorations when possible
-	// instead of re-creating them, to minimize flicker
 	protected void reloadDecorations()
 	{
 		CList<PathElement> hs = new CList<>();
 		CList<PathElement> cs = new CList<>();
 		
-		for(SelectionSegment s: selection)
+		for(SelectionSegment s: selection.getChildrenUnmodifiable())
 		{
 			Marker start = s.getStart();
 			Marker end = s.getEnd();
