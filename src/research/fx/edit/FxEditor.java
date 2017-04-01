@@ -62,7 +62,6 @@ public class FxEditor
 		}
 	};
 	protected final ReadOnlyObjectWrapper<Boolean> singleSelection = new ReadOnlyObjectWrapper<>();
-	protected final ReadOnlyObjectWrapper<Duration> blinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	// TODO multiple selection
 	// TODO caret visible
 	// TODO line decorations/line numbers
@@ -76,6 +75,7 @@ public class FxEditor
 	protected Markers markers = new Markers(32);
 	protected ScrollBar vscroll;
 	protected ScrollBar hscroll;
+	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	protected final Timeline caretAnimation;
 	protected final Path caretPath;
 	protected final Path selectionHighlight;
@@ -363,19 +363,19 @@ public class FxEditor
 	
 	public ReadOnlyObjectProperty<Duration> blinkRateProperty()
 	{
-		return blinkRate.getReadOnlyProperty();
+		return caretBlinkRate.getReadOnlyProperty();
 	}
 	
 	
 	public Duration getBlinkRate()
 	{
-		return blinkRate.get();
+		return caretBlinkRate.get();
 	}
 	
 	
 	public void setBlinkRate(Duration d)
 	{
-		blinkRate.set(d);
+		caretBlinkRate.set(d);
 	}
 	
 	
