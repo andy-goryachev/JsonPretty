@@ -1,7 +1,9 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view;
 import goryachev.common.util.CList;
+import goryachev.fx.Binder;
 import goryachev.fx.FX;
+import goryachev.fx.edit.StyledTextPane;
 import goryachev.pretty.CaretSpot;
 import goryachev.pretty.ColorScheme;
 import goryachev.pretty.IContentView;
@@ -14,8 +16,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import research.fx.Binder;
-import research.fx.edit.StyledTextPane;
 
 
 /**

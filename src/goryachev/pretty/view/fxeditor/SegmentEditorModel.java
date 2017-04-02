@@ -2,14 +2,14 @@
 package goryachev.pretty.view.fxeditor;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
+import goryachev.fx.edit.CTextFlow;
+import goryachev.fx.edit.FxEditorModel;
 import goryachev.pretty.ColorScheme;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import research.fx.edit.CTextFlow;
-import research.fx.edit.FxEditorModel;
 
 
 /**

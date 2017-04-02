@@ -1,6 +1,10 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view.fxeditor;
+import goryachev.fx.Binder;
 import goryachev.fx.FX;
+import goryachev.fx.edit.FxEditor;
+import goryachev.fx.edit.Marker;
+import goryachev.fx.edit.SelectionSegment;
 import goryachev.pretty.CaretSpot;
 import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
@@ -8,10 +12,6 @@ import java.util.List;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.Node;
-import research.fx.Binder;
-import research.fx.edit.FxEditor;
-import research.fx.edit.Marker;
-import research.fx.edit.SelectionSegment;
 
 
 /**
