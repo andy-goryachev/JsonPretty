@@ -109,7 +109,7 @@ public class FxEditor
 		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
 		selection = createSelectionModel();
-		selection.getChildrenUnmodifiable().addListener((Observable src) -> requestLayout());
+		selection.getSelection().addListener((Observable src) -> requestLayout());
 		Binder.onChange(this::requestLayout, widthProperty(), heightProperty());
 		
 		initController();
@@ -492,7 +492,7 @@ public class FxEditor
 		CPathBuilder hb = new CPathBuilder();
 		CPathBuilder cb = new CPathBuilder();
 		
-		for(SelectionSegment s: selection.getChildrenUnmodifiable())
+		for(SelectionSegment s: selection.getSelection())
 		{
 			Marker start = s.getStart();
 			Marker end = s.getEnd();
@@ -702,5 +702,12 @@ public class FxEditor
 				p.lineto(beg.x, beg.y0);
 			}
 		}
+	}
+
+
+	/** returns plain text on the specified line */
+	public String getTextOnLine(int line)
+	{
+		return model.get().getPlainText(line);
 	}
 }

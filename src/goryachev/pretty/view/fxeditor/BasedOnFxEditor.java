@@ -8,7 +8,10 @@ import java.util.List;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.Node;
+import research.fx.Binder;
 import research.fx.edit.FxEditor;
+import research.fx.edit.Marker;
+import research.fx.edit.SelectionSegment;
 
 
 /**
@@ -28,9 +31,10 @@ public class BasedOnFxEditor
 		
 		textField = new FxEditor(model);
 		FX.style(textField, FX.insets(2.5, 4.5), CONTENT_TEXT);
+		// TODO set single selection
 		// TODO disable editing
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
-		// TODO selection listener
+		Binder.onChange(this::updateCaret, textField.getSelectionModel().getSelection());
 	}
 
 
@@ -61,5 +65,17 @@ public class BasedOnFxEditor
 	public void setWrapText(boolean on)
 	{
 		textField.setWrapText(on);
+	}
+	
+	
+	protected void updateCaret()
+	{
+		SelectionSegment sel = textField.getSelectionModel().getLastSegment();
+		if(sel != null)
+		{
+			Marker m = sel.getEnd();
+			String text = textField.getTextOnLine(m.getLine());
+			caretSpot.set(new CaretSpot(m.getLineOffset(), text));
+		}
 	}
 }

@@ -38,7 +38,7 @@ public class SegmentEditorModel
 	}
 
 
-	public String getSearchText(int ix)
+	public String getPlainText(int ix)
 	{
 		return lines.get(ix).getText();
 	}
