@@ -2,7 +2,6 @@
 package goryachev.pretty.view;
 import goryachev.common.util.CList;
 import goryachev.fx.FX;
-import goryachev.fx.FxInvalidationListener;
 import goryachev.pretty.CaretSpot;
 import goryachev.pretty.ColorScheme;
 import goryachev.pretty.IContentView;
@@ -15,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
+import research.fx.Binder;
 import research.fx.edit.StyledTextPane;
 
 
@@ -34,7 +34,7 @@ public class BasedOnTextFlow
 	public BasedOnTextFlow()
 	{
 		textField = new StyledTextPane();
-		new FxInvalidationListener(textField.selectionIndexProperty(), () -> updateCaret());
+		Binder.onChange(this::updateCaret, textField.selectionIndexProperty());
 		FX.style(textField, FX.insets(2.5, 4.5), CONTENT_TEXT);
 		textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
 		

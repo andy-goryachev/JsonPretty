@@ -3,7 +3,6 @@ package research.fx.edit;
 import goryachev.common.util.D;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
-import goryachev.fx.FxInvalidationListener;
 import goryachev.fx.util.CPathBuilder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -105,7 +104,7 @@ public class FxEditor
 		
 		caretAnimation = new Timeline();
 		caretAnimation.setCycleCount(Animation.INDEFINITE);
-		new FxInvalidationListener(blinkRateProperty(), true, () -> updateBlinkRate(getBlinkRate()));
+		Binder.onChange(this::updateBlinkRate, true, blinkRateProperty());
 		
 		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
@@ -450,8 +449,9 @@ public class FxEditor
 	
 	
 	// TODO stop blinking when dragging
-	protected void updateBlinkRate(Duration d)
+	protected void updateBlinkRate()
 	{
+		Duration d = getBlinkRate();
 		Duration period = d.multiply(2);
 		
 		caretAnimation.stop();
