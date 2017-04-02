@@ -548,11 +548,10 @@ public class FxEditor
 		
 //		D.print(offsety, beg, end); // FIX
 		
-		Insets pad = getInsets();
-		double left = pad.getLeft();
-		double right = getWidth() - left - pad.getRight() - vscroll().getWidth();
-		double top = 0; // no padding 
-		double bottom = getHeight(); // no padding TODO hscroll
+		double left = 0.0;
+		double right = getWidth() - left - vscroll().getWidth();
+		double top = 0.0; 
+		double bottom = getHeight(); // TODO hscroll
 		boolean sameLine = startMarker.getLine() == endMarker.getLine();
 		
 		// there is a number of possible shapes resulting from intersection of
