@@ -107,13 +107,27 @@ public class Base64Analyzer
 			String hex = Hex.toHexString(b);
 			result.put("base64", hex);
 			
-			// TODO try to decode as a utf8 string
 			try
 			{
+				//  try decoding as a utf8 string
 				String dec = new String(b, CKit.CHARSET_UTF8);
 				if(checkPrintableString(dec))
 				{
-					result.put("base64 decoded as UTF-8", dec);
+					result.put("base64 UTF-8", dec);
+				}
+			}
+			catch(Exception e)
+			{
+			}
+			
+			try
+			{
+				// try as an ascii string
+				String dec = new String(b, CKit.CHARSET_ASCII);
+				dec = dec.replace('\ufffd', '.');
+				if(checkPrintableString(dec))
+				{
+					result.put("base64 ASCII", dec);
 				}
 			}
 			catch(Exception e)
