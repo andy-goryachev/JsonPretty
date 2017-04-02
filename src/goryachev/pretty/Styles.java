@@ -53,7 +53,7 @@ public class Styles
 			
 			new Selector(IContentView.CONTENT_TEXT).defines
 			(
-				fontSize("200%")
+				fontSize("150%")
 			),
 			
 			// common fx styles

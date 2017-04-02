@@ -95,11 +95,8 @@ public class Base64Analyzer
 	
 	protected void analyze(String s, Map<String,String> result)
 	{
-		if((s.length() % 3) != 0)
-		{
-			// not base-64
-			return;
-		}
+		// decode json string
+		s = JsonStringDecoder.decode(s);
 		
 		try
 		{
@@ -123,11 +120,10 @@ public class Base64Analyzer
 			try
 			{
 				// try as an ascii string
-				String dec = new String(b, CKit.CHARSET_ASCII);
-				dec = dec.replace('\ufffd', '.');
-				if(checkPrintableString(dec))
+				String dec = toAscii(b);
+				if(dec != null)
 				{
-					result.put("base64 ASCII", dec);
+					result.put("hex ASCII", dec);
 				}
 			}
 			catch(Exception e)

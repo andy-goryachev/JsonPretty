@@ -63,13 +63,26 @@ public class HexAnalyzer
 			byte[] b = Hex.parseByteArray(s);
 			String hex = Hex.toHexString(b);
 			
-			// TODO try to decode as a utf8 string
 			try
 			{
+				// try decoding as a utf8 string
 				String dec = new String(b, CKit.CHARSET_UTF8);
 				if(checkPrintableString(dec))
 				{
-					result.put("hex decoded as UTF-8", dec);
+					result.put("hex UTF-8", dec);
+				}
+			}
+			catch(Exception e)
+			{
+			}
+			
+			try
+			{
+				// try as an ascii string
+				String dec = toAscii(b);
+				if(dec != null)
+				{
+					result.put("hex ASCII", dec);
 				}
 			}
 			catch(Exception e)

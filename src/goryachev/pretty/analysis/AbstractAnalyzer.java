@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.analysis;
+import goryachev.common.util.SB;
 import java.util.Map;
 
 
@@ -81,6 +82,31 @@ public abstract class AbstractAnalyzer
 		{
 			analyze(s, result);
 		}
+	}
+	
+	
+	protected String toAscii(byte[] b)
+	{
+		if(b != null)
+		{
+			SB sb = new SB(b.length);
+			for(byte c: b)
+			{
+				int ch = c & 0xff;
+				if(ch < ' ')
+				{
+					ch = '.';
+				}
+				else if(ch > 127)
+				{
+					ch = '.';
+				}
+				
+				sb.append((char)ch);
+			}
+			return sb.toString();
+		}
+		return null;
 	}
 	
 	

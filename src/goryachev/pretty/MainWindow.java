@@ -158,7 +158,6 @@ public class MainWindow
 	
 	protected void updateDetailPane()
 	{
-//		D.print(sp);
 		CaretSpot sp = view.caretSpotProperty().get();
 		List<Segment> segments = analyze(sp.getPosition(), sp.getText());
 		detailPane.setTextSegments(segments);
