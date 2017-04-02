@@ -14,6 +14,8 @@ import javafx.animation.Timeline;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -53,16 +55,14 @@ public class FxEditor
 	
 	protected final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
 	protected final ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
-	protected final ReadOnlyObjectWrapper<Boolean> wrap = new ReadOnlyObjectWrapper<Boolean>(true)
+	protected final ReadOnlyObjectWrapper<Boolean> wrapText = new ReadOnlyObjectWrapper<Boolean>(true)
 	{
 		protected void invalidated()
 		{
 			requestLayout();
 		}
 	};
-	protected final ReadOnlyObjectWrapper<Boolean> singleSelection = new ReadOnlyObjectWrapper<>();
-	// TODO multiple selection
-	// TODO caret visible
+	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
 	// TODO line decorations/line numbers
 	protected FxEditorLayout layout;
 	/** index of the topmost visible line */
@@ -271,13 +271,31 @@ public class FxEditor
 	
 	public boolean isWrapText()
 	{
-		return wrap.get();
+		return wrapText.get();
 	}
 	
 	
 	public void setWrapText(boolean on)
 	{
-		wrap.set(on);
+		wrapText.set(on);
+	}
+	
+	
+	public void setMultipleSelectionEnabled(boolean on)
+	{
+		multipleSelection.set(on);
+	}
+	
+	
+	public boolean isMultipleSelectionEnabled()
+	{
+		return multipleSelection.get();
+	}
+	
+	
+	public ReadOnlyBooleanProperty multipleSelectionProperty()
+	{
+		return multipleSelection.getReadOnlyProperty();
 	}
 	
 	
