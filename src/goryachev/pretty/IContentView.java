@@ -27,7 +27,7 @@ public interface IContentView
 	public ReadOnlyObjectProperty<CaretSpot> caretSpotProperty();
 
 
-	public void setCaretVisible(boolean on);
+	public void setDisplayCaret(boolean on);
 	
 	
 	public void setWrapText(boolean on);

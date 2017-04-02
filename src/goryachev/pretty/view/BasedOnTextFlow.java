@@ -84,7 +84,7 @@ public class BasedOnTextFlow
 	}
 	
 	
-	public void setCaretVisible(boolean on)
+	public void setDisplayCaret(boolean on)
 	{
 		textField.setCaretVisible(on);
 	}

@@ -19,7 +19,7 @@ public class DetailPane
 	public DetailPane()
 	{
 		view = Config.USE_FX_EDITOR ? new BasedOnFxEditor() : new BasedOnTextFlow();
-		view.setCaretVisible(false);
+		view.setDisplayCaret(false);
 		view.setWrapText(true);
 		
 		setCenter(view.getNode());

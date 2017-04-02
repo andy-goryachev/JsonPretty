@@ -56,9 +56,9 @@ public class BasedOnFxEditor
 	}
 
 
-	public void setCaretVisible(boolean on)
+	public void setDisplayCaret(boolean on)
 	{
-		textField.setCaretVisible(on);
+		textField.setDisplayCaret(on);
 	}
 	
 	

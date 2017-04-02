@@ -6,6 +6,12 @@ TODO
 - format [,,,,] properly
 - fix format: { "array":[ { }] }
 - fix format: { "array":[{ "n":null }] }
-- wrap
+
+
+EDITOR
 - horizontal panning
+- click outside of text should move caret to the last character
+- focused border
+- combine selection segments
+- handle single/multiple selection setting
 

@@ -12,6 +12,8 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.Observable;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -72,6 +74,8 @@ public class FxEditor
 	protected Markers markers = new Markers(32);
 	protected ScrollBar vscroll;
 	protected ScrollBar hscroll;
+	protected final BooleanProperty displayCaret = new SimpleBooleanProperty(true);
+	protected final BooleanProperty caretVisible = new SimpleBooleanProperty(true);
 	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	protected final Timeline caretAnimation;
 	protected final Path caretPath;
@@ -102,6 +106,18 @@ public class FxEditor
 		FX.style(caretPath, FxEditor.CARET);
 		caretPath.setManaged(false);
 		caretPath.setStroke(Color.BLACK);
+		caretPath.visibleProperty().bind(new BooleanBinding()
+		{
+			{
+				bind(focusedProperty(), disabledProperty(), displayCaret, caretVisible);
+			}
+
+			protected boolean computeValue()
+			{
+				return caretVisible.get() && isDisplayCaret() && isFocused() && (!isDisabled());
+			}
+		});
+		
 		
 		caretAnimation = new Timeline();
 		caretAnimation.setCycleCount(Animation.INDEFINITE);
@@ -472,10 +488,23 @@ public class FxEditor
 	}
 
 	
-	public void setCaretVisible(boolean on)
+	public void setDisplayCaret(boolean on)
 	{
+		displayCaret.set(on);
+	}
+	
+	
+	public boolean isDisplayCaret()
+	{
+		return displayCaret.get();
+	}
+	
+	
+	protected void setCaretVisible(boolean on)
+	{
+		caretVisible.set(on);
 		// FIX property
-		caretPath.setVisible(on);
+//		caretPath.setVisible(on);
 	}
 	
 
