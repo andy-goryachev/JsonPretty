@@ -1,6 +1,10 @@
 # JsonPretty Release Notes
 
 
+**0.00.04**
+- base64 binary and strings
+- fxeditor selection model
+
 **0.00.03**
 - base64 value parser
 - hex value parser
