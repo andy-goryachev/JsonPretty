@@ -13,5 +13,5 @@ EDITOR
 - click outside of text should move caret to the last character
 - focused border
 - combine selection segments
-- handle single/multiple selection setting
-
+- selection: ignore changes while dragging
+- use scrollpane for focus ind
