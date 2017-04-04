@@ -3,7 +3,7 @@ package goryachev.pretty.analysis;
 import goryachev.common.util.Base64;
 import goryachev.common.util.CKit;
 import goryachev.common.util.Hex;
-import java.util.Map;
+import goryachev.pretty.AnalysisReport;
 
 
 /**
@@ -50,7 +50,7 @@ public class HexAnalyzer
 	}
 	
 	
-	protected void analyze(String s, Map<String,String> result)
+	protected void analyze(String s, AnalysisReport rep)
 	{
 		if((s.length() % 2) != 0)
 		{
@@ -69,7 +69,8 @@ public class HexAnalyzer
 				String dec = new String(b, CKit.CHARSET_UTF8);
 				if(checkPrintableString(dec))
 				{
-					result.put("hex UTF-8", dec);
+					String[] lines = breakLines(dec);
+					rep.addSection("hex UTF-8", lines);
 				}
 			}
 			catch(Exception e)
@@ -82,7 +83,8 @@ public class HexAnalyzer
 				String dec = toAscii(b);
 				if(dec != null)
 				{
-					result.put("hex ASCII", dec);
+					String[] lines = breakLines(dec);
+					rep.addSection("hex ASCII", lines);
 				}
 			}
 			catch(Exception e)

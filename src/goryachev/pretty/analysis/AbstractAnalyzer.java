@@ -1,7 +1,9 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.analysis;
+import goryachev.common.util.CList;
+import goryachev.common.util.Hex;
 import goryachev.common.util.SB;
-import java.util.Map;
+import goryachev.pretty.AnalysisReport;
 
 
 /**
@@ -11,7 +13,7 @@ public abstract class AbstractAnalyzer
 {
 	protected abstract boolean isCharSupported(int c);
 	
-	protected abstract void analyze(String s, Map<String,String> result);
+	protected abstract void analyze(String s, AnalysisReport rep);
 	
 	//
 	
@@ -75,12 +77,12 @@ public abstract class AbstractAnalyzer
 	
 	
 	/** analyzes and adds text to the report if compatible data is found */
-	public void report(Map<String,String> result)
+	public void report(AnalysisReport rep)
 	{
 		String s = extractText();
 		if(s != null)
 		{
-			analyze(s, result);
+			analyze(s, rep);
 		}
 	}
 	
@@ -150,5 +152,63 @@ public abstract class AbstractAnalyzer
 		}
 		
 		return true;
+	}
+	
+	
+	protected String[] toArray(CList<String> a)
+	{
+		if(a.size() == 0)
+		{
+			return null;
+		}
+		return a.toArray(new String[a.size()]);
+	}
+	
+	
+	protected String[] breakLines(String text)
+	{
+		CList<String> a = new CList();
+		SB sb = new SB();
+		
+		for(int i=0; i<text.length(); i++)
+		{
+			int col = i % 16;
+			char c = text.charAt(i);
+			sb.a(c);
+			
+			if(col == 15)
+			{
+				a.add(sb.getAndClear());
+			}
+		}
+		
+		return toArray(a);
+	}
+	
+	
+	protected String[] breakBinary(byte[] bytes)
+	{
+		CList<String> a = new CList();
+		SB sb = new SB();
+		
+		for(int i=0; i<bytes.length; i++)
+		{
+			int col = i % 16;
+			if(col == 8)
+			{
+				sb.a("  ");
+			}
+			
+			byte b = bytes[i];
+			sb.a(Hex.toHexByte(b));
+			sb.a(' ');
+			
+			if(col == 15)
+			{
+				a.add(sb.getAndClear());
+			}
+		}
+		
+		return toArray(a);
 	}
 }

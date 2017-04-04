@@ -125,6 +125,7 @@ public class MainWindow
 	{
 		List<Segment> ss = parseAndFormat(s);
 		view.setTextSegments(ss);
+		detailPane.clear();
 	}
 
 
@@ -140,7 +141,6 @@ public class MainWindow
 			// parse
 			ParseResult r = new RecursiveJsonParser(text).parse();
 			List<Segment> segments = r.getSegments();
-			//D.list(segments); // FIX
 			
 			// format
 			JsonPrettyFormatter f = new JsonPrettyFormatter(segments);
@@ -159,33 +159,20 @@ public class MainWindow
 	protected void updateDetailPane()
 	{
 		CaretSpot sp = view.caretSpotProperty().get();
-		List<Segment> segments = analyze(sp.getPosition(), sp.getText());
-		detailPane.setTextSegments(segments);
+		AnalysisReport rep = analyze(sp.getPosition(), sp.getText());
+		detailPane.setReport(rep);
 	}
 
 
-	protected List<Segment> analyze(int pos, String text)
+	protected AnalysisReport analyze(int pos, String text)
 	{		
-		CMap<String,String> rep = new CMap();
+		AnalysisReport rep = new AnalysisReport();
 		
 		// analyzers
 		new Base64Analyzer(pos, text).report(rep);
 		new HexAnalyzer(pos, text).report(rep);
 		new IntegerAnalyzer(pos, text).report(rep);
 		
-		CList<String> names = rep.keys();
-		CSorter.sort(names);
-		
-		CList<Segment> rv = new CList<>();
-		for(String k: names)
-		{
-			String val = rep.get(k);
-			rv.add(new Segment(Type.NAME, k + ":"));
-			rv.add(new Segment(Type.LINEBREAK, "\n"));
-			rv.add(new Segment(Type.WHITESPACE, "    "));
-			rv.add(new Segment(Type.TEXT, val));
-			rv.add(new Segment(Type.LINEBREAK, "\n"));
-		}
-		return rv;
+		return rep;
 	}
 }

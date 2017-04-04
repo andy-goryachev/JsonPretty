@@ -1,10 +1,10 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.analysis;
 import goryachev.common.util.CCalendar;
+import goryachev.pretty.AnalysisReport;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 import java.util.TimeZone;
 
 
@@ -58,7 +58,7 @@ public class IntegerAnalyzer
 	}
 	
 	
-	protected void analyze(String s, Map<String,String> result)
+	protected void analyze(String s, AnalysisReport rep)
 	{
 		int val;
 		try
@@ -68,13 +68,13 @@ public class IntegerAnalyzer
 			// java time
 			if((n > MIN_TIME_MS) && (n < MAX_TIME_MS))
 			{
-				result.put("timestamp", javaFormat.format(new Date(n)));
+				rep.addSection("java time", javaFormat.format(new Date(n)));
 			}
 			
 			// unix time
 			if((n > MIN_TIME_UNIX) && (n < MAX_TIME_UNIX))
 			{
-				result.put("unix time", unixFormat.format(new Date(n * 1000)));
+				rep.addSection("unix time", unixFormat.format(new Date(n * 1000)));
 			}
 		}
 		catch(Exception ignore)

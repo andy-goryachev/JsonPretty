@@ -55,12 +55,6 @@ public class BasedOnFxEditor
 		return caretSpot.getReadOnlyProperty();
 	}
 
-
-	public void setDisplayCaret(boolean on)
-	{
-		textField.setDisplayCaret(on);
-	}
-	
 	
 	public void setWrapText(boolean on)
 	{

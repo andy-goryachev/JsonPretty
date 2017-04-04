@@ -3,7 +3,7 @@ package goryachev.pretty.analysis;
 import goryachev.common.util.Base64;
 import goryachev.common.util.CKit;
 import goryachev.common.util.Hex;
-import java.util.Map;
+import goryachev.pretty.AnalysisReport;
 
 
 /**
@@ -93,7 +93,7 @@ public class Base64Analyzer
 	}
 	
 	
-	protected void analyze(String s, Map<String,String> result)
+	protected void analyze(String s, AnalysisReport rep)
 	{
 		// decode json string
 		s = JsonStringDecoder.decode(s);
@@ -101,8 +101,8 @@ public class Base64Analyzer
 		try
 		{
 			byte[] b = Base64.decode(s);
-			String hex = Hex.toHexString(b);
-			result.put("base64", hex);
+			String[] hex = breakBinary(b);
+			rep.addSection("base64", hex);
 			
 			try
 			{
@@ -110,7 +110,8 @@ public class Base64Analyzer
 				String dec = new String(b, CKit.CHARSET_UTF8);
 				if(checkPrintableString(dec))
 				{
-					result.put("base64 UTF-8", dec);
+					String[] lines = breakLines(dec);
+					rep.addSection("base64 UTF-8", lines);
 				}
 			}
 			catch(Exception e)
@@ -123,7 +124,8 @@ public class Base64Analyzer
 				String dec = toAscii(b);
 				if(dec != null)
 				{
-					result.put("hex ASCII", dec);
+					String[] lines = breakLines(dec);
+					rep.addSection("base64 ASCII", lines);
 				}
 			}
 			catch(Exception e)

@@ -56,6 +56,11 @@ public class Styles
 				fontSize("100%")
 			),
 			
+			new Selector(DetailPane.PANE).defines
+			(
+				fontFamily("monospace")
+			),
+			
 			// common fx styles
 			new CommonStyles()
 		);

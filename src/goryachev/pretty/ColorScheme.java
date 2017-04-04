@@ -99,4 +99,11 @@ public class ColorScheme
 		}
 		return s.textColor;
 	}
+	
+	
+	public static Color getDetailColor(boolean heading)
+	{
+		ColorScheme s = getScheme();
+		return heading ? s.nameColor : s.textColor;
+	}
 }

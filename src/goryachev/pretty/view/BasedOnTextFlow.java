@@ -84,12 +84,6 @@ public class BasedOnTextFlow
 	}
 	
 	
-	public void setDisplayCaret(boolean on)
-	{
-		textField.setCaretVisible(on);
-	}
-	
-	
 	public void setWrapText(boolean on)
 	{
 		scroll.setFitToWidth(on);

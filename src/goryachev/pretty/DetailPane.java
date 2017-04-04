@@ -1,10 +1,9 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
 import goryachev.fx.CPane;
-import goryachev.pretty.parser.Segment;
-import goryachev.pretty.view.BasedOnTextFlow;
-import goryachev.pretty.view.fxeditor.BasedOnFxEditor;
-import java.util.List;
+import goryachev.fx.CssStyle;
+import goryachev.fx.FX;
+import goryachev.fx.edit.FxEditor;
 
 
 /**
@@ -13,21 +12,34 @@ import java.util.List;
 public class DetailPane
 	extends CPane
 {
-	public final IContentView view;
+	public static final CssStyle PANE = new CssStyle("DetailPane_PANE");
+	public final DetailModel model;
+	public final FxEditor textField;
 	
 	
 	public DetailPane()
 	{
-		view = Config.USE_FX_EDITOR ? new BasedOnFxEditor() : new BasedOnTextFlow();
-		view.setDisplayCaret(false);
-		view.setWrapText(true);
+		FX.style(this, PANE);
 		
-		setCenter(view.getNode());
+		model = new DetailModel();
+		
+		textField = new FxEditor(model);
+		textField.setDisplayCaret(false);
+		textField.setWrapText(true);
+		FX.style(textField, FX.insets(2.5, 4.5));
+		
+		setCenter(textField);
 	}
 
 
-	public void setTextSegments(List<Segment> segments)
+	public void setReport(AnalysisReport rep)
 	{
-		view.setTextSegments(segments);
+		model.setReport(rep);
+	}
+
+
+	public void clear()
+	{
+		model.setReport(null);
 	}
 }
