@@ -161,7 +161,7 @@ public class FxEditor
 	/** override to provide your own controller */
 	protected void initMouseController()
 	{
-		FxEditorController h = new FxEditorController(this);
+		FxEditorMouseController h = new FxEditorMouseController(this);
 		
 		addEventFilter(MouseEvent.MOUSE_PRESSED, (ev) -> h.handleMousePressed(ev));
 		addEventFilter(MouseEvent.MOUSE_RELEASED, (ev) -> h.handleMouseReleased(ev));

@@ -9,14 +9,14 @@ import javafx.scene.input.ScrollEvent;
 /**
  * FxEditor Controller.
  */
-public class FxEditorController
+public class FxEditorMouseController
 {
 	protected final FxEditor editor;
 	protected boolean dragging;
 	protected boolean draggingScroll;
 
 
-	public FxEditorController(FxEditor ed)
+	public FxEditorMouseController(FxEditor ed)
 	{
 		this.editor = ed;
 	}
@@ -26,12 +26,31 @@ public class FxEditorController
 	{
 		// TODO
 	}
-
+	
 	
 	protected void handleScroll(ScrollEvent ev)
 	{
-		// TODO mouse wheel scroll
-		D.print(ev);
+		// on scrollbar
+		if(ev.getX() >= editor.vscroll().getLayoutX())
+		{
+			return;
+		}
+		
+		if(ev.isShiftDown())
+		{
+			// TODO horizontal scroll
+			D.print("horizontal scroll", ev.getDeltaX());
+		}
+		else if(ev.isShortcutDown())
+		{
+			// TODO page up / page down
+			D.print("page scroll", ev.getDeltaY(), ev.getTextDeltaY(), ev.getTextDeltaYUnits());
+		}
+		else
+		{
+			// TODO vertical scroll
+			D.print("vertical scroll", ev.getDeltaY(), ev.getTextDeltaY(), ev.getTextDeltaYUnits());
+		}
 	}
 	
 	
@@ -156,5 +175,7 @@ public class FxEditorController
 		}
 
 		// TODO optimize selection: combine overlapping segments
+		
+		// TODO perhaps set editor selection here
 	}
 }
