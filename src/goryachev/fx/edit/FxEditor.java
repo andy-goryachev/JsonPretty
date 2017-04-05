@@ -63,6 +63,7 @@ public class FxEditor
 		}
 	};
 	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
+	protected final ReadOnlyObjectWrapper<EditorSelection> selection2 = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
 	// TODO line decorations/line numbers
 	protected FxEditorLayout layout;
 	/** index of the topmost visible line */
@@ -80,6 +81,7 @@ public class FxEditor
 	protected final Timeline caretAnimation;
 	protected final Path caretPath;
 	protected final Path selectionHighlight;
+	@Deprecated // FIX remove
 	protected final FxEditorSelectionModel selection;
 	protected final KeyMap keymap;
 
@@ -127,7 +129,7 @@ public class FxEditor
 		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
 		selection = createSelectionModel();
-		selection.getSelection().addListener((Observable src) -> requestLayout());
+		selection.getSelection().addListener((Observable src) -> requestLayout()); // TODO need to change layout on selection shape changing!
 		Binder.onChange(this::requestLayout, widthProperty(), heightProperty());
 		
 		keymap = createKeyMap();

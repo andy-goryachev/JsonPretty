@@ -87,4 +87,17 @@ public class SelectionSegment
 			return false;
 		}
 	}
+
+
+	public boolean isEmpty()
+	{
+		if(start.getLine() == end.getLine())
+		{
+			if(start.getLineOffset() == end.getLineOffset())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
