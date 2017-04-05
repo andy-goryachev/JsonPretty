@@ -81,6 +81,7 @@ public class FxEditor
 	protected final Path caretPath;
 	protected final Path selectionHighlight;
 	protected final FxEditorSelectionModel selection;
+	protected final KeyMap keymap;
 
 	
 	public FxEditor()
@@ -129,7 +130,22 @@ public class FxEditor
 		selection.getSelection().addListener((Observable src) -> requestLayout());
 		Binder.onChange(this::requestLayout, widthProperty(), heightProperty());
 		
-		initController();
+		keymap = createKeyMap();
+		
+		initMouseController();
+		
+		// init key handler
+		addEventFilter(KeyEvent.ANY, (ev) ->
+		{
+			if(!ev.isConsumed())
+			{
+				Runnable a = keymap.getActionForKeyEvent(ev);
+				if(a != null)
+				{
+					a.run();
+				}
+			}
+		});
 	}
 	
 	
@@ -141,17 +157,28 @@ public class FxEditor
 	
 	
 	/** override to provide your own controller */
-	protected void initController()
+	protected void initMouseController()
 	{
 		FxEditorController h = new FxEditorController(this);
 		
-		addEventFilter(KeyEvent.KEY_PRESSED, (ev) -> h.handleKeyPressed(ev));
-		addEventFilter(KeyEvent.KEY_RELEASED, (ev) -> h.handleKeyReleased(ev));
-		addEventFilter(KeyEvent.KEY_TYPED, (ev) -> h.handleKeyTyped(ev));
 		addEventFilter(MouseEvent.MOUSE_PRESSED, (ev) -> h.handleMousePressed(ev));
 		addEventFilter(MouseEvent.MOUSE_RELEASED, (ev) -> h.handleMouseReleased(ev));
 		addEventFilter(MouseEvent.MOUSE_DRAGGED, (ev) -> h.handleMouseDragged(ev));
 		addEventFilter(ScrollEvent.ANY, (ev) -> h.handleScroll(ev));
+	}
+	
+	
+	/** override to provide your own controller */
+	protected KeyMap createKeyMap()
+	{
+		KeyMap m = new KeyMap();
+		return m;
+	}
+	
+	
+	protected Runnable getActionForKeyEvent(KeyEvent ev)
+	{
+		return null;
 	}
 	
 	

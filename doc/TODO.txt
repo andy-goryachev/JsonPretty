@@ -1,5 +1,4 @@
 TODO
-
 - parser: single AB,OB,AE,OE tags
 - check for valid values maybe
 - handle [[[]]] right
@@ -15,3 +14,4 @@ EDITOR
 - combine selection segments
 - selection: ignore changes while dragging
 - use scrollpane for focus ind
+- keymap

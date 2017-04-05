@@ -35,6 +35,7 @@ public class FxEditorController
 	}
 	
 	
+	/*
 	protected void handleKeyPressed(KeyEvent ev)
 	{
 		switch(ev.getCode())
@@ -65,6 +66,7 @@ public class FxEditorController
 	{
 		// TODO
 	}
+	*/
 	
 	
 	protected Marker getTextPos(MouseEvent ev)
