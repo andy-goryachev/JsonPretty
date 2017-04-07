@@ -11,14 +11,14 @@ public class Marker
 	implements Comparable<Marker>
 {
 	private int line;
-	private int offset;
+	private int charIndex;
 	private boolean leading;
 	
 	
-	public Marker(int line, int offset, boolean leading)
+	public Marker(int line, int charIndex, boolean leading)
 	{
 		this.line = line;
-		this.offset = offset;
+		this.charIndex = charIndex;
 		this.leading = leading;
 	}
 	
@@ -27,7 +27,7 @@ public class Marker
 	{
 		int h = FH.hash(Marker.class);
 		h = FH.hash(h, line);
-		h = FH.hash(h, offset);
+		h = FH.hash(h, charIndex);
 		return FH.hash(h, leading);
 	}
 
@@ -42,7 +42,13 @@ public class Marker
 	/** returns the position within the line */
 	public int getLineOffset()
 	{
-		return offset;
+		return leading ? charIndex : charIndex + 1;
+	}
+	
+	
+	public int getCharIndex()
+	{
+		return charIndex;
 	}
 	
 	
@@ -54,7 +60,7 @@ public class Marker
 	
 	public String toString()
 	{
-		return line + "." + offset + (leading ? ".L" : "T");
+		return line + "." + charIndex + (leading ? ".L" : "T");
 	}
 
 	
@@ -63,7 +69,7 @@ public class Marker
 		int d = line - m.line;
 		if(d == 0)
 		{
-			d = offset - m.offset;
+			d = charIndex - m.charIndex;
 			if(leading != m.leading)
 			{
 				return leading ? -1 : 1;
@@ -82,7 +88,7 @@ public class Marker
 		else if(x instanceof Marker)
 		{
 			Marker m = (Marker)x;
-			return (leading == m.leading) && (line == m.line) && (offset == m.offset);
+			return (leading == m.leading) && (line == m.line) && (charIndex == m.charIndex);
 		}
 		else
 		{
@@ -101,7 +107,7 @@ public class Marker
 		else if(d == 0)
 		{
 			// TODO or use insertion index?
-			if(offset < m.offset)
+			if(charIndex < m.charIndex)
 			{
 				return true;
 			}

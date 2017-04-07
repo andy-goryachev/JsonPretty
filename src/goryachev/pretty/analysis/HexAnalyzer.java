@@ -52,11 +52,11 @@ public class HexAnalyzer
 	
 	protected void analyze(String s, AnalysisReport rep)
 	{
-		if((s.length() % 2) != 0)
-		{
-			// not hex
-			return;
-		}
+//		if((s.length() % 2) != 0)
+//		{
+//			// not hex
+//			return;
+//		}
 		
 		try
 		{

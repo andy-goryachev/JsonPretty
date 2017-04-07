@@ -59,10 +59,10 @@ public abstract class AbstractAnalyzer
 		int end = pos;
 		for(int i=pos; i<initialText.length(); i++)
 		{
+			end = i;
 			int c = peek(i);
 			if(!isCharSupported(c))
 			{
-				end = i;
 				break;
 			}
 		}

@@ -68,15 +68,17 @@ public class BasedOnFxEditor
 		SelectionSegment sel = textField.getSelection().getSegment();
 		if(sel != null)
 		{
+			String text;
+			int pos;
+			
 			if(sel.isEmpty())
 			{
 				Marker m = sel.getEnd();
-				String text = textField.getTextOnLine(m.getLine());
-				caretSpot.set(new CaretSpot(m.getLineOffset(), text));
+				text = textField.getTextOnLine(m.getLine());
+				pos = m.getLineOffset();
 			}
 			else
 			{
-				String text;
 				try
 				{
 					text = textField.getSelectedText();
@@ -87,8 +89,10 @@ public class BasedOnFxEditor
 					text = "";
 				}
 				
-				caretSpot.set(new CaretSpot(0, text));
+				pos = 0;
 			}
+			
+			caretSpot.set(new CaretSpot(pos, text));
 		}
 	}
 }
