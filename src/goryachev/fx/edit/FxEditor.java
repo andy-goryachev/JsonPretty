@@ -8,6 +8,7 @@ import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
 import goryachev.fx.edit.internal.Markers;
 import goryachev.fx.util.CPathBuilder;
+import java.io.StringWriter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -186,12 +187,24 @@ public class FxEditor
 	}
 	
 	
+	public EditorSelection getSelection()
+	{
+		return selection.get();
+	}
+	
+	
 	/** perhaps make this method public */
 	protected void setSelection(EditorSelection es)
 	{
 		selection.set(es);
 	}
 	
+	
+	public void clearSelection()
+	{
+		selector.clear();
+	}
+
 	
 	protected Runnable getActionForKeyEvent(KeyEvent ev)
 	{
@@ -538,12 +551,6 @@ public class FxEditor
 	}
 	
 	
-	public void clearSelection()
-	{
-		selector.clear();
-	}
-
-	
 	public void setDisplayCaret(boolean on)
 	{
 		displayCaret.set(on);
@@ -794,5 +801,14 @@ public class FxEditor
 	public String getTextOnLine(int line)
 	{
 		return model.get().getPlainText(line);
+	}
+
+
+	/** returns selected plain text, concatenating multiple selection segments if necessary */
+	public String getSelectedText() throws Exception
+	{
+		StringWriter wr = new StringWriter();
+		model.get().getPlainText(getSelection(), wr);
+		return wr.toString();
 	}
 }

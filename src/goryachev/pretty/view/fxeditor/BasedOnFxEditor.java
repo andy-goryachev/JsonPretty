@@ -1,6 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view.fxeditor;
-import goryachev.common.util.D;
+import goryachev.common.util.Log;
 import goryachev.fx.Binder;
 import goryachev.fx.FX;
 import goryachev.fx.edit.FxEditor;
@@ -65,12 +65,30 @@ public class BasedOnFxEditor
 	
 	protected void updateCaret()
 	{
-		SelectionSegment sel = textField.selectionProperty().get().getSegment();
+		SelectionSegment sel = textField.getSelection().getSegment();
 		if(sel != null)
 		{
-			Marker m = sel.getEnd();
-			String text = textField.getTextOnLine(m.getLine());
-			caretSpot.set(new CaretSpot(m.getLineOffset(), text));
+			if(sel.isEmpty())
+			{
+				Marker m = sel.getEnd();
+				String text = textField.getTextOnLine(m.getLine());
+				caretSpot.set(new CaretSpot(m.getLineOffset(), text));
+			}
+			else
+			{
+				String text;
+				try
+				{
+					text = textField.getSelectedText();
+				}
+				catch(Exception e)
+				{
+					Log.ex(e);
+					text = "";
+				}
+				
+				caretSpot.set(new CaretSpot(0, text));
+			}
 		}
 	}
 }

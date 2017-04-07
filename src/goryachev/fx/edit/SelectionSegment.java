@@ -62,11 +62,11 @@ public class SelectionSegment
 	{
 		if(end.isBefore(start))
 		{
-			return end;
+			return start;
 		}
 		else
 		{
-			return start;
+			return end;
 		}
 	}
 
@@ -175,6 +175,20 @@ public class SelectionSegment
 				// no overlap
 				return null;
 			}
+		}
+	}
+
+
+	/** returns a segment in which the start marker always comes before the end marker */
+	public SelectionSegment getNormalizedSegment()
+	{
+		if(start.isBefore(end))
+		{
+			return this;
+		}
+		else
+		{
+			return new SelectionSegment(end, start);
 		}
 	}
 }
