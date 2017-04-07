@@ -6,8 +6,9 @@ Detect and pretty print JSON text copied to the clipboard.
 
 ## Why
 
-I needed to pretty print some json from the clipboard.  Also, this is a test bed for my
-[super fast text editor](https://github.com/andy-goryachev/FxEditor).
+I needed to pretty print some json from the clipboard.  Also, this is a test bed for 
+[FxEditor](https://github.com/andy-goryachev/FxEditor),
+a super-fast text editor that can work with very large texts. 
 
 ## Download
 
