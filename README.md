@@ -13,7 +13,7 @@ or
 
 Also, this is a test bed for 
 [FxEditor](https://github.com/andy-goryachev/FxEditor),
-a super-fast text editor that can work with very large texts. 
+a super-fast text editor that works with very large texts. 
 
 ## Download
 
