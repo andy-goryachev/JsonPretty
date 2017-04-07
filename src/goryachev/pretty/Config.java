@@ -7,6 +7,4 @@ package goryachev.pretty;
  */
 public class Config
 {
-	/** whether to use FxEditor or (temporarily) StyledTextPane workaround */
-	public static final boolean USE_FX_EDITOR = true;
 }

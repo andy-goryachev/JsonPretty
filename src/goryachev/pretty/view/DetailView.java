@@ -1,13 +1,13 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package goryachev.pretty.view.fxeditor;
+package goryachev.pretty.view;
 import goryachev.common.util.Log;
 import goryachev.fx.Binder;
+import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.edit.FxEditor;
 import goryachev.fx.edit.Marker;
 import goryachev.fx.edit.SelectionSegment;
 import goryachev.pretty.CaretSpot;
-import goryachev.pretty.IContentView;
 import goryachev.pretty.parser.Segment;
 import java.util.List;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -18,15 +18,17 @@ import javafx.scene.Node;
 /**
  * IContentView based on FxEditor.
  */
-public class BasedOnFxEditor
-	implements IContentView
+public class DetailView
 {
+	public static CssStyle CONTENT_PANE = new CssStyle("IContentView_CONTENT_PANE");
+	public static CssStyle CONTENT_TEXT = new CssStyle("IContentView_CONTENT_TEXT");
+
 	public final FxEditor textField;
 	public final SegmentEditorModel model;
 	private final ReadOnlyObjectWrapper<CaretSpot> caretSpot = new ReadOnlyObjectWrapper();
 	
 	
-	public BasedOnFxEditor()
+	public DetailView()
 	{
 		model = new SegmentEditorModel();
 		

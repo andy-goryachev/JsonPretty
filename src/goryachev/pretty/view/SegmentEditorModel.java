@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package goryachev.pretty.view.fxeditor;
+package goryachev.pretty.view;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
 import goryachev.fx.edit.CTextFlow;

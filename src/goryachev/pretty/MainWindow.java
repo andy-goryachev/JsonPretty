@@ -2,8 +2,6 @@
 package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.CMap;
-import goryachev.common.util.CSorter;
 import goryachev.common.util.Log;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
@@ -19,8 +17,7 @@ import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonParser;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
-import goryachev.pretty.view.BasedOnTextFlow;
-import goryachev.pretty.view.fxeditor.BasedOnFxEditor;
+import goryachev.pretty.view.DetailView;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -40,7 +37,7 @@ public class MainWindow
 	extends FxWindow
 {
 	public static final Duration PERIOD = Duration.millis(200);
-	public final IContentView view;
+	public final DetailView view;
 	public final DetailPane detailPane;
 	public final SplitPane split;
 	protected final Clipboard clipboard;
@@ -51,7 +48,7 @@ public class MainWindow
 	{
 		super("MainWindow");
 		
-		view = Config.USE_FX_EDITOR ? new BasedOnFxEditor() : new BasedOnTextFlow();
+		view = new DetailView();
 		
 		detailPane = new DetailPane();
 		

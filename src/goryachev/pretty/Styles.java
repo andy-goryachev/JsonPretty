@@ -2,6 +2,7 @@
 package goryachev.pretty;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FxStyleSheet;
+import goryachev.pretty.view.DetailView;
 import javafx.scene.paint.Color;
 
 
@@ -44,16 +45,16 @@ public class Styles
 				)
 			),
 			
-			new Selector(IContentView.CONTENT_PANE, FOCUSED).defines
+			new Selector(DetailView.CONTENT_PANE, FOCUSED).defines
 			(
 				// removes focused border from scroll pane
 				// TODO do it specifically for the content pane
 //				backgroundInsets(1)
 			),
 			
-			new Selector(IContentView.CONTENT_TEXT).defines
+			new Selector(DetailView.CONTENT_TEXT).defines
 			(
-				fontSize("100%")
+				fontSize("150%")
 			),
 			
 			new Selector(DetailPane.PANE).defines
