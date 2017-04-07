@@ -6,7 +6,12 @@ Detect and pretty print JSON text copied to the clipboard.
 
 ## Why
 
-I needed to pretty print some json from the clipboard.  Also, this is a test bed for 
+I needed to pretty print some sensitive json from the the logs, so could not use web sites like
+[jsonprettyprint.com](http://jsonprettyprint.com/)
+or
+[jsonprettyprint.net](http://jsonprettyprint.net/).  (Plus, these tools break if you paste an invalid json).
+
+Also, this is a test bed for 
 [FxEditor](https://github.com/andy-goryachev/FxEditor),
 a super-fast text editor that can work with very large texts. 
 
