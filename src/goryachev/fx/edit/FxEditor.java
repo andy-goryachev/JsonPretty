@@ -19,6 +19,8 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -63,7 +65,8 @@ public class FxEditor
 		}
 	};
 	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
-	protected final ReadOnlyObjectWrapper<EditorSelection> selection2 = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
+	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
+	protected final ReadOnlyObjectWrapper<EditorSelection> selection = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
 	// TODO line decorations/line numbers
 	protected FxEditorLayout layout;
 	/** index of the topmost visible line */
@@ -81,8 +84,7 @@ public class FxEditor
 	protected final Timeline caretAnimation;
 	protected final Path caretPath;
 	protected final Path selectionHighlight;
-	@Deprecated // FIX remove
-	protected final FxEditorSelectionModel selection;
+	protected final EditorSelectionController selector;
 	protected final KeyMap keymap;
 
 	
@@ -128,8 +130,8 @@ public class FxEditor
 		
 		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
-		selection = createSelectionModel();
-		selection.getSelection().addListener((Observable src) -> requestLayout()); // TODO need to change layout on selection shape changing!
+		selector = createSelectionController();
+		segments.addListener((Observable src) -> reloadSelectionDecorations());
 		Binder.onChange(this::requestLayout, widthProperty(), heightProperty());
 		
 		keymap = createKeyMap();
@@ -152,16 +154,16 @@ public class FxEditor
 	
 	
 	/** override to provide your own selection model */
-	protected FxEditorSelectionModel createSelectionModel()
+	protected EditorSelectionController createSelectionController()
 	{
-		return new FxEditorSelectionModel();
+		return new EditorSelectionController(segments);
 	}
 	
 	
 	/** override to provide your own controller */
 	protected void initMouseController()
 	{
-		FxEditorMouseController h = new FxEditorMouseController(this);
+		FxEditorMouseController h = new FxEditorMouseController(this, selector);
 		
 		addEventFilter(MouseEvent.MOUSE_PRESSED, (ev) -> h.handleMousePressed(ev));
 		addEventFilter(MouseEvent.MOUSE_RELEASED, (ev) -> h.handleMouseReleased(ev));
@@ -178,15 +180,22 @@ public class FxEditor
 	}
 	
 	
-	protected Runnable getActionForKeyEvent(KeyEvent ev)
+	public ReadOnlyObjectProperty<EditorSelection> selectionProperty()
 	{
-		return null;
+		return selection.getReadOnlyProperty();
 	}
 	
 	
-	public FxEditorSelectionModel getSelectionModel()
+	/** perhaps make this method public */
+	protected void setSelection(EditorSelection es)
 	{
-		return selection;
+		selection.set(es);
+	}
+	
+	
+	protected Runnable getActionForKeyEvent(KeyEvent ev)
+	{
+		return null;
 	}
 	
 	
@@ -531,7 +540,7 @@ public class FxEditor
 	
 	public void clearSelection()
 	{
-		selection.clear();
+		selector.clear();
 	}
 
 	
@@ -569,7 +578,7 @@ public class FxEditor
 		CPathBuilder hb = new CPathBuilder();
 		CPathBuilder cb = new CPathBuilder();
 		
-		for(SelectionSegment s: selection.getSelection())
+		for(SelectionSegment s: segments)
 		{
 			Marker start = s.getStart();
 			Marker end = s.getEnd();

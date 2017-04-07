@@ -12,13 +12,15 @@ import javafx.scene.input.ScrollEvent;
 public class FxEditorMouseController
 {
 	protected final FxEditor editor;
+	protected final EditorSelectionController sel;
 	protected boolean dragging;
 	protected boolean draggingScroll;
 
 
-	public FxEditorMouseController(FxEditor ed)
+	public FxEditorMouseController(FxEditor ed, EditorSelectionController sel)
 	{
 		this.editor = ed;
+		this.sel = sel;
 	}
 	
 	
@@ -106,7 +108,6 @@ public class FxEditorMouseController
 			
 		// TODO property: multiple selection
 		Marker pos = getTextPos(ev);
-		FxEditorSelectionModel sel = editor.getSelectionModel();
 		
 		if(ev.isShiftDown())
 		{
@@ -159,7 +160,7 @@ public class FxEditorMouseController
 		dragging = true;
 		
 		Marker pos = getTextPos(ev);
-		editor.getSelectionModel().extendLastSegment(pos);
+		sel.extendLastSegment(pos);
 	}
 	
 	
@@ -173,9 +174,8 @@ public class FxEditorMouseController
 		{
 			return;
 		}
-
-		// TODO optimize selection: combine overlapping segments
 		
-		// TODO perhaps set editor selection here
+		EditorSelection es = sel.commitSelection();
+		editor.setSelection(es);
 	}
 }

@@ -22,7 +22,16 @@ public class Marker
 		this.leading = leading;
 	}
 	
-	
+
+	public int hashCode()
+	{
+		int h = FH.hash(Marker.class);
+		h = FH.hash(h, line);
+		h = FH.hash(h, offset);
+		return FH.hash(h, leading);
+	}
+
+
 	/** returns the line number corresponding to this text position */
 	public int getLine()
 	{
@@ -82,11 +91,28 @@ public class Marker
 	}
 
 
-	public int hashCode()
+	public boolean isBefore(Marker m)
 	{
-		int h = FH.hash(Marker.class);
-		h = FH.hash(h, line);
-		h = FH.hash(h, offset);
-		return FH.hash(h, leading);
+		int d = line - m.line;
+		if(d < 0)
+		{
+			return true;
+		}
+		else if(d == 0)
+		{
+			// TODO or use insertion index?
+			if(offset < m.offset)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

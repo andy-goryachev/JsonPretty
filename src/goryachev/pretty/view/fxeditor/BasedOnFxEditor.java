@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view.fxeditor;
+import goryachev.common.util.D;
 import goryachev.fx.Binder;
 import goryachev.fx.FX;
 import goryachev.fx.edit.FxEditor;
@@ -34,7 +35,7 @@ public class BasedOnFxEditor
 		// TODO set single selection
 		// TODO disable editing
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
-		Binder.onChange(this::updateCaret, textField.getSelectionModel().getSelection());
+		Binder.onChange(this::updateCaret, textField.selectionProperty());
 	}
 
 
@@ -64,7 +65,7 @@ public class BasedOnFxEditor
 	
 	protected void updateCaret()
 	{
-		SelectionSegment sel = textField.getSelectionModel().getLastSegment();
+		SelectionSegment sel = textField.selectionProperty().get().getSegment();
 		if(sel != null)
 		{
 			Marker m = sel.getEnd();
