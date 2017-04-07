@@ -11,7 +11,8 @@ EDITOR
 - horizontal panning
 - click outside of text should move caret to the last character
 - focused border
-- combine selection segments
-- selection: ignore changes while dragging
 - use scrollpane for focus ind
 - keymap
+- consider line node insets in computing selection shapes
+- model.copySelection(), all formats
+- select all

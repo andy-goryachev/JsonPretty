@@ -3,6 +3,7 @@
 
 **0.00.05 RC**
 - improved detail pane
+- analyze selection
 
 **0.00.04**
 - base64 binary and strings
