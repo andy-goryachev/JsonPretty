@@ -59,7 +59,7 @@ public class FxEditor
 	
 	protected final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
 	protected final ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
-	protected final ReadOnlyObjectWrapper<Boolean> wrapText = new ReadOnlyObjectWrapper<Boolean>(true)
+	protected final ReadOnlyBooleanWrapper wrapText = new ReadOnlyBooleanWrapper(true)
 	{
 		protected void invalidated()
 		{

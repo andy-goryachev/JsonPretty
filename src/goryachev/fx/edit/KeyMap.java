@@ -17,6 +17,9 @@ public class KeyMap
 	protected static final int ALT = 0x0000_0004;
 	protected static final int META = 0x0000_0008;
 	protected static final int SHORTCUT = 0x0000_0010;
+	protected static final int KEY_PRESSED = 0x8000_0000;
+	protected static final int KEY_RELEASED = 0x4000_0000;
+	
 	protected final CMap<Key,Runnable> keymap = new CMap();
 	
 	
@@ -27,25 +30,25 @@ public class KeyMap
 	
 	public void add(KeyCode k, Runnable r)
 	{
-		add(0, k, r);
+		add(KEY_PRESSED, k, r);
 	}
 	
 	
 	public void ctrl(KeyCode k, Runnable r)
 	{
-		add(CTRL, k, r);
+		add(KEY_PRESSED | CTRL, k, r);
 	}
 	
 	
 	public void shift(KeyCode k, Runnable r)
 	{
-		add(SHIFT, k, r);
+		add(KEY_PRESSED | SHIFT, k, r);
 	}
 	
 	
 	public void shortcut(KeyCode k, Runnable r)
 	{
-		int flags = (CPlatform.get().isMac() ? META : CTRL);
+		int flags = KEY_PRESSED | (CPlatform.get().isMac() ? META : CTRL);
 		add(flags, k, r);
 	}
 	
@@ -66,9 +69,13 @@ public class KeyMap
 	{
 		int flags = 0;
 		
-		if(ev.isShortcutDown()) // this may backfire
+		if(ev.getEventType() == KeyEvent.KEY_PRESSED)
 		{
-			flags |= SHORTCUT;
+			flags |= KEY_PRESSED;
+		}
+		else if(ev.getEventType() == KeyEvent.KEY_RELEASED)
+		{
+			flags |= KEY_RELEASED;
 		}
 		
 		if(ev.isShiftDown())
@@ -95,8 +102,8 @@ public class KeyMap
 	
 	protected static class Key
 	{
-		protected int flags;
-		protected KeyCode keyCode;
+		protected final int flags;
+		protected final KeyCode keyCode;
 
 
 		public Key(int flags, KeyCode keyCode)
