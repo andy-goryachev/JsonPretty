@@ -3,12 +3,14 @@ package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
+import goryachev.fx.CCheckMenuItem;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
 import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
+import goryachev.fx.obsolete.FxInvalidationListener;
 import goryachev.pretty.analysis.Base64Analyzer;
 import goryachev.pretty.analysis.HexAnalyzer;
 import goryachev.pretty.analysis.IntegerAnalyzer;
@@ -21,6 +23,7 @@ import goryachev.pretty.view.DetailView;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -42,12 +45,13 @@ public class MainWindow
 	public final SplitPane split;
 	protected final Clipboard clipboard;
 	protected String oldContent;
+	protected final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(true);
 	
 	
 	public MainWindow()
 	{
 		super("MainWindow");
-		
+				
 		view = new DetailView();
 		
 		detailPane = new DetailPane();
@@ -80,6 +84,10 @@ public class MainWindow
 		}));
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.play();
+		
+		// preferences
+		bind("HSPLIT", horizontalSplit);
+		new FxInvalidationListener(horizontalSplit, true, this::updateSplit);
 
 		// debugging
 		FxDump.attach(this);
@@ -101,7 +109,7 @@ public class MainWindow
 		m.add("Save Selection As...");
 		// view
 		mb.add(m = new CMenu("View"));
-		m.add("Layout");
+		m.add(new CCheckMenuItem("Detail Pane Below", horizontalSplit));
 		// help
 		mb.add(m = new CMenu("Help"));
 		m.add("About");
@@ -115,6 +123,13 @@ public class MainWindow
 		p.fill();
 		p.add(FX.label("copyright © 2017 andy goryachev", Color.GRAY, new Insets(1, 10, 1, 2)));
 		return p;
+	}
+	
+	
+	protected void updateSplit()
+	{
+		boolean hor = horizontalSplit.get();
+		split.setOrientation(hor ? Orientation.HORIZONTAL : Orientation.VERTICAL);
 	}
 	
 	

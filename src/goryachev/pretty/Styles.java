@@ -54,7 +54,7 @@ public class Styles
 			
 			new Selector(DetailView.CONTENT_TEXT).defines
 			(
-				fontSize("150%")
+				fontSize("100%")
 			),
 			
 			new Selector(DetailPane.PANE).defines
