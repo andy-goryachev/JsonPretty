@@ -3,6 +3,7 @@ package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
+import goryachev.fx.CAction;
 import goryachev.fx.CCheckMenuItem;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
@@ -19,7 +20,7 @@ import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonParser;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
-import goryachev.pretty.view.DetailView;
+import goryachev.pretty.view.ContentView;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -40,19 +41,20 @@ public class MainWindow
 	extends FxWindow
 {
 	public static final Duration PERIOD = Duration.millis(200);
-	public final DetailView view;
+	public final ContentView view;
 	public final DetailPane detailPane;
 	public final SplitPane split;
 	protected final Clipboard clipboard;
 	protected String oldContent;
 	protected final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(true);
+	public final CAction copyAction = new CAction(this::copy); 
 	
 	
 	public MainWindow()
 	{
 		super("MainWindow");
 				
-		view = new DetailView();
+		view = new ContentView();
 		
 		detailPane = new DetailPane();
 		
@@ -105,7 +107,7 @@ public class MainWindow
 		m.add("Quit", FX.exitAction());
 		// edit
 		mb.add(m = new CMenu("Edit"));
-		m.add("Copy");
+		m.add("Copy", copyAction);
 		m.add("Save Selection As...");
 		// view
 		mb.add(m = new CMenu("View"));
@@ -186,5 +188,11 @@ public class MainWindow
 		new IntegerAnalyzer(pos, text).report(rep);
 		
 		return rep;
+	}
+	
+	
+	protected void copy()
+	{
+		view.copy();
 	}
 }

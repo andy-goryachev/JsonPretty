@@ -833,7 +833,7 @@ public class FxEditor
 	
 	public void copy()
 	{
-		// TODO
-		D.print();
+		// TODO use model to copy every data format it can
+		model.get().copy(getSelection());
 	}
 }

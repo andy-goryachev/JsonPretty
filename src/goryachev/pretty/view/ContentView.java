@@ -16,19 +16,19 @@ import javafx.scene.Node;
 
 
 /**
- * IContentView based on FxEditor.
+ * Content View based on FxEditor.
  */
-public class DetailView
+public class ContentView
 {
-	public static CssStyle CONTENT_PANE = new CssStyle("IContentView_CONTENT_PANE");
-	public static CssStyle CONTENT_TEXT = new CssStyle("IContentView_CONTENT_TEXT");
+	public static CssStyle CONTENT_PANE = new CssStyle("ContentView_CONTENT_PANE");
+	public static CssStyle CONTENT_TEXT = new CssStyle("ContentView_CONTENT_TEXT");
 
 	public final FxEditor textField;
 	public final SegmentEditorModel model;
 	private final ReadOnlyObjectWrapper<CaretSpot> caretSpot = new ReadOnlyObjectWrapper();
 	
 	
-	public DetailView()
+	public ContentView()
 	{
 		model = new SegmentEditorModel();
 		
@@ -96,5 +96,11 @@ public class DetailView
 			
 			caretSpot.set(new CaretSpot(pos, text));
 		}
+	}
+
+
+	public void copy()
+	{
+		textField.copy();
 	}
 }

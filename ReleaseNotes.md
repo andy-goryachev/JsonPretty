@@ -5,6 +5,7 @@
 - improved detail pane
 - analyze selection
 - split option
+- edit/copy
 
 **0.00.04**
 - base64 binary and strings
