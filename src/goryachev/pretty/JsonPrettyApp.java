@@ -24,7 +24,7 @@ public class JsonPrettyApp
 	public void init() throws Exception
 	{
 		// TODO change to something visible in Documents? platform-specific?
-		File baseDir = new File(System.getProperty("user.home"), ".goryachev.com");
+		File baseDir = new File(System.getProperty("user.home"), ".goryachev.com/JsonPretty");
 			
 		File logFolder = new File(baseDir, "logs"); 
 //		Log.init(logFolder);

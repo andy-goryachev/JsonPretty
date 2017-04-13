@@ -11,7 +11,6 @@ import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
-import goryachev.fx.obsolete.FxInvalidationListener;
 import goryachev.pretty.analysis.Base64Analyzer;
 import goryachev.pretty.analysis.HexAnalyzer;
 import goryachev.pretty.analysis.IntegerAnalyzer;
@@ -89,7 +88,7 @@ public class MainWindow
 		
 		// preferences
 		bind("HSPLIT", horizontalSplit);
-		new FxInvalidationListener(horizontalSplit, true, this::updateSplit);
+		FX.listen(this::updateSplit, true, horizontalSplit);
 
 		// debugging
 		FxDump.attach(this);
@@ -111,7 +110,7 @@ public class MainWindow
 		m.add("Save Selection As...");
 		// view
 		mb.add(m = new CMenu("View"));
-		m.add(new CCheckMenuItem("Detail Pane Below", horizontalSplit));
+		m.add(new CCheckMenuItem("Detail Pane on a Side", horizontalSplit));
 		// help
 		mb.add(m = new CMenu("Help"));
 		m.add("About");

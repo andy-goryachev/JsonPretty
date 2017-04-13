@@ -1,7 +1,7 @@
 # JsonPretty Release Notes
 
 
-**0.00.05 RC**
+**0.00.05**
 - improved detail pane
 - analyze selection
 - split option
