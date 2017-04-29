@@ -33,7 +33,8 @@ public class ContentView
 		model = new SegmentEditorModel();
 		
 		textField = new FxEditor(model);
-		FX.style(textField, FX.insets(2.5, 4.5), CONTENT_TEXT);
+		textField.setContentPadding(FX.insets(2.5, 4.5));
+		FX.style(textField, CONTENT_TEXT);
 		// TODO set single selection
 		// TODO disable editing
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());

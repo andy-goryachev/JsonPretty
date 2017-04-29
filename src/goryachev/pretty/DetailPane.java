@@ -26,7 +26,7 @@ public class DetailPane
 		textField = new FxEditor(model);
 		textField.setDisplayCaret(false);
 		textField.setWrapText(true);
-		FX.style(textField, FX.insets(2.5, 4.5));
+		textField.setContentPadding(FX.insets(2.5, 4.5));
 		
 		setCenter(textField);
 	}
