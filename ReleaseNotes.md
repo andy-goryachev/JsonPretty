@@ -1,6 +1,9 @@
 # JsonPretty Release Notes
 
 
+**0.00.06**
+- select all
+
 **0.00.05**
 - improved detail pane
 - analyze selection

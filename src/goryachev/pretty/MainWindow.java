@@ -108,6 +108,8 @@ public class MainWindow
 		mb.add(m = new CMenu("Edit"));
 		m.add("Copy", copyAction);
 		m.add("Save Selection As...");
+		m.separator();
+		m.add("Select All", view.textField.selectAllAction);
 		// view
 		mb.add(m = new CMenu("View"));
 		m.add(new CCheckMenuItem("Detail Pane on a Side", horizontalSplit));
