@@ -6,12 +6,4 @@ TODO
 - fix format: { "array":[ { }] }
 - fix format: { "array":[{ "n":null }] }
 
-
-EDITOR
-- horizontal panning
-- click outside of text should move caret to the last character
-- focused border
-- use scrollpane for focus ind
-- model.copySelection(), all formats
-- select all
-- maybe extract a virtual flow container
+- xml parser
