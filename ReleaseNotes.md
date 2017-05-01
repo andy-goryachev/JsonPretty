@@ -1,6 +1,11 @@
 # JsonPretty Release Notes
 
 
+**0.00.07**
+- page up
+- page down
+- mouse wheen scrolling
+
 **0.00.06**
 - select all
 

@@ -3,6 +3,7 @@ package goryachev.pretty;
 import goryachev.common.util.CList;
 import goryachev.common.util.CSorter;
 import goryachev.fx.edit.CTextFlow;
+import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxEditorModel;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Region;
@@ -117,5 +118,11 @@ public class DetailModel
 			this.heading = heading;
 			this.text = text;
 		}
+	}
+
+
+	public Edit edit(Edit ed) throws Exception
+	{
+		throw new Exception();
 	}
 }

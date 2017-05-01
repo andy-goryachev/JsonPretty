@@ -3,6 +3,7 @@ package goryachev.pretty.view;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
 import goryachev.fx.edit.CTextFlow;
+import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxEditorModel;
 import goryachev.pretty.ColorScheme;
 import goryachev.pretty.parser.Segment;
@@ -41,6 +42,12 @@ public class SegmentEditorModel
 	public String getPlainText(int ix)
 	{
 		return lines.get(ix).getText();
+	}
+	
+	
+	public Edit edit(Edit ed) throws Exception
+	{
+		throw new Exception();
 	}
 
 

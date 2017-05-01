@@ -60,12 +60,6 @@ public class FxEditor
 	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
 	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
 	protected final ReadOnlyObjectWrapper<EditorSelection> selection = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
-	/** index of the topmost visible line */
-	protected int topLineIndex;
-	/** horizontal shift in pixels */
-	protected int offsetx;
-	/** vertical shift in pixels, applied to topmost line */
-	protected int offsety;
 	protected Markers markers = new Markers(32);
 	protected final VFlow vflow;
 	protected final ScrollBar vscroll;
@@ -74,6 +68,7 @@ public class FxEditor
 	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	protected final EditorSelectionController selector;
 	protected final KeyMap keymap;
+	protected boolean handleScrollEvents = true;
 
 	
 	public FxEditor()
@@ -243,6 +238,7 @@ public class FxEditor
 		s.setMin(0.0);
 		s.setMax(1.0);
 		s.valueProperty().addListener((src,old,val) -> setAbsolutePositionVertical(val.doubleValue()));
+		s.addEventFilter(ScrollEvent.ANY, (ev) -> ev.consume());
 		return s;
 	}
 	
@@ -255,15 +251,19 @@ public class FxEditor
 		s.setMin(0.0);
 		s.setMax(1.0);
 		s.valueProperty().addListener((src,old,val) -> setAbsolutePositionHorizontal(val.doubleValue()));
+		s.addEventFilter(ScrollEvent.ANY, (ev) -> ev.consume());
 		return s;
 	}
 	
 	
 	protected void setAbsolutePositionVertical(double pos)
 	{
-		// TODO account for visible line count
-		int start = FX.round(getTextModel().getLineCount() * pos);
-		setTopLineIndex(start);
+		if(handleScrollEvents)
+		{
+			// TODO account for visible line count
+			int start = FX.round(getTextModel().getLineCount() * pos);
+			setTopLineIndex(start);
+		}
 	}
 	
 	
@@ -273,31 +273,9 @@ public class FxEditor
 	}
 	
 	
-	protected void scrollRelative(double pixels)
+	protected void setHandleScrollEvents(boolean on)
 	{
-		if(pixels < 0)
-		{
-			double toScroll = pixels;
-			int ix = getViewStartLine();
-			int offsety = getOffsetY();
-			
-			LayoutOp op = newLayoutOp();
-			
-			// TODO
-			// using the current layout, add lines until scrolled up to the necessary number of pixels
-			// or the first/last line
-//			while(toScroll > 0)
-//			{
-//				if(ix <= 0)
-//				{
-//					break;
-//				}
-//			}
-		}
-		else
-		{
-			
-		}
+		handleScrollEvents = on;
 	}
 	
 	
@@ -343,9 +321,9 @@ public class FxEditor
 	}
 	
 	
-	protected void setTopLineIndex(int x)
+	protected void setTopLineIndex(int ix)
 	{
-		topLineIndex = x;
+		vflow.setTopLineIndex(ix);
 		updateLayout();
 	}
 	
@@ -403,18 +381,6 @@ public class FxEditor
 	}
 	
 	
-	protected int getOffsetX()
-	{
-		return offsetx;
-	}
-	
-	
-	protected int getOffsetY()
-	{
-		return offsety;
-	}
-	
-	
 	protected int getViewStartLine()
 	{
 		return vflow.layout.startLine();
@@ -449,12 +415,6 @@ public class FxEditor
 	public void setEditable(boolean on)
 	{
 		editable.set(on);
-	}
-
-
-	protected LayoutOp newLayoutOp()
-	{
-		return new LayoutOp(vflow.layout);
 	}
 
 	
@@ -521,15 +481,19 @@ public class FxEditor
 	
 	public void pageUp()
 	{
-		// TODO
-		D.print();
+		vflow.pageUp();
 	}
 	
 	
 	public void pageDown()
 	{
-		// TODO
-		D.print();
+		vflow.pageDown();
+	}
+	
+	
+	public void blockScroll(boolean up)
+	{
+		vflow.blockScroll(up);
 	}
 	
 	

@@ -6,7 +6,7 @@ import javafx.scene.input.ScrollEvent;
 
 
 /**
- * FxEditor Controller.
+ * FxEditor Mouse Controller.
  */
 public class FxEditorMouseController
 {
@@ -23,34 +23,48 @@ public class FxEditorMouseController
 	}
 	
 	
-	public void moveCaret(boolean right)
+	protected boolean isOverScrollBar(double x, double y)
 	{
-		// TODO
+		if(x >= editor.vscroll.getLayoutX())
+		{
+			return true;
+		}
+		else if(y >= editor.hscroll.getLayoutY())
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	
 	protected void handleScroll(ScrollEvent ev)
 	{
-		// on scrollbar
-		if(ev.getX() >= editor.vscroll.getLayoutX())
+		if(isOverScrollBar(ev.getX(), ev.getY()))
 		{
 			return;
 		}
 		
 		if(ev.isShiftDown())
 		{
-			// TODO horizontal scroll
+			// TODO horizontal scroll perhaps?
 			D.print("horizontal scroll", ev.getDeltaX());
 		}
 		else if(ev.isShortcutDown())
 		{
-			// TODO page up / page down
-			D.print("page scroll", ev.getDeltaY(), ev.getTextDeltaY(), ev.getTextDeltaYUnits());
+			// page up / page down
+			if(ev.getDeltaY() >= 0)
+			{
+				editor.pageUp();
+			}
+			else
+			{
+				editor.pageDown();
+			}
 		}
 		else
 		{
-			// TODO vertical scroll
-			D.print("vertical scroll", ev.getDeltaY(), ev.getTextDeltaY(), ev.getTextDeltaYUnits());
+			// vertical block scroll
+			editor.blockScroll(ev.getDeltaY() >= 0);
 		}
 	}
 	
@@ -65,13 +79,11 @@ public class FxEditorMouseController
 	
 	protected void handleMousePressed(MouseEvent ev)
 	{
-		// on scrollbar
-		if(ev.getX() >= editor.vscroll.getLayoutX())
+		if(isOverScrollBar(ev.getX(), ev.getY()))
 		{
 			return;
 		}
 			
-		// TODO property: multiple selection
 		Marker pos = getTextPos(ev);
 		
 		if(ev.isShiftDown())
@@ -92,7 +104,7 @@ public class FxEditorMouseController
 			}
 			else
 			{
-				// FIX add a new caret
+				// add a new caret
 				sel.addSelectionSegment(pos, pos);
 			}
 		}
@@ -116,8 +128,7 @@ public class FxEditorMouseController
 			return;
 		}
 		
-		// on scrollbar
-		if(ev.getX() >= editor.vscroll.getLayoutX())
+		if(isOverScrollBar(ev.getX(), ev.getY()))
 		{
 			dragging = false;
 			draggingScroll = true;
@@ -136,8 +147,7 @@ public class FxEditorMouseController
 		dragging = false;
 		draggingScroll = false;
 
-		// on scrollbar
-		if(ev.getX() >= editor.vscroll.getLayoutX())
+		if(isOverScrollBar(ev.getX(), ev.getY()))
 		{
 			return;
 		}
