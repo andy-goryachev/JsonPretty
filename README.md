@@ -9,7 +9,7 @@ Detect and pretty print JSON text copied to the clipboard.
 I needed to pretty print some sensitive json from the the logs, so could not use web sites like
 [jsonprettyprint.com](http://jsonprettyprint.com/)
 or
-[jsonprettyprint.net](http://jsonprettyprint.net/).  (Plus, these tools break if you paste an invalid json).
+[jsonprettyprint.net](http://jsonprettyprint.net/).  In addition, many tools break if you try to copy an invalid json.
 
 Also, this is a test bed for 
 [FxEditor](https://github.com/andy-goryachev/FxEditor),
