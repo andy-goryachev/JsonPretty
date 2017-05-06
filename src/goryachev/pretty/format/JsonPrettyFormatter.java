@@ -180,7 +180,6 @@ public class JsonPrettyFormatter
 				break;
 				
 			case SEPARATOR:
-				addSpace(1);
 				addSegment(s);
 				break;
 				
