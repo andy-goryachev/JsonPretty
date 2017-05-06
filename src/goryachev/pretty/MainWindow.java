@@ -4,9 +4,13 @@ import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
 import goryachev.fx.CAction;
+import goryachev.fx.CBooleanProperty;
+import goryachev.fx.CButton;
+import goryachev.fx.CCheckBox;
 import goryachev.fx.CCheckMenuItem;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
+import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
@@ -45,8 +49,12 @@ public class MainWindow
 	public final SplitPane split;
 	protected final Clipboard clipboard;
 	protected String oldContent;
+	protected final CBooleanProperty monitorClipboardProperty = new CBooleanProperty(true, this::updateClipboardMonitoring);
+	protected final CCheckBox monitorClipboardCheckbox;
 	protected final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(true);
 	public final CAction copyAction = new CAction(this::copy); 
+	public final CAction pasteAction = new CAction(this::pasteFromClipboard);
+	private Timeline timeline;
 	
 	
 	public MainWindow()
@@ -56,6 +64,9 @@ public class MainWindow
 		view = new ContentView();
 		
 		detailPane = new DetailPane();
+		
+		monitorClipboardCheckbox = new CCheckBox("monitor clipboard");
+		monitorClipboardCheckbox.selectedProperty().bindBidirectional(monitorClipboardProperty);
 		
 		view.caretSpotProperty().addListener((src) -> updateDetailPane());
 		
@@ -71,31 +82,19 @@ public class MainWindow
 
 		clipboard = Clipboard.getSystemClipboard();
 		
-		Timeline timeline = new Timeline(new KeyFrame(PERIOD, (ev) ->
-		{
-			if(clipboard.hasString())
-			{
-				String s = clipboard.getString();
-				if(CKit.notEquals(oldContent, s))
-				{
-					updateContent(s);
-					oldContent = s;
-				}
-			}
-		}));
-		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.play();
-		
 		// preferences
 		bind("HSPLIT", horizontalSplit);
 		FX.listen(this::updateSplit, true, horizontalSplit);
+		bind("MONITOR_CLIPBOARD", monitorClipboardProperty);
+		
+		updateClipboardMonitoring();
 
 		// debugging
 		FxDump.attach(this);
 	}
 	
 	
-	protected CMenuBar createMenu()
+	protected Node createMenu()
 	{
 		CMenu m;
 		CMenuBar mb = new CMenuBar();
@@ -110,13 +109,33 @@ public class MainWindow
 		m.add("Save Selection As...");
 		m.separator();
 		m.add("Select All", view.textField.selectAllAction);
+		m.separator();
+		m.add(new CCheckMenuItem("Monitor Clipboard", monitorClipboardProperty));
+		m.add("Paste from Clipboard", pasteAction);
 		// view
 		mb.add(m = new CMenu("View"));
 		m.add(new CCheckMenuItem("Detail Pane on a Side", horizontalSplit));
 		// help
 		mb.add(m = new CMenu("Help"));
 		m.add("About");
-		return mb;
+		
+//		mb.addFill();
+//		mb.add(monitorClipboardCheckbox);
+//		mb.add(new CButton("Paste", this::paste));
+		
+		CPane p = new CPane();
+		p.setHGap(10);
+		p.addColumns
+		(
+			CPane.FILL,
+			CPane.PREF,
+			CPane.PREF
+		);
+		p.add(0, 0, mb);
+		p.add(1, 0, monitorClipboardCheckbox);
+		p.add(2, 0, new CButton("Paste", pasteAction));
+		
+		return p;
 	}
 	
 	
@@ -195,5 +214,41 @@ public class MainWindow
 	protected void copy()
 	{
 		view.copy();
+	}
+	
+	
+	protected void pasteFromClipboard()
+	{
+		if(clipboard.hasString())
+		{
+			String s = clipboard.getString();
+			if(CKit.notEquals(oldContent, s))
+			{
+				updateContent(s);
+				oldContent = s;
+			}
+		}
+	}
+	
+	
+	protected void updateClipboardMonitoring()
+	{
+		if(monitorClipboardProperty.get())
+		{
+			if(timeline == null)
+			{
+				timeline = new Timeline(new KeyFrame(PERIOD, (ev) -> pasteFromClipboard()));
+				timeline.setCycleCount(Timeline.INDEFINITE);
+				timeline.play();
+			}
+		}
+		else
+		{
+			if(timeline != null)
+			{
+				timeline.stop();
+				timeline = null;
+			}
+		}
 	}
 }
