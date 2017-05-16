@@ -2026,4 +2026,10 @@ public final class CKit
 		}
 		return eclipseDetected;
 	}
+
+
+	public static <T> Collection<T> asList(T ... items)
+	{
+		return new CList<>(items);
+	}
 }
