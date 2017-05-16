@@ -7,5 +7,5 @@ package goryachev.pretty;
  */
 public class Version
 {
-	public static final String VERSION = "0.00.07";
+	public static final String VERSION = "0.00.08";
 }

@@ -1,6 +1,10 @@
 # JsonPretty Release Notes
 
 
+**0.00.08**
+- monitor clipboard checkbox
+- paste toolbar button
+
 **0.00.07**
 - page up
 - page down
