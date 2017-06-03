@@ -84,6 +84,17 @@ public class RecursiveJsonXmlParser
 		if(off > startOffset)
 		{
 			String s = text.substring(startOffset, off);
+			
+			switch(state)
+			{
+			case XML_TAG_OPEN:
+				if(s.endsWith("/>"))
+				{
+					state = Type.XML_TAG_EMPTY;
+				}
+				break;
+			}
+			
 			Segment ch = new Segment(state, s);
 			result.addSegment(ch);
 
@@ -466,8 +477,14 @@ public class RecursiveJsonXmlParser
 			return;
 		}
 		
-		// TODO open tag, closing tag, empty
-		setState(Type.XML_TAG);
+		if(peek("</"))
+		{
+			setState(Type.XML_TAG_CLOSING);
+		}
+		else
+		{
+			setState(Type.XML_TAG_OPEN);
+		}
 		expect('<');
 		
 		for(;;)

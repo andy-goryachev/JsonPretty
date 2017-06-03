@@ -35,7 +35,9 @@ public class TestBase
 	public static final Type VA = Type.VALUE;
 	public static final Type WH = Type.WHITESPACE;
 	public static final Type XC = Type.XML_COMMENT;
-	public static final Type XT = Type.XML_TAG;
+	public static final Type XE = Type.XML_TAG_CLOSING;
+	public static final Type XN = Type.XML_TAG_EMPTY;
+	public static final Type XB = Type.XML_TAG_OPEN;
 
 	
 	public static void t(Object ... parts)

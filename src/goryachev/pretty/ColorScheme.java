@@ -98,7 +98,9 @@ public class ColorScheme
 			return s.stringColor;
 		case VALUE:
 			return s.valueColor;
-		case XML_TAG:
+		case XML_TAG_CLOSING:
+		case XML_TAG_EMPTY:
+		case XML_TAG_OPEN:
 			return s.xmlTagColor;
 		}
 		return s.textColor;
