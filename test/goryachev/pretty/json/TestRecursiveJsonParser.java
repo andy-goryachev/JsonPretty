@@ -6,7 +6,7 @@ import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Rex;
 import goryachev.pretty.parser.ParseResult;
-import goryachev.pretty.parser.RecursiveJsonParser;
+import goryachev.pretty.parser.RecursiveJsonXmlParser;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;
@@ -49,7 +49,7 @@ public class TestRecursiveJsonParser
 		}
 		String text = sb.toString();
 		
-		RecursiveJsonParser p = new RecursiveJsonParser(text);
+		RecursiveJsonXmlParser p = new RecursiveJsonXmlParser(text);
 		ParseResult r = p.parse();
 		List<Segment> segments = r.getSegments();
 		

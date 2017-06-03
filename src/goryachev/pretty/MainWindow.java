@@ -20,7 +20,7 @@ import goryachev.pretty.analysis.HexAnalyzer;
 import goryachev.pretty.analysis.IntegerAnalyzer;
 import goryachev.pretty.format.JsonPrettyFormatter;
 import goryachev.pretty.parser.ParseResult;
-import goryachev.pretty.parser.RecursiveJsonParser;
+import goryachev.pretty.parser.RecursiveJsonXmlParser;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import goryachev.pretty.view.ContentView;
@@ -177,7 +177,7 @@ public class MainWindow
 		try
 		{
 			// parse
-			ParseResult r = new RecursiveJsonParser(text).parse();
+			ParseResult r = new RecursiveJsonXmlParser(text).parse();
 			List<Segment> segments = r.getSegments();
 			
 			// format

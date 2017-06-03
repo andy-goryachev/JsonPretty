@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://icl.cs.utk.edu/ReST/Package/1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://icl.cs.utk.edu/ReST/Package/1.0 
+                             http://icl.cs.utk.edu/rest/restpackage-1_0.xsd">
+
+  <!-- Basic information about the software package -->
+  <header>
+    <title>NetSolve Installer</title>
+    <base>NetSolve</base>
+    <version>2.0</version>
+    <description>NetSolve is a grid middleware package</description>
+    <uri>http://icl.cs.utk.edu/netsolve/</uri>
+
+    <!-- Basic information about the packager -->
+    <packager>
+      <name>Jeff M. Larkin</name>
+      <uri>mailto:larkin@cs.utk.edu</uri>
+    </packager>
+    
+    <actions>
+      <action name="Start Server" tooltip="Start a NetSolve server.">
+        <command value="/bin/bash ./start_server.sh" statusmsg="Starting Server"
+                 errormsg="Failed to start server."/>
+      </action>
+      <action name="Kill Server" tooltip="Kill a NetSolve server.">
+        <command value="/bin/bash ./kill_server.sh" statusmsg="Killing Server"
+                 errormsg="Failed to kill server."/>
+      </action>
+      <action name="Restart Server" tooltip="Restart a NetSolve server.">
+        <command value="/bin/bash ./kill_server.sh" statusmsg="Killing Server"
+                 errormsg="Failed to kill server."/>
+        <command value="/bin/bash ./start_server.sh" statusmsg="Starting Server"
+                 errormsg="Failed to start server."/>
+      </action>
+      <action name="Start Agent" tooltip="Start a NetSolve Agent.">
+        <command value="/bin/bash ./start_agent.sh" statusmsg="Starting Agent"
+                 errormsg="Failed to start Agent"/>
+      </action>
+      <action name="Kill Agent" tooltip="Kill a NetSolve Agent.">
+        <command value="/bin/bash ./kill_agent.sh" statusmsg="Killing Agent"
+                 errormsg="Failed to kill Agent"/>
+      </action>
+      <action name="Restart Agent" tooltip="Restart a NetSolve Agent.">
+        <command value="/bin/bash ./kill_agent.sh" statusmsg="Killing Agent"
+                 errormsg="Failed to kill Agent"/>
+        <command value="/bin/bash ./start_agent.sh" statusmsg="Starting Agent"
+                 errormsg="Failed to start Agent"/>
+      </action>
+    </actions>
+
+    <configfile packagefile="server_config" 
+                remotefile="NetSolve-2.0/server_config"
+                description="NetSolve Server Configuration File">
+      <sub name="nproc" description="Number of processors"
+           default="2" type="string"/>
+      <sub name="agent" description="The NetSolve Agent hostname"
+           default="netsolve.cs.utk.edu" type="string"/>
+      <sub name="scratch" description="Scratch Directory"
+           default="/tmp/" type="string"/>
+      <sub name="mpihosts" description="Number of MPI Hosts"
+           default="4" type="string"/>
+      <sub name="workloadmax" description="Maximum allowable workload"
+           default="-1" type="string"/>
+      <sub name="testing" description="Testing PDF"
+           truevalue="" falsevalue="#" type="boolean" default="true"/>
+      <sub name="qsort" description="QuickSort PDF"
+           truevalue="" falsevalue="#" type="boolean" default="true"/>
+      <sub name="area" description="Area PDF"
+           truevalue="" falsevalue="#" type="boolean" default="true"/>
+      <sub name="mandelbrot" description="Mandelbrot PDF"
+           truevalue="" falsevalue="#" type="boolean" default="true"/>
+      <sub name="blas_subset" description="BLAS Subset PDF"
+           truevalue="" falsevalue="#" type="boolean" default="true"/>
+      <sub name="lapack_subset" description="LAPACK Subset PDF"
+           truevalue="" falsevalue="#" type="boolean" default="true"/>
+      <sub name="lapack" description="LAPACK PDF"
+           truevalue="" falsevalue="#" type="boolean" default="false"/>
+      <sub name="lapack_extended" description="LAPACK Extended Drivers PDF"
+           truevalue="" falsevalue="#" type="boolean" default="false"/>
+      <sub name="scalapack" description="SCALAPACK PDF"
+           truevalue="" falsevalue="#" type="boolean" default="false"/>
+      <sub name="sparse_iterative_solve" description="Sparse Iterative Solvers PDF"
+           truevalue="" falsevalue="#" type="boolean" default="false"/>
+      <sub name="sparse_direct_solve" description="Sparse Direct Solvers PDF"
+           truevalue="" falsevalue="#" type="boolean" default="false"/>
+      <sub name="arpack" description="ARPACK PDF"
+           truevalue="" falsevalue="#" type="boolean" default="false"/>
+      <sub name="testingglobus" description="Globus Testing PDF"
+           truevalue="" falsevalue="#" type="boolean" default="false"/>
+      <sub name="restrictions" description="Maximum allowable workload"
+           default="" type="text">* 10</sub>
+    </configfile>
+    <configfile packagefile="MPImachines" 
+                remotefile="NetSolve-2.0/MPImachines"
+                description="NetSolve MPI Hosts File">
+      <sub name="hosts" description="List of MPI Hosts" type="text" default="">
+enterprise
+enterprise
+enterprise
+enterprise
+      </sub>
+    </configfile>
+    <configfile packagefile="netsolve.env" 
+                remotefile="netsolve.env"
+                description="NetSolve Environment Variables">
+      <sub name="agent" description="NetSolve Agent"
+           default="netsolve.cs.utk.edu" type="string"/>
+    </configfile>
+    <!-- Package source(s). We can do both remote and local files  -->
+    <packagesrc>NetSolve-2.0.tgz</packagesrc>
+    <packagesrc>config.guess</packagesrc>
+    <packagesrc>start_server.sh</packagesrc>
+    <packagesrc>start_agent.sh</packagesrc>
+    <packagesrc>kill_agent.sh</packagesrc>
+    <packagesrc>kill_server.sh</packagesrc>
+
+    <installerattributes>
+        <backgroundimage>http://www.cs.utk.edu/~meek/icl/GSAP/netsolve_bg.png</backgroundimage>
+        <icon>http://icl.cs.utk.edu/favicon.ico</icon>
+    </installerattributes>
+  </header>
+
+  <!-- Things to do before anything else -->
+  <preparation>
+    <command value="gunzip -f NetSolve-2.0.tgz" grouped="true"/>
+    <command value="tar -xf NetSolve-2.0.tar" grouped="true"/>
+    <command value="cd NetSolve-2.0/" grouped="false"/>
+  </preparation>
+
+  <!-- Configuration of the package before compilation -->
+  <configuration>
+    <!-- This is the configure line -->
+    <command value="./configure" grouped="true">
+      <!-- One of the possible configure options -->
+      <option name="lapack" type="text" default="/usr/local/lib/libpack.a" 
+              truevalue="--with-lapack="/>
+      <option name="blas" type="text" default="/usr/local/lib/libblas.a" 
+              truevalue="--with-blaslib="/>
+      <option name="petsc" type="text" default="" 
+              truevalue="--with-petsc="/>
+      <option name="petsclibdir" type="text" default="" 
+              truevalue="--with-petsclibdir="/>
+      <option name="aztec" type="text" default="" 
+              truevalue="--with-aztec="/>
+      <option name="azteclib" type="text" default="" 
+              truevalue="--with-azteclib="/>
+      <option name="superlu" type="text" default="" 
+              truevalue="--with-superlu="/>
+      <option name="superlulib" type="text" default="" 
+              truevalue="--with-superlulib="/>
+      <option name="ma28" type="boolean" default="false" 
+              truevalue="--with-ma28"/>
+      <option name="itpack" type="boolean" default="false" 
+              truevalue="--with-itpack"/>
+      <option name="arpacklib" type="text" default="" 
+              truevalue="--with-arpacklib="/>
+      <option name="mpi" type="text" default="" 
+              truevalue="--with-mpi=" falsevalue="--without-mpi"/>
+      <option name="scalapack" type="text" default="" 
+              truevalue="--with-scalapacklib="/>
+      <option name="blacslib" type="text" default="" 
+              truevalue="--with-blacslib="/>
+      <option name="mldk" type="text" default="" 
+              truevalue="--with-mldk="/>
+      <option name="rpclib" type="text" default="" 
+              truevalue="--with-rpclib="/>
+      <option name="rpcinc" type="text" default="" 
+              truevalue="--with-rpcinc="/>
+      <option name="octave-include" type="text" default="" 
+              truevalue="--with-octave-include="/>
+      <option name="gpg" type="text" default="/usr/bin/gpg" 
+              truevalue="--with-gpg=" falsevalue="--without-gpg"/>
+      <option name="buildgpg" type="text" default="" 
+              truevalue="--with-buildgpg="/>
+      <option name="nws" type="text" default="" 
+              truevalue="--with-nws="/>
+      <option name="ibp" type="text" default="" 
+              truevalue="--with-ibp="/>
+      <option name="kerberos" type="text" default="" 
+              truevalue="--with-kerberos"/>
+      <option name="proxy" type="choice" choices="nestolve,globus" default="" 
+              truevalue="--with-proxy "/>
+      <option name="ouputlevel" type="choice" choices="debug,view,none" default="none" 
+              truevalue="--with-outputlevel "/>
+      <option name="infoserver" type="text" default="" 
+              truevalue="--enable-infoserver"/>
+    </command>
+  </configuration>
+
+  <!-- Source Compilation -->
+  <compilation>
+    <command value="make" grouped="true">
+      <option type="boolean" truevalue="standard" name="Standard" enabled="true"/>
+      <option type="boolean" truevalue="all" name="All"/>
+      <option type="boolean" truevalue="server" name="Server"/>
+      <option type="boolean" truevalue="agent" name="Agent"/>
+      <option type="boolean" truevalue="C" name="C"/>
+      <option type="boolean" truevalue="Fortran" name="Fortran"/>
+      <option type="boolean" truevalue="matlab" name="Matlab"/>
+      <option type="boolean" truevalue="octave" name="Octave"/>
+      <option type="boolean" truevalue="mathematica" name="Mathematica"/>
+      <option type="boolean" truevalue="gridrpc" name="GridRPC"/>
+      <option type="boolean" truevalue="pdfgui" name="PDF Gui"/>
+      <option type="boolean" truevalue="tools" name="Tools"/>
+      <option type="boolean" truevalue="wrappers" name="Wrappers"/>
+      <option type="boolean" truevalue="tester"  name="Tester"/>
+      <option type="boolean" truevalue="regress" name="Regression Test Suite"/>
+      <option type="boolean" truevalue="clean" name="Clean"/>
+      <option type="boolean" truevalue="configclean" name="Configclean"/>
+      <option type="boolean" truevalue="CLEAN" name="Clean every architecture"/>
+    </command>
+  </compilation>
+
+  <!-- Package Installation -->
+  <installation>
+    <!--<command value="make install"/>-->
+  </installation>
+
+  <!-- Clean-up what is no longer needed -->
+  <completion>
+    <command value="cd ../"/>
+    <command value="rm -rf NetSolve-2.0.tar" grouped="true"/>
+    <command value="rm -rf NetSolve-2.0.tgz" grouped="true"/>
+  </completion>
+
+</package>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE PARTS SYSTEM "parts.dtd">
+<?xml-stylesheet type="text/css" href="xmlpartsstyle.css"?>
+<note>
+	<!-- comment -->
+	<to attr="a1" attr2="a2">Tove &nbsp; &lt;</to>
+	<p>Vive la France&#xA0;!</p>
+	<p>Vive la France&#160;!</p>
+	<tag />
+	<p>
+		Jako efektivn&#x115;j&#x161;&#xED; se n&#xE1;m jev&#xED; po&#x159;&#xE1;d&#xE1;n&#xED; tzv. Road Show prost&#x159;ednictv&#xED;m na&#x161;ich autorizovan&#xFD;ch dealer&#x16F; v &#x10C;ech&#xE1;ch a na Morav&#x11B;, kter&#xE9; prob&#x11B;hnou v pr&#x16F;b&#x11B;hu z&#xE1;&#x159;&#xED; a &#x159;&#xED;jna.
+	</p>
+</note> 

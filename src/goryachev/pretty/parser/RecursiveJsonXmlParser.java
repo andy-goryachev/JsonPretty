@@ -5,13 +5,13 @@ import goryachev.common.util.Rex;
 
 
 /**
- * A recursive descent JSON parser capable of handling malformed JSON (and later, XML).
+ * A recursive descent parser capable of handling malformed JSON, XML, and embedded text.
  * 
  * WARNING: this parser lacks a formal proof of correctness.
  * I am too tired to do better at the moment, perhaps some other time.
  * Sorry.
  */
-public class RecursiveJsonParser
+public class RecursiveJsonXmlParser
 {
 	private static final int EOF = -1;
 	
@@ -28,7 +28,7 @@ public class RecursiveJsonParser
 	private int prevOffset = -1;
 	
 	
-	public RecursiveJsonParser(String text)
+	public RecursiveJsonXmlParser(String text)
 	{
 		this.text = text;
 	}
