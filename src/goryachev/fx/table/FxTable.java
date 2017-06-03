@@ -181,6 +181,7 @@ public class FxTable<T>
 	public void selectFirst()
 	{
 		table.getSelectionModel().selectFirst();
+		table.scrollTo(0);
 	}
 	
 	
@@ -211,5 +212,11 @@ public class FxTable<T>
 	public void setMultipleSelection(boolean on)
 	{
 		table.getSelectionModel().setSelectionMode(on ? SelectionMode.MULTIPLE : SelectionMode.SINGLE);
+	}
+	
+	
+	public void setCellSelectionEnabled(boolean on)
+	{
+		table.getSelectionModel().setCellSelectionEnabled(on);
 	}
 }
