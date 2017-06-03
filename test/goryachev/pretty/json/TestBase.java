@@ -34,7 +34,8 @@ public class TestBase
 	public static final Type SE = Type.STRING_END;
 	public static final Type VA = Type.VALUE;
 	public static final Type WH = Type.WHITESPACE;
-	public static final Type XT = Type.XMLTAG;
+	public static final Type XC = Type.XML_COMMENT;
+	public static final Type XT = Type.XML_TAG;
 
 	
 	public static void t(Object ... parts)

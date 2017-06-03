@@ -74,7 +74,7 @@ public class MainWindow
 		split.setOrientation(Orientation.HORIZONTAL);
 		split.setDividerPositions(0.8);
 		
-		setTitle("Pretty Print JSON " + Version.VERSION);
+		setTitle("Pretty Print JSON/XML " + Version.VERSION);
 		setTop(createMenu());
 		setCenter(split);
 		setBottom(createStatusBar());

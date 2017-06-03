@@ -143,9 +143,31 @@ public class RecursiveJsonXmlParser
 	}
 	
 	
+	protected boolean peek(String token)
+	{
+		if(offset + token.length() >= text.length())
+		{
+			return false;
+		}
+		
+		detectInfiniteLoop();
+		
+		return token.equals(text.substring(offset, offset + token.length()));
+	}
+	
+	
 	protected void next()
 	{
 		offset += symbolLength;
+	}
+	
+	
+	protected void next(int count)
+	{
+		for(int i=0; i<count; i++)
+		{
+			next();
+		}
 	}
 	
 	
@@ -413,10 +435,39 @@ public class RecursiveJsonXmlParser
 	}
 	
 	
+	protected void readXmlComment()
+	{
+		setState(Type.XML_COMMENT);
+		
+		for(;;)
+		{
+			int c = peek();
+			switch(c)
+			{
+			case '-':
+				if(peek("-->"))
+				{
+					next(3);
+					return;
+				}
+				break;
+			}
+			
+			next();
+		}
+	}
+	
+	
 	protected void readTag()
 	{
-		// TODO comment, open tag, closing tag, empty
-		setState(Type.XMLTAG);
+		if(peek("<!--"))
+		{
+			readXmlComment();
+			return;
+		}
+		
+		// TODO open tag, closing tag, empty
+		setState(Type.XML_TAG);
 		expect('<');
 		
 		for(;;)

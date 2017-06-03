@@ -24,5 +24,6 @@ public enum Type
 	TEXT,
 	VALUE,
 	WHITESPACE,
-	XMLTAG
+	XML_COMMENT,
+	XML_TAG
 }

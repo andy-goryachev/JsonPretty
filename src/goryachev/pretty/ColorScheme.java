@@ -82,6 +82,7 @@ public class ColorScheme
 		switch(t)
 		{
 		case COMMENT:
+		case XML_COMMENT:
 			return s.commentColor;
 		case ERROR:
 			return s.errorColor;
@@ -97,7 +98,7 @@ public class ColorScheme
 			return s.stringColor;
 		case VALUE:
 			return s.valueColor;
-		case XMLTAG:
+		case XML_TAG:
 			return s.xmlTagColor;
 		}
 		return s.textColor;
