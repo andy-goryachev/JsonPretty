@@ -23,6 +23,6 @@ public enum Type
 	STRING_END,
 	TEXT,
 	VALUE,
-	WHITESPACE
-	;
+	WHITESPACE,
+	XMLTAG
 }

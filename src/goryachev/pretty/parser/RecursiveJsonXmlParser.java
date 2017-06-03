@@ -56,6 +56,7 @@ public class RecursiveJsonXmlParser
 			{
 			case '{':
 			case '[':
+			case '<':
 				readMain();
 				setState(Type.IGNORE);
 				continue;
@@ -412,6 +413,29 @@ public class RecursiveJsonXmlParser
 	}
 	
 	
+	protected void readTag()
+	{
+		// TODO comment, open tag, closing tag, empty
+		setState(Type.XMLTAG);
+		expect('<');
+		
+		for(;;)
+		{
+			int c = peek();
+			switch(c)
+			{
+			case '>':
+				next();
+				setState(Type.IGNORE);
+				return;
+			default:
+				next();
+				break;
+			}
+		}
+	}
+	
+	
 	protected void readMain()
 	{
 		skipWhitespace();
@@ -424,6 +448,9 @@ public class RecursiveJsonXmlParser
 			break;
 		case '[':
 			readArray();
+			break;
+		case '<':
+			readTag();
 			break;
 		case EOF:
 		default:
