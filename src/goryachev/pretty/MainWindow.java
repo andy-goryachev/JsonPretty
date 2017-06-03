@@ -18,7 +18,7 @@ import goryachev.fx.HPane;
 import goryachev.pretty.analysis.Base64Analyzer;
 import goryachev.pretty.analysis.HexAnalyzer;
 import goryachev.pretty.analysis.IntegerAnalyzer;
-import goryachev.pretty.format.JsonPrettyFormatter;
+import goryachev.pretty.format.PrettyFormatter;
 import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonXmlParser;
 import goryachev.pretty.parser.Segment;
@@ -181,7 +181,7 @@ public class MainWindow
 			List<Segment> segments = r.getSegments();
 			
 			// format
-			JsonPrettyFormatter f = new JsonPrettyFormatter(segments);
+			PrettyFormatter f = new PrettyFormatter(segments);
 			// TODO set options
 			CList<Segment> formatted = f.format();
 			return formatted;

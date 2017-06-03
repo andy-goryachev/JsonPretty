@@ -5,7 +5,7 @@ import goryachev.common.test.Test;
 
 
 public class TestXmlParser
-	extends TestBase
+	extends ParserTestBase
 {
 	public static void main(String[] args)
 	{

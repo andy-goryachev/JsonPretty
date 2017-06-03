@@ -1,7 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.format;
 import goryachev.common.util.CList;
-import goryachev.common.util.D;
 import goryachev.common.util.SB;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
@@ -9,9 +8,9 @@ import java.util.List;
 
 
 /**
- * Json Pretty Formatter.
+ * JSON/XML Pretty Formatter.
  */
-public class JsonPrettyFormatter
+public class PrettyFormatter
 {
 	private final List<Segment> input;
 	private final CList<Segment> result;
@@ -21,7 +20,7 @@ public class JsonPrettyFormatter
 	private boolean egyptian = false; // TODO
 	
 	
-	public JsonPrettyFormatter(List<Segment> input)
+	public PrettyFormatter(List<Segment> input)
 	{
 		this.input = input;
 		result = new CList<>(input.size() + 128);
