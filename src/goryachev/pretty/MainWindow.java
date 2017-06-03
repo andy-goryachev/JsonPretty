@@ -100,6 +100,8 @@ public class MainWindow
 		CMenuBar mb = new CMenuBar();
 		// file
 		mb.add(m = new CMenu("File"));
+		m.add("Save As...");
+		m.separator();
 		m.add("Preferences");
 		m.separator();
 		m.add("Quit", FX.exitAction());
@@ -121,9 +123,11 @@ public class MainWindow
 		
 //		mb.addFill();
 //		mb.add(monitorClipboardCheckbox);
-//		mb.add(new CButton("Paste", this::paste));
+//		mb.add(new CButton("Paste", pasteAction));
+//		return mb;
 		
 		CPane p = new CPane();
+		p.setPadding(1);
 		p.setHGap(10);
 		p.addColumns
 		(

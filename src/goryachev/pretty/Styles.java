@@ -2,55 +2,23 @@
 package goryachev.pretty;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FxStyleSheet;
+import goryachev.fx.Theme;
 import goryachev.pretty.view.ContentView;
-import javafx.scene.paint.Color;
 
 
 /**
- * ReqTraq style sheet.
+ * Application style sheet.
  */
 public class Styles
 	extends FxStyleSheet
 {
 	public Styles()
 	{
-		// TODO themes
+		Theme theme = Theme.current();
 		
 		add
 		(
-			// basic styles
-			new Selector(".root").defines
-			(
-				prop("-fx-accent", Color.RED),
-				prop("-fx-focus-color", Color.RED),
-				prop("-fx-faint-focus-color", Color.BLACK)
-			),
-			
-			new Selector(".text").defines
-			(
-				prop("-fx-font-smoothing-type", "gray")
-			),
-			
-			new Selector(".scroll-pane").defines
-			(
-//				new Selector(FOCUSED).defines
-//				(
-//					// removes focused border from scroll pane
-//					// TODO do it specifically for the content pane
-//					backgroundInsets(1)
-//				),
-				new Selector(" > .viewport").defines
-				(
-					backgroundColor(Color.WHITE)
-				)
-			),
-			
-			new Selector(ContentView.CONTENT_PANE, FOCUSED).defines
-			(
-				// removes focused border from scroll pane
-				// TODO do it specifically for the content pane
-//				backgroundInsets(1)
-			),
+			new CommonStyles(),
 			
 			new Selector(ContentView.CONTENT_TEXT).defines
 			(
@@ -60,10 +28,17 @@ public class Styles
 			new Selector(DetailPane.PANE).defines
 			(
 				fontFamily("monospace")
-			),
+			)
 			
-			// common fx styles
-			new CommonStyles()
+//			new Selector(".menu").defines
+//			(
+//				padding(spaces(2, 5, 2, 5))
+//			),
+//			
+//			new Selector(".menu .button").defines
+//			(
+//				padding(spaces(2, 5, 2, 5))
+//			)
 		);
 	}
 }

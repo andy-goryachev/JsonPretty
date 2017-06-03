@@ -3,7 +3,7 @@ package goryachev.pretty;
 
 
 /**
- * Version.
+ * Application Version.
  */
 public class Version
 {
