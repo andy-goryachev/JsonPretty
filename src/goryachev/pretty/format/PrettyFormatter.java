@@ -203,6 +203,24 @@ public class PrettyFormatter
 				addSegment(s);
 				break;
 				
+			case XML_COMMENT:
+			case XML_TAG_EMPTY:
+				insertLineBreak();
+				addSegment(s);
+				break;
+				
+			case XML_TAG_OPEN:
+				insertLineBreak();
+				++indent;
+				addSegment(s);
+				break;
+				
+			case XML_TAG_CLOSING:
+				--indent;
+				insertLineBreak();
+				addSegment(s);
+				break;
+				
 			default:
 				switch(prev)
 				{

@@ -7,3 +7,5 @@ TODO
 - fix format: { "array":[{ "n":null }] }
 
 - xml parser
+	- remove newlines from tags
+	- xml text tag type
