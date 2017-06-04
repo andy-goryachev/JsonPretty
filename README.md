@@ -1,15 +1,16 @@
 # JsonPretty
 
-Detect and pretty print JSON text copied to the clipboard.
+JSON/XML pretty printer that won't leak your data.
 
 ![screenshot](https://github.com/andy-goryachev/JsonPretty/blob/master/doc/screenshot.png)
 
 ## Why
 
-I needed to pretty print some sensitive json from the the logs, so could not use web sites like
+I needed to pretty print some sensitive JSON and XML from the logs, so web sites like
 [jsonprettyprint.com](http://jsonprettyprint.com/)
 or
-[jsonprettyprint.net](http://jsonprettyprint.net/).  In addition, many tools break if you try to copy an invalid json.
+[jsonprettyprint.net](http://jsonprettyprint.net/) were out of question.  In addition, many tools fail to parse a malformed or invalid
+JSON or XML, something that happens often when one copies from a log.
 
 Also, this is a test bed for 
 [FxEditor](https://github.com/andy-goryachev/FxEditor),
