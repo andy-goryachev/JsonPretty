@@ -1,6 +1,9 @@
 # JsonPretty Release Notes
 
 
+**0.00.10**
+- copy includes html with color highlighting
+
 **0.00.09**
 - parse xml
 
