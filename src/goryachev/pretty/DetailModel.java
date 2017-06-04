@@ -103,6 +103,12 @@ public class DetailModel
 		return flow;
 	}
 	
+
+	public Edit edit(Edit ed) throws Exception
+	{
+		throw new Exception();
+	}
+	
 	
 	//
 	
@@ -118,11 +124,5 @@ public class DetailModel
 			this.heading = heading;
 			this.text = text;
 		}
-	}
-
-
-	public Edit edit(Edit ed) throws Exception
-	{
-		throw new Exception();
 	}
 }

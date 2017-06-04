@@ -155,11 +155,19 @@ public abstract class FxEditorModel
 			m.put(DataFormat.PLAIN_TEXT, s);
 		}
 		
+		copyOtherFormats(m, sel);
+		
 		Clipboard c = Clipboard.getSystemClipboard();
 		c.setContent(m);
 	}
 	
 	
+	/** override to add additional formats. */
+	protected void copyOtherFormats(CMap<DataFormat,Object> clipboardData, EditorSelection sel)
+	{
+	}
+	
+
 	public String copyPlainText(EditorSelection sel)
 	{
 		try
