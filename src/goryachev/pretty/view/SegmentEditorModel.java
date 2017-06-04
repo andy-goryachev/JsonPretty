@@ -174,15 +174,56 @@ public class SegmentEditorModel
 	}
 
 
-	protected void writeSegments(Writer wr, Segment[] segments, int start, int end) throws Exception
+	protected void writeSegments(Writer wr, Segment[] segments, int startIndex, int endIndex) throws Exception
 	{
 		int off = 0;
 		for(Segment s: segments)
 		{
 			String text = s.getText();
+			int len = text.length();
+			int beg = off;
+			int end = off + len;
+			off += len;
 			
-			// FIX
-			// whole, partial, none
+			// 1: *** |    |
+			// 2:   **|**  |
+			// 3:     | ** |
+			// 4:     |  **|**
+			// 5:     |    | ***
+			// 6:  ***|****|****
+			
+			if(end < startIndex)
+			{
+				// #1
+				continue;
+			}
+			else if(beg > endIndex)
+			{
+				// #5
+				continue;
+			}
+			else if(beg < startIndex)
+			{
+				if(end < endIndex)
+				{
+					// #2
+					text = text.substring(startIndex - beg);
+				}
+				else
+				{
+					// #6
+					text = text.substring(startIndex - beg, endIndex - beg);
+				}
+			}
+			else if(end < endIndex)
+			{
+				// #3
+			}
+			else
+			{
+				// #4
+				text = text.substring(0, endIndex - beg);
+			}
 			
 			Type t = s.getType();
 			switch(t)
@@ -200,8 +241,6 @@ public class SegmentEditorModel
 				wr.write(HtmlTools.safe(text));
 				wr.write("</span>");
 			}
-			
-			off += text.length();
 		}
 	}
 
