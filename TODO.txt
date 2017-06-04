@@ -8,4 +8,4 @@ TODO
 
 - xml parser
 	- remove newlines from tags
-	- xml text tag type
+

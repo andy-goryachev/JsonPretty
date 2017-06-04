@@ -1,9 +1,12 @@
 # JsonPretty Release Notes
 
 
+**0.00.09**
+- parse xml
+
 **0.00.08**
 - monitor clipboard checkbox
-- paste toolbar button
+- paste button
 
 **0.00.07**
 - page up
