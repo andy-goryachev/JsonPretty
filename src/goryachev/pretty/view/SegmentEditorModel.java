@@ -194,9 +194,9 @@ public class SegmentEditorModel
 				wr.write("&emsp;");
 				break;
 			default:
-				wr.write("<span class='s");
+				wr.write("<span class=s");
 				wr.write(String.valueOf(t.ordinal()));
-				wr.write("'>");
+				wr.write(">");
 				wr.write(HtmlTools.safe(text));
 				wr.write("</span>");
 			}
