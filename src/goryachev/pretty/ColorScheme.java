@@ -35,7 +35,7 @@ public class ColorScheme
 	private Color stringColor = FX.rgb(0x66d9ef);
 	private Color textColor = Color.BLACK;
 	private Color valueColor = FX.rgb(0xae81ff);
-	private Color xmlTagColor = Color.GREEN; //FX.rgb(0xae81ff);
+	private Color xmlTagColor = FX.rgb(0xa6e22e); //Color.GREEN; //FX.rgb(0xae81ff);
 
 	
 	//

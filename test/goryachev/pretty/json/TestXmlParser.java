@@ -13,16 +13,16 @@ public class TestXmlParser
 	}
 	
 
-//	@Test
+	@Test
 	public void testRegression()
 	{
-		t(XB, "<p>", IG, "yo", XE, "</p>");
+		t(XB, "<p>", XT, "yo", XE, "</p>");
 	}
 
 	
 	@Test
 	public void testXml()
 	{
-		t(XB, "<p>", IG, "yo", XE, "</p>", XC, "<!-- \n yo <xml> </xml> -->", XN, "<a />");
+		t(XB, "<p>", XT, "yo", XE, "</p>", XC, "<!-- \n yo <xml> </xml> -->", XN, "<a />", IG, "ignore");
 	}
 }

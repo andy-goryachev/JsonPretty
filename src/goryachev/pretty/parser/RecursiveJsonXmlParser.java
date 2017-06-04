@@ -6,26 +6,22 @@ import goryachev.common.util.Rex;
 
 /**
  * A recursive descent parser capable of handling malformed JSON, XML, and embedded text.
- * 
- * WARNING: this parser lacks a formal proof of correctness.
- * I am too tired to do better at the moment, perhaps some other time.
- * Sorry.
  */
 public class RecursiveJsonXmlParser
 {
 	private static final int EOF = -1;
 	
 	protected final String text;
+	private final int maxSameOffsetCount = 50;
 	private int ch;
 	private Type state;
 	private int offset;
 	private int startOffset;
 	private int symbolLength;
 	private ParseResult result;
-
-	private final int maxSameOffsetCount = 50;
 	private int sameOffsetCount;
 	private int prevOffset = -1;
+	private int xmlLevel;
 	
 	
 	public RecursiveJsonXmlParser(String text)
@@ -58,14 +54,28 @@ public class RecursiveJsonXmlParser
 			case '[':
 			case '<':
 				readMain();
-				setState(Type.IGNORE);
+				if(xmlLevel > 0)
+				{
+					setState(Type.XML_TEXT);
+				}
+				else
+				{
+					setState(Type.IGNORE);
+				}
 				continue;
 			case '\r':
 			case '\n':
 				setState(Type.LINEBREAK);
 				break;
 			default:
-				setState(Type.IGNORE);
+				if(xmlLevel > 0)
+				{
+					setState(Type.XML_TEXT);
+				}
+				else
+				{
+					setState(Type.IGNORE);
+				}
 				break;
 			}
 			
@@ -91,6 +101,7 @@ public class RecursiveJsonXmlParser
 				if(s.endsWith("/>"))
 				{
 					state = Type.XML_TAG_EMPTY;
+					xmlLevel--;
 				}
 				break;
 			}
@@ -469,7 +480,7 @@ public class RecursiveJsonXmlParser
 	}
 	
 	
-	protected void readTag()
+	protected void readXmlTag()
 	{
 		if(peek("<!--"))
 		{
@@ -480,10 +491,12 @@ public class RecursiveJsonXmlParser
 		if(peek("</"))
 		{
 			setState(Type.XML_TAG_CLOSING);
+			xmlLevel--;
 		}
 		else
 		{
 			setState(Type.XML_TAG_OPEN);
+			xmlLevel++;
 		}
 		expect('<');
 		
@@ -494,7 +507,14 @@ public class RecursiveJsonXmlParser
 			{
 			case '>':
 				next();
-				setState(Type.IGNORE);
+				if(xmlLevel > 0)
+				{
+					setState(Type.XML_TEXT);
+				}
+				else
+				{
+					setState(Type.IGNORE);
+				}
 				return;
 			default:
 				next();
@@ -518,7 +538,7 @@ public class RecursiveJsonXmlParser
 			readArray();
 			break;
 		case '<':
-			readTag();
+			readXmlTag();
 			break;
 		case EOF:
 		default:
