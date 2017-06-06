@@ -1,5 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.fx.edit.FxEditor;
 import goryachev.fx.internal.CssTools;
 import javafx.scene.paint.Color;
 
@@ -38,19 +39,13 @@ public class CommonStyles
 			
 			// FIX
 //			checkbox(theme),						
-			
 			comboBox(theme),
-			
+			fxEditor(theme),
 			menuBar(theme),
-			
 			scrollBar(theme),
-			
 			scrollPane(theme),
-			
 			table(theme),
-			
 			text(theme),
-			
 			// FIX
 			//radioButton(theme),
 						
@@ -194,6 +189,24 @@ public class CommonStyles
 			(
 				backgroundRadius(0),
 				shadow()
+			)
+		);
+	}
+	
+	
+	protected Object fxEditor(Theme theme)
+	{
+		return selector(FxEditor.PANEL).defines
+		(
+			backgroundColor(commas(theme.textBG, theme.textBG)),
+			backgroundInsets(commas(0, 1)),
+			backgroundRadius(0),
+
+			// FIX does not work
+			selector(FOCUSED).defines
+			(
+				backgroundColor(commas(theme.focus, theme.textBG)),
+				backgroundInsets(commas(0, 1))
 			)
 		);
 	}

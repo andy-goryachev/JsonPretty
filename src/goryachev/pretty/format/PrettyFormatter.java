@@ -133,6 +133,16 @@ public class PrettyFormatter
 		
 		return true;
 	}
+	
+	
+	protected void indent(int delta)
+	{
+		indent += delta;
+		if(indent < 0)
+		{
+			indent = 0;
+		}
+	}
 
 
 	public CList<Segment> format()
@@ -151,12 +161,12 @@ public class PrettyFormatter
 					insertLineBreak();
 				}
 				addSegment(s);
-				indent++;
+				indent(1);
 				insertLineBreak();
 				break;
 				
 			case ARRAY_END:
-				indent--;
+				indent(-1);
 				if(processArrayEnd())
 				{
 					insertLineBreak();
@@ -165,7 +175,7 @@ public class PrettyFormatter
 				break;
 				
 			case OBJECT_END:
-				indent--;
+				indent(-1);
 				if(processObjectEnd())
 				{
 					insertLineBreak();
@@ -201,6 +211,7 @@ public class PrettyFormatter
 					insertLineBreak();
 				}
 				addSegment(s);
+				indent = 0;
 				break;
 				
 			case XML_COMMENT:
@@ -211,12 +222,12 @@ public class PrettyFormatter
 				
 			case XML_TAG_OPEN:
 				insertLineBreak();
-				++indent;
+				indent(1);
 				addSegment(s);
 				break;
 				
 			case XML_TAG_CLOSING:
-				--indent;
+				indent(-1);
 				insertLineBreak();
 				addSegment(s);
 				break;
