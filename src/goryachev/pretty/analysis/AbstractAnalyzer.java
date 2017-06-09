@@ -56,7 +56,8 @@ public abstract class AbstractAnalyzer
 		}
 		
 		int end = pos;
-		for(int i=pos; i<initialText.length(); i++)
+		int mx = initialText.length() + 1;
+		for(int i=pos; i<mx; i++)
 		{
 			end = i;
 			int c = peek(i);

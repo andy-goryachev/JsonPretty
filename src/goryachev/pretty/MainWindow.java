@@ -2,6 +2,7 @@
 package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
+import goryachev.common.util.D;
 import goryachev.common.util.Log;
 import goryachev.fx.CAction;
 import goryachev.fx.CBooleanProperty;
@@ -204,7 +205,8 @@ public class MainWindow
 
 
 	protected AnalysisReport analyze(int pos, String text)
-	{		
+	{
+		D.print(pos, text);
 		AnalysisReport rep = new AnalysisReport();
 		
 		// analyzers
