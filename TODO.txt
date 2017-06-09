@@ -1,6 +1,12 @@
 TODO
+
+- clipboard menu
+- collapsible toolbar
+- reset indent on IGNORE
+- aaa[<xml...
+- fix json [{
+- show TZ when parsing date
 - parser: single AB,OB,AE,OE tags
-- check for valid values maybe
 - handle [[[]]] right
 - format [,,,,] properly
 - fix format: { "array":[ { }] }
