@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package goryachev.pretty;
+package goryachev.pretty.analysis;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
 

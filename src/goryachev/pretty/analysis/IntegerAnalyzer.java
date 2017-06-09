@@ -1,7 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.analysis;
 import goryachev.common.util.CCalendar;
-import goryachev.pretty.AnalysisReport;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;

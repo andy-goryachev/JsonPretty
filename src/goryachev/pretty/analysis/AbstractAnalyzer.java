@@ -3,7 +3,6 @@ package goryachev.pretty.analysis;
 import goryachev.common.util.CList;
 import goryachev.common.util.Hex;
 import goryachev.common.util.SB;
-import goryachev.pretty.AnalysisReport;
 
 
 /**

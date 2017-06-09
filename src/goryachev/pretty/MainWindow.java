@@ -15,6 +15,7 @@ import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
+import goryachev.pretty.analysis.AnalysisReport;
 import goryachev.pretty.analysis.Base64Analyzer;
 import goryachev.pretty.analysis.HexAnalyzer;
 import goryachev.pretty.analysis.IntegerAnalyzer;

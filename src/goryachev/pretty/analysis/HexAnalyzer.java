@@ -3,7 +3,6 @@ package goryachev.pretty.analysis;
 import goryachev.common.util.Base64;
 import goryachev.common.util.CKit;
 import goryachev.common.util.Hex;
-import goryachev.pretty.AnalysisReport;
 
 
 /**

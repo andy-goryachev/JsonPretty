@@ -5,6 +5,7 @@ import goryachev.common.util.CSorter;
 import goryachev.fx.edit.CTextFlow;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxEditorModel;
+import goryachev.pretty.analysis.AnalysisReport;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
