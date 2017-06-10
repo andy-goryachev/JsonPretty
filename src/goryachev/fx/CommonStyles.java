@@ -220,7 +220,7 @@ public class CommonStyles
 		{			
 			selector(".menu-bar").defines
 			(
-				backgroundColor("derive(-fx-base, -5%)"),
+				backgroundColor("-fx-background"),
 				backgroundInsets(0),
 				backgroundRadius(0),
 				
