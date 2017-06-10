@@ -1,11 +1,11 @@
 TODO
 
+- copy rtf
 - clipboard menu
 - collapsible toolbar
 - reset indent on IGNORE
 - aaa[<xml...
 - fix json [{
-- show TZ when parsing date
 - parser: single AB,OB,AE,OE tags
 - handle [[[]]] right
 - format [,,,,] properly
