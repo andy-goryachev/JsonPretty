@@ -206,7 +206,6 @@ public class MainWindow
 
 	protected AnalysisReport analyze(int pos, String text)
 	{
-		D.print(pos, text);
 		AnalysisReport rep = new AnalysisReport();
 		
 		// analyzers

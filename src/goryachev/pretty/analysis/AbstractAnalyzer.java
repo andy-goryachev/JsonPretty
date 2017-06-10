@@ -6,7 +6,7 @@ import goryachev.common.util.SB;
 
 
 /**
- * AbstractAnalyzer.
+ * Abstract Analyzer.
  */
 public abstract class AbstractAnalyzer
 {
@@ -167,25 +167,38 @@ public abstract class AbstractAnalyzer
 	
 	protected String[] breakLines(String text)
 	{
-		CList<String> a = new CList();
+		CList<String> rv = new CList();
 		SB sb = new SB();
 		
 		for(int i=0; i<text.length(); i++)
 		{
-			int col = i % 16;
 			char c = text.charAt(i);
-			sb.a(c);
-			
-			if(col == 15)
+			switch(c)
 			{
-				a.add(sb.getAndClear());
+			case '\r':
+			case '\n':
+				addLine(rv, sb);
+				break;
+			default:
+				sb.append(c);
+				break;
 			}
 		}
 		
-		return toArray(a);
+		addLine(rv, sb);
+		return toArray(rv);
 	}
 	
 	
+	protected void addLine(CList<String> list, SB sb)
+	{
+		if(sb.length() > 0)
+		{
+			list.add(sb.getAndClear());
+		}
+	}
+
+
 	protected String[] breakBinary(byte[] bytes)
 	{
 		CList<String> a = new CList();
