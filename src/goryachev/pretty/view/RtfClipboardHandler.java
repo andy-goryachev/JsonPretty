@@ -1,9 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view;
 import goryachev.common.util.CKit;
-import goryachev.common.util.CMap;
-import goryachev.common.util.Hex;
-import goryachev.common.util.html.HtmlTools;
 import goryachev.fx.edit.ClipboardHandlerBase;
 import goryachev.fx.edit.EditorSelection;
 import goryachev.fx.edit.FxEditorModel;
@@ -19,21 +16,21 @@ import javafx.scene.paint.Color;
 
 
 /**
- * Html Clipboard Handler.
+ * RTF Clipboard Handler.
  */
-public class HtmlClipboardHandler
+public class RtfClipboardHandler
 	extends ClipboardHandlerBase
 {
 	private final SegmentEditorModel model;
 	
 	
-	public HtmlClipboardHandler(SegmentEditorModel m)
+	public RtfClipboardHandler(SegmentEditorModel m)
 	{
-		super(DataFormat.HTML);
+		super(DataFormat.RTF);
 		this.model = m;
 	}
-	
-	
+
+
 	public Object copy(FxEditorModel m, EditorSelection sel) throws Exception
 	{
 		if(m != model)
@@ -42,19 +39,19 @@ public class HtmlClipboardHandler
 		}
 		
 		StringWriter wr = new StringWriter();
-		writeHtml(sel, wr);
-		String html = wr.toString();
-		return html;
+		writeRtf(sel, wr);
+		String rtf = wr.toString();
+		return rtf;
 	}
 	
-
-	protected void writeHtml(EditorSelection sel, StringWriter wr) throws Exception
+	
+	protected void writeRtf(EditorSelection sel, StringWriter wr) throws Exception
 	{
 		sel = sel.getNormalizedSelection();
 		
-		wr.write("<html><head><style>\n");
+		// TODO use editor's font
+		wr.write("{\\rtf1\\ansi\\ansicpg1252\\uc1\\deff0{\\fonttbl{\\f0\\fnil Courier New;}}\n");
 		writeStyles(wr);
-		wr.write("</style><body style=\"font-family:courier,monospace\">\n");
 		
 		for(SelectionSegment s: sel.getSegments())
 		{
@@ -62,36 +59,39 @@ public class HtmlClipboardHandler
 			writeSelectionSegment(s, wr);
 		}
 		
-		wr.write("</body></html>\n");
+		wr.write("}}\n");
 	}
 	
 	
 	protected void writeStyles(Writer wr) throws Exception
 	{
+		wr.write("{\\colortbl");
+		
 		for(Type t: Type.values())
 		{
-			wr.write(".s");
-			wr.write(String.valueOf(t.ordinal()));
-			wr.write(" {color:");
 			writeColor(wr, ColorScheme.getColor(t));
-			wr.write(";}\n");
 		}
+		
+		wr.write("}\n");
 	}
 	
 	
 	protected void writeColor(Writer wr, Color c) throws Exception
 	{
-		wr.write("#");
+		wr.write("\\red");
 		wr.write(to255(c.getRed()));
+		wr.write("\\green");
 		wr.write(to255(c.getGreen()));
+		wr.write("\\blue");
 		wr.write(to255(c.getBlue()));
+		wr.write(";");
 	}
 	
 	
 	protected String to255(double x)
 	{
 		int v = (int)Math.round(255 * x);
-		return Hex.toHexByte(v);
+		return String.valueOf(v);
 	}
 
 
@@ -102,10 +102,20 @@ public class HtmlClipboardHandler
 		
 		int first = m0.getLine();
 		int last = m1.getLine();
+		boolean lineBreak = false;
 		
 		for(int i=first; i<=last; i++)
 		{
 			CKit.checkCancelled();
+			
+			if(lineBreak)
+			{
+				wr.write("\\line");
+			}
+			else
+			{
+				lineBreak = true;
+			}
 			
 			Segment[] ss = model.getSegments(i);
 			
@@ -122,8 +132,6 @@ public class HtmlClipboardHandler
 			}
 			else
 			{
-				wr.write("<br>\n");
-				
 				if(i == last)
 				{
 					writeSegments(wr, ss, 0, m1.getLineOffset());
@@ -192,46 +200,48 @@ public class HtmlClipboardHandler
 			switch(t)
 			{
 			case LINEBREAK:
-				wr.write("<br>\n");
 				break;
 			case WHITESPACE:
-				writeWhitespace(wr, text);
-				break;
 			default:
-				wr.write("<span class=s");
+				wr.write("{\\f0 {\\cf");
 				wr.write(String.valueOf(t.ordinal()));
-				wr.write(">");
-				wr.write(HtmlTools.safe(text));
-				wr.write("</span>");
+				wr.write(' ');
+				writeText(wr, text);
+				wr.write("}}\n");
+				break;
 			}
 		}
 	}
 
 
-	protected void writeWhitespace(Writer wr, String text) throws Exception
+	protected void writeText(Writer wr, String text) throws Exception
 	{
-		boolean nbsp = false;
-		int sz = text.length();
-		for(int i=0; i<sz; i++)
+		int len = text.length();
+		for(int i=0; i<len; i++)
 		{
 			char c = text.charAt(i);
-			switch(c)
+			if((c >= 0x20) && (c <= 0x7f))
 			{
-			case '\t':
-				// this is not strictly right
-				wr.write("&emsp;");
-				break;
-			default:
-				if(nbsp)
+				switch(c)
 				{
-					wr.write("&nbsp;");
+				case '\\':
+					wr.write("\\\\");
+					break;
+				case '{':
+					wr.write("\\{");
+					break;
+				case '}':
+					wr.write("\\}");
+					break;
+				default:
+					wr.write(c);
 				}
-				else
-				{
-					wr.write(' ');
-					nbsp = true;
-				}
-				wr.write(c);
+			}
+			else
+			{
+				wr.write("\\u");
+				wr.write(String.valueOf((short)c));
+				wr.write("?");
 			}
 		}
 	}

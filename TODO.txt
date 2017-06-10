@@ -1,8 +1,8 @@
 TODO
 
-- copy rtf
 - clipboard menu
 - collapsible toolbar
+
 - reset indent on IGNORE
 - aaa[<xml...
 - fix json [{

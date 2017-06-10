@@ -45,10 +45,10 @@ import javafx.util.Duration;
 public class MainWindow
 	extends FxWindow
 {
-	public static final Duration PERIOD = Duration.millis(200);
 	public final ContentView view;
 	public final DetailPane detailPane;
 	public final SplitPane split;
+	protected static final Duration PERIOD = Duration.millis(200);
 	protected final Clipboard clipboard;
 	protected String oldContent;
 	protected final CBooleanProperty monitorClipboardProperty = new CBooleanProperty(true, this::updateClipboardMonitoring);

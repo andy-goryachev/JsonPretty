@@ -10,7 +10,14 @@ ignored:
 	"anObject":
 	{
 		"anEmptyObject": {},
-		"anEmptyArray": []
+		"anEmptyArray": [],
+		"nestedObject":
+		{
+			"oneMore":
+			{
+				"thatAllFolks": []
+			}
+		}
 	},
 	"anArray":
 	[
@@ -34,6 +41,14 @@ ignored:
 	]
 }
 extra text
+
+some xml
+<xml>
+	<yo>
+		<yolo test="one" test="two" />
+		This is a test.
+	</yo>
+</xml>
 
 {
 	"a" :
