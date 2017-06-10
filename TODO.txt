@@ -1,17 +1,6 @@
 TODO
 
-- clipboard menu
-- collapsible toolbar
-
 - reset indent on IGNORE
-- aaa[<xml...
-- fix json [{
-- parser: single AB,OB,AE,OE tags
-- handle [[[]]] right
-- format [,,,,] properly
-- fix format: { "array":[ { }] }
-- fix format: { "array":[{ "n":null }] }
-
-- xml parser
-	- remove newlines from tags
+- json parser: single AB,OB,AE,OE tags
+- xml parser: remove newlines from tags
 

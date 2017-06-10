@@ -1,0 +1,4 @@
+embedded xml tags should be parsed as such, ignoring [ because it's malformed json
+[info]
+text=[<xml>this should be <xml>yo</xml></xml>]
+ignore

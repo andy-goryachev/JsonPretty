@@ -1,0 +1,2 @@
+#006 formatting issue: empty object in an array
+{ "array":[ { }] }
