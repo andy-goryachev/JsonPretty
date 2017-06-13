@@ -1,6 +1,12 @@
 # JsonPretty Release Notes
 
 
+**0.00.11**
+- rtf copy
+- detail analyzer fixes
+- fixed #4 fails to parse large base64 
+- fixed #3 fails to parse date without comma
+
 **0.00.10**
 - copy includes html with color highlighting
 
