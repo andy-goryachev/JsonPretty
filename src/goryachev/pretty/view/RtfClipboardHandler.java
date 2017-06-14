@@ -49,9 +49,11 @@ public class RtfClipboardHandler
 	{
 		sel = sel.getNormalizedSelection();
 		
-		// TODO use editor's font
-		wr.write("{\\rtf1\\ansi\\ansicpg1252\\uc1\\deff0{\\fonttbl{\\f0\\fnil Courier New;}}\n");
+		wr.write("{\\rtf1\\ansi\\uc1\\deff0{\\fonttbl{\\f0\\fnil Courier New;}}\n");
+		
 		writeStyles(wr);
+		
+		wr.write("{\\f0\\fs18 \\fi0\\ql ");
 		
 		for(SelectionSegment s: sel.getSegments())
 		{
@@ -110,7 +112,7 @@ public class RtfClipboardHandler
 			
 			if(lineBreak)
 			{
-				wr.write("\\line");
+				wr.write("\\par \\fi0\\ql ");
 			}
 			else
 			{
@@ -203,11 +205,11 @@ public class RtfClipboardHandler
 				break;
 			case WHITESPACE:
 			default:
-				wr.write("{\\f0 {\\cf");
+				wr.write("{\\cf");
 				wr.write(String.valueOf(t.ordinal()));
 				wr.write(' ');
 				writeText(wr, text);
-				wr.write("}}\n");
+				wr.write("}\n");
 				break;
 			}
 		}
