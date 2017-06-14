@@ -25,7 +25,7 @@ public class SegmentEditorModel
 	public SegmentEditorModel()
 	{
 		addClipboardHandler(new HtmlClipboardHandler(this));
-//		addClipboardHandler(new RtfClipboardHandler(this));
+		addClipboardHandler(new RtfClipboardHandler(this));
 	}
 
 
