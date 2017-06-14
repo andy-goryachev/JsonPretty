@@ -2046,4 +2046,11 @@ public final class CKit
 	{
 		return new CList<>(items);
 	}
+
+
+	/** utility method converts a String Collection to a String[] */ 
+	public static String[] toArray(Collection<String> x)
+	{
+		return x.toArray(new String[x.size()]);
+	}
 }

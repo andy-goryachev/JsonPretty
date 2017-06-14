@@ -2,6 +2,7 @@
 package goryachev.pretty.analysis;
 import goryachev.common.util.Base64;
 import goryachev.common.util.CKit;
+import goryachev.common.util.Hex;
 
 
 /**
@@ -128,7 +129,7 @@ public class Base64Analyzer
 		try
 		{
 			byte[] b = decodeBase64(s);
-			String[] hex = breakBinary(b);
+			String[] hex = Hex.toHexStringsAscii(b);
 			rep.addSection(urlSafe ? "base64 url-safe" : "base64", hex);
 			
 			try
@@ -139,20 +140,6 @@ public class Base64Analyzer
 				{
 					String[] lines = breakLines(dec);
 					rep.addSection("base64-encoded UTF-8", lines);
-				}
-			}
-			catch(Exception e)
-			{
-			}
-			
-			try
-			{
-				// try as an ascii string
-				String dec = toAscii(b);
-				if(dec != null)
-				{
-					String[] lines = breakLines(dec);
-					rep.addSection("base64-encoded ASCII", lines);
 				}
 			}
 			catch(Exception e)

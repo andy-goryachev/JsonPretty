@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.analysis;
+import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Hex;
 import goryachev.common.util.SB;
@@ -196,37 +197,5 @@ public abstract class AbstractAnalyzer
 		{
 			list.add(sb.getAndClear());
 		}
-	}
-
-
-	protected String[] breakBinary(byte[] bytes)
-	{
-		CList<String> a = new CList();
-		SB sb = new SB();
-		
-		for(int i=0; i<bytes.length; i++)
-		{
-			int col = i % 16;
-			if(col == 8)
-			{
-				sb.a("  ");
-			}
-			
-			byte b = bytes[i];
-			sb.a(Hex.toHexByte(b));
-			sb.a(' ');
-			
-			if(col == 15)
-			{
-				a.add(sb.getAndClear());
-			}
-		}
-		
-		if(sb.length() > 0)
-		{
-			a.add(sb.getAndClear());
-		}
-		
-		return toArray(a);
 	}
 }
