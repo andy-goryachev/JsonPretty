@@ -10,6 +10,10 @@ import goryachev.common.util.CKit;
 public class Base64Analyzer
 	extends AbstractAnalyzer
 {
+	private boolean classic;
+	private boolean urlSafe;
+	
+	
 	public Base64Analyzer(int pos, String text)
 	{
 		super(pos, text);
@@ -82,25 +86,50 @@ public class Base64Analyzer
 		case '7':
 		case '8':
 		case '9':
+			return true;
 		case '+':
 		case '/':
 		case '=':
+			classic = true;
+			return true;
+		case '-':
+		case '_':
+			urlSafe = true;
 			return true;
 		}
 		return false;
 	}
 	
 	
+	protected byte[] decodeBase64(String s) throws Exception
+	{
+		if(urlSafe)
+		{
+			return Base64.decode(s, Base64.URL_SAFE);
+		}
+		else
+		{
+			return Base64.decode(s);
+		}
+	}
+	
+	
 	protected void analyze(String s, AnalysisReport rep)
 	{
+		if(urlSafe && classic)
+		{
+			// likely not a base64
+			return;
+		}
+		
 		// decode json string
 		s = JsonStringDecoder.decode(s);
 		
 		try
 		{
-			byte[] b = Base64.decode(s);
+			byte[] b = decodeBase64(s);
 			String[] hex = breakBinary(b);
-			rep.addSection("base64", hex);
+			rep.addSection(urlSafe ? "base64 url-safe" : "base64", hex);
 			
 			try
 			{
@@ -109,7 +138,7 @@ public class Base64Analyzer
 				if(checkPrintableString(dec))
 				{
 					String[] lines = breakLines(dec);
-					rep.addSection("base64 UTF-8", lines);
+					rep.addSection("base64-encoded UTF-8", lines);
 				}
 			}
 			catch(Exception e)
@@ -123,7 +152,7 @@ public class Base64Analyzer
 				if(dec != null)
 				{
 					String[] lines = breakLines(dec);
-					rep.addSection("base64 ASCII", lines);
+					rep.addSection("base64-encoded ASCII", lines);
 				}
 			}
 			catch(Exception e)

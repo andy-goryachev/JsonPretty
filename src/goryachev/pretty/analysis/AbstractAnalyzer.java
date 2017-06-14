@@ -222,6 +222,11 @@ public abstract class AbstractAnalyzer
 			}
 		}
 		
+		if(sb.length() > 0)
+		{
+			a.add(sb.getAndClear());
+		}
+		
 		return toArray(a);
 	}
 }
