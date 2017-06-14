@@ -2,6 +2,7 @@
 
 **0.00.13**
 - binary display enhancement
+- rtf copy, take 2
 
 **0.00.12**
 - rtf copy enabled
