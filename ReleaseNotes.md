@@ -1,5 +1,8 @@
 # JsonPretty Release Notes
 
+**0.00.12**
+- rtf copy enabled
+- decoding base64 and url safe base64
 
 **0.00.11**
 - rtf copy
