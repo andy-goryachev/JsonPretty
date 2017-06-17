@@ -34,7 +34,9 @@ import javafx.util.Duration;
 public class MainPane
 	extends CPane
 {
-	public final CAction copyAction = new CAction(this::copy); 
+	public final CAction copyAction = new CAction(this::copy);
+	public final CAction copyHtmlAction = new CAction(this::copyHtml); 
+	public final CAction copyRtfAction = new CAction(this::copyRtf); 
 	public final CAction pasteAction = new CAction(this::pasteFromClipboard);
 	public final CCheckBox monitorClipboardCheckbox;
 	public final ContentView view;
@@ -136,6 +138,18 @@ public class MainPane
 	public void copy()
 	{
 		view.copy();
+	}
+	
+	
+	public void copyHtml()
+	{
+		view.copyHtml();
+	}
+	
+	
+	public void copyRtf()
+	{
+		view.copyRtf();
 	}
 
 	

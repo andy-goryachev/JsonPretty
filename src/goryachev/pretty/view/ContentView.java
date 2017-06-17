@@ -13,6 +13,7 @@ import java.util.List;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.Node;
+import javafx.scene.input.DataFormat;
 
 
 /**
@@ -103,5 +104,17 @@ public class ContentView
 	public void copy()
 	{
 		textField.copy();
+	}
+	
+	
+	public void copyHtml()
+	{
+		textField.copy(null, DataFormat.HTML);
+	}
+	
+	
+	public void copyRtf()
+	{
+		textField.copy(null, DataFormat.RTF);
 	}
 }

@@ -112,7 +112,7 @@ public class RtfClipboardHandler
 			
 			if(lineBreak)
 			{
-				wr.write("\\par \\fi0\\ql ");
+				wr.write("\\line \\fi0\\ql ");
 			}
 			else
 			{

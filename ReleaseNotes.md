@@ -1,5 +1,8 @@
 # JsonPretty Release Notes
 
+**0.00.14**
+- separate rtf and html copy menus
+
 **0.00.13**
 - binary display enhancement
 - rtf copy, take 2

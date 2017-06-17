@@ -60,6 +60,9 @@ public class MainWindow
 		// edit
 		mb.add(m = new CMenu("Edit"));
 		m.add("Copy", pane.copyAction);
+		m.add("Copy HTML", pane.copyHtmlAction);
+		m.add("Copy RTF", pane.copyRtfAction);
+		m.separator();
 		m.add("Save Selection As...");
 		m.separator();
 		m.add("Select All", pane.view.textField.selectAllAction);
