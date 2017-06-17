@@ -51,17 +51,13 @@ public class RecursiveJsonXmlParser
 			switch(c)
 			{
 			case '{':
+				readObject();
+				continue;
 			case '[':
+				readArray();
+				continue;
 			case '<':
-				readMain();
-				if(xmlLevel > 0)
-				{
-					setState(Type.XML_TEXT);
-				}
-				else
-				{
-					setState(Type.IGNORE);
-				}
+				readXmlTag();
 				continue;
 			case '\r':
 			case '\n':
@@ -74,7 +70,14 @@ public class RecursiveJsonXmlParser
 				}
 				else
 				{
-					setState(Type.IGNORE);
+					if(Character.isWhitespace(c))
+					{
+						setState(Type.WHITESPACE);
+					}
+					else
+					{
+						setState(Type.IGNORE);
+					}
 				}
 				break;
 			}
@@ -309,22 +312,20 @@ public class RecursiveJsonXmlParser
 	{
 		setState(Type.ARRAY_BEGIN);
 		expect('[');
+		forceSegment();
 		
 		for(;;)
 		{
 			skipWhitespace();
 			
 			int c = peek();
-			if(c == ']')
-			{
-				setState(Type.ARRAY_END);
-				next();
-				break;
-			}
-			else if(c == EOF)
-			{
-				break;
-			}
+//			if(c == ']')
+//			{
+//				setState(Type.ARRAY_END);
+//				next();
+//				forceSegment();
+//				break;
+//			}
 			
 			switch(c)
 			{
@@ -338,6 +339,13 @@ public class RecursiveJsonXmlParser
 			case '{':
 				readObject();
 				break;
+			case EOF:
+				return;
+			case ']':
+				setState(Type.ARRAY_END);
+				next();
+				forceSegment();
+				return;
 			default:
 				readValue();
 				if(state == Type.ERROR)
@@ -347,8 +355,6 @@ public class RecursiveJsonXmlParser
 				break;
 			}
 		}
-		setState(Type.ARRAY_END);
-		expect(']');
 	}
 	
 	
@@ -528,30 +534,5 @@ public class RecursiveJsonXmlParser
 				break;
 			}
 		}
-	}
-	
-	
-	protected void readMain()
-	{
-		skipWhitespace();
-		
-		int c = peek();
-		switch(c)
-		{
-		case '{':
-			readObject();
-			break;
-		case '[':
-			readArray();
-			break;
-		case '<':
-			readXmlTag();
-			break;
-		case EOF:
-		default:
-			// FIX? error?
-			break;
-		}
-		return;
 	}
 }
