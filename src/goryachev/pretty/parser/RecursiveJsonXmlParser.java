@@ -127,6 +127,12 @@ public class RecursiveJsonXmlParser
 	}
 	
 	
+	protected void forceSegment()
+	{
+		addSegment();
+	}
+	
+	
 	protected void detectInfiniteLoop()
 	{
 		// this code detects errors in the parser that cause infinite loops
@@ -255,6 +261,7 @@ public class RecursiveJsonXmlParser
 			case '}':
 				setState(Type.OBJECT_END);
 				next();
+				forceSegment();
 				return;
 			case ',':
 				setState(Type.COMMA);
