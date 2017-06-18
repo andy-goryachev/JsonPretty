@@ -14,15 +14,15 @@ public class TestXmlParser
 	
 
 	@Test
-	public void testRegression()
+	public void regressionTests()
 	{
 		t(XB, "<p>", XT, "yo", XE, "</p>");
+		t(XB, "<p>", XT, "yo", XE, "</p>", XC, "<!-- \n yo <xml> </xml> -->", XN, "<a />", IG, "ignore");
 	}
 
 	
 	@Test
 	public void testXml()
 	{
-		t(XB, "<p>", XT, "yo", XE, "</p>", XC, "<!-- \n yo <xml> </xml> -->", XN, "<a />", IG, "ignore");
 	}
 }

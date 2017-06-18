@@ -14,23 +14,38 @@ public class TestPrettyFormatter
 	{
 		TF.run();
 	}
-
 	
-	@Test
-	public void testRegression()
+	
+//	@Test
+	public void regressionTests()
 	{
 		test1();
 		test2();
-		test_issue001();
-		test_issue002();
-		test_issue006();
-		test_issue007();
-		test_issue007_1();
+		issue_001();
+		issue002();
+		issue006();
+		issue007();
+		issue007_1();
 	}
 	
 	
+	@Test
+	public void issue_008()
+	{
+		// { "array":[],"object":{} }
+		t
+		(
+			"{ \"array\":[],\"object\":{} }",
+			OB, LB,
+			IN, NB, NA, NE, SP, AB, WS, AE, CO, LB,
+			IN, NB, NA, NE, SP, OB, WS, OE, LB,
+			OE
+		);
+	}
+
+	
 	// fixed @Test
-	public void test_issue001()
+	public void issue_001()
 	{
 		// {"issue_001":{"a":{"b":{"c":{"d": false}}}}}
 		t
@@ -56,7 +71,7 @@ public class TestPrettyFormatter
 	
 	
 	// fixed @Test
-	public void test_issue002()
+	public void issue002()
 	{
 		// {"issue_002":[[[]]]}
 		t
@@ -75,7 +90,7 @@ public class TestPrettyFormatter
 	
 	
 	// fixed @Test
-	public void test_issue007()
+	public void issue007()
 	{
 		// [[[]]]
 		t
@@ -91,7 +106,7 @@ public class TestPrettyFormatter
 	
 	
 	// fixed @Test
-	public void test_issue007_1()
+	public void issue007_1()
 	{
 		// [[]]
 		t
@@ -141,7 +156,7 @@ public class TestPrettyFormatter
 	
 	
 	// fixed @Test
-	public void test_issue006()
+	public void issue006()
 	{
 		// { "array":[ { }] }
 		t

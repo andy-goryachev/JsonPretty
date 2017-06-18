@@ -14,7 +14,7 @@ public class TestJsonParser
 	
 
 	@Test
-	public void testRegression()
+	public void regressionTests()
 	{
 		t(OB, "{", OE, "}");
 		t(AB, "[", AE, "]");
