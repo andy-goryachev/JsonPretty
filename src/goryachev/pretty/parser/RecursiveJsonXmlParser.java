@@ -235,6 +235,20 @@ public class RecursiveJsonXmlParser
 	}
 	
 	
+	protected boolean isEmptyOrMetaTag(String s)
+	{
+		if(s.endsWith("/>"))
+		{
+			return true;
+		}
+		else if(s.startsWith("<?") && s.endsWith("?>"))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	
 	protected void addSegment()
 	{
 		int off = Math.min(offset, text.length());
@@ -252,7 +266,7 @@ public class RecursiveJsonXmlParser
 			switch(state)
 			{
 			case XML_TAG_OPEN:
-				if(s.endsWith("/>"))
+				if(isEmptyOrMetaTag(s))
 				{
 					state = Type.XML_TAG_EMPTY;
 					xmlLevel--;

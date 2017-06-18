@@ -13,17 +13,24 @@ public class TestXmlParser
 	}
 	
 
-	@Test
+//	@Test
 	public void regressionTests()
+	{
+		testNormal();
+	}
+	
+	
+	// part of the regression test
+	public void testNormal()
 	{
 		t(XB, "<p>", XT, "yo", XE, "</p>");
 		t(XB, "<p>", XT, "yo", XE, "</p>", XC, "<!-- \n yo <xml> </xml> -->", XN, "<a />", IG, "ignore");
+		t(XN, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 	}
 
 	
 	@Test
 	public void testXml()
 	{
-		// <?xml version="1.0" encoding="UTF-8"?>
 	}
 }
