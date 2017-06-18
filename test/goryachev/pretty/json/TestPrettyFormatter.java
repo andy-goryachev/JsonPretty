@@ -2,6 +2,7 @@
 package goryachev.pretty.json;
 import goryachev.common.test.TF;
 import goryachev.common.test.Test;
+import goryachev.common.util.Log;
 
 
 /**
@@ -12,6 +13,7 @@ public class TestPrettyFormatter
 {
 	public static void main(String[] args)
 	{
+//		Log.connect("PrettyFormatter", "console");
 		TF.run();
 	}
 	
@@ -26,10 +28,11 @@ public class TestPrettyFormatter
 		issue006();
 		issue007();
 		issue007_1();
+		issue_008();
 	}
 	
 	
-	@Test
+	// fixed @Test
 	public void issue_008()
 	{
 		// { "array":[],"object":{} }
@@ -37,8 +40,8 @@ public class TestPrettyFormatter
 		(
 			"{ \"array\":[],\"object\":{} }",
 			OB, LB,
-			IN, NB, NA, NE, SP, AB, WS, AE, CO, LB,
-			IN, NB, NA, NE, SP, OB, WS, OE, LB,
+			IN, NB, NA, NE, SP, WS, AB, WS, AE, CO, LB,
+			IN, NB, NA, NE, SP, WS, OB, WS, OE, LB,
 			OE
 		);
 	}
@@ -136,7 +139,8 @@ public class TestPrettyFormatter
 	}
 	
 	
-	// fixed @Test
+	// fixed 
+	@Test
 	public void test2()
 	{
 		// { "array":[{ "n":null }] }

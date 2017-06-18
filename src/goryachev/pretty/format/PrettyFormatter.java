@@ -18,7 +18,6 @@ public class PrettyFormatter
 	private int indent;
 	private boolean insertIndent;
 	private Type prev = Type.IGNORE;
-	private boolean egyptian = false; // TODO
 	protected static Log log = Log.get("PrettyFormatter");
 	
 	
@@ -149,26 +148,6 @@ public class PrettyFormatter
 	}
 	
 	
-	protected boolean needLineBreakBeforeArrayOrObject()
-	{
-		if(result.size() == 0)
-		{
-			return false;
-		}
-		
-		switch(lastType())
-		{
-		case LINEBREAK:
-		case INDENT:
-			return false;
-		}
-		
-		// TODO perhaps insert an extra line break between two objects or arrays
-		
-		return true;
-	}
-	
-	
 	protected void indent(int delta)
 	{
 		indent += delta;
@@ -176,6 +155,160 @@ public class PrettyFormatter
 		{
 			indent = 0;
 		}
+	}
+	
+	
+	protected Type getType(int ix)
+	{
+		if(ix >= input.size())
+		{
+			return Type.IGNORE;
+		}
+		
+		return input.get(ix).getType();
+	}
+	
+	
+	protected boolean isEmptyArray(int ix)
+	{
+		for(int i=ix+1; ; i++)
+		{
+			Type t = getType(i);
+			switch(t)
+			{
+			case ARRAY_END:
+				return true;
+			case LINEBREAK:
+			case WHITESPACE:
+				continue;
+			default:
+				return false;
+			}
+		}
+	}
+	
+	
+	protected boolean isEmptyObject(int ix)
+	{
+		for(int i=ix+1; ; i++)
+		{
+			Type t = getType(i);
+			switch(t)
+			{
+			case OBJECT_END:
+				return true;
+			case LINEBREAK:
+			case WHITESPACE:
+				continue;
+			default:
+				return false;
+			}
+		}
+	}
+	
+	
+	protected boolean isAfterSeparator()
+	{
+		for(int i=result.size()-1; i>=0; i--)
+		{
+			Type t = result.get(i).getType();
+			switch(t)
+			{
+			case SEPARATOR:
+				return true;
+			default:
+				return false;
+			}
+		}
+		return false;
+	}
+	
+
+	// TODO isAfter(Type.ARRAY_BEGIN) ?
+	protected boolean wasEmptyArray()
+	{
+		for(int i=result.size()-1; i>=0; i--)
+		{
+			Type t = result.get(i).getType();
+			switch(t)
+			{
+			case ARRAY_BEGIN:
+				return true;
+			case LINEBREAK:
+			case WHITESPACE:
+				continue;
+			default:
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	
+	// TODO isAfter(Type.OBJECT_BEGIN) ?
+	protected boolean wasEmptyObject()
+	{
+		for(int i=result.size()-1; i>=0; i--)
+		{
+			Type t = result.get(i).getType();
+			switch(t)
+			{
+			case OBJECT_BEGIN:
+				return true;
+			case LINEBREAK:
+			case WHITESPACE:
+				continue;
+			default:
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	
+	protected boolean isAfter(Type ... types)
+	{
+		for(int i=result.size()-1; i>=0; i--)
+		{
+			Type t = result.get(i).getType();
+			if(CKit.contains(types, t))
+			{
+				return true;
+			}
+			
+			switch(t)
+			{
+			case LINEBREAK:
+			case WHITESPACE:
+			case INDENT:
+				continue;
+			default:
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	
+	protected boolean insertLineBreakBeforeArrayBegin()
+	{
+		if(result.size() == 0)
+		{
+			return false;
+		}
+		
+		return isAfter(Type.SEPARATOR, Type.COMMA, Type.COMMA_ARRAY, Type.OBJECT_END, Type.ARRAY_END, Type.XML_TAG_CLOSING, Type.XML_TAG_EMPTY);
+	}
+	
+	
+	protected boolean insertLineBreakBeforeObjectBegin()
+	{
+		if(result.size() == 0)
+		{
+			return false;
+		}
+		
+		return isAfter(Type.SEPARATOR, Type.COMMA, Type.COMMA_ARRAY, Type.OBJECT_END, Type.ARRAY_END, Type.XML_TAG_CLOSING, Type.XML_TAG_EMPTY);
 	}
 
 
@@ -192,29 +325,64 @@ public class PrettyFormatter
 			switch(t)
 			{
 			case ARRAY_BEGIN:
-			case OBJECT_BEGIN:
-				if(needLineBreakBeforeArrayOrObject())
+				if(isEmptyArray(i))
 				{
+					if(isAfterSeparator())
+					{
+						insertIndent = false;
+						addSpace(1);
+					}
+					addSegment(s);
+					addSpace(1);
+				}
+				else
+				{
+					if(insertLineBreakBeforeArrayBegin())
+					{
+						insertLineBreak();
+					}
+					addSegment(s);
+					indent(1);
 					insertLineBreak();
 				}
-				addSegment(s);
-				indent(1);
-				insertLineBreak();
+				break;
+				
+			case OBJECT_BEGIN:
+				if(isEmptyObject(i))
+				{
+					if(isAfterSeparator())
+					{
+						insertIndent = false;
+						addSpace(1);
+					}
+					addSegment(s);
+					addSpace(1);
+				}
+				else
+				{
+					if(insertLineBreakBeforeObjectBegin())
+					{
+						insertLineBreak();
+					}
+					addSegment(s);
+					indent(1);
+					insertLineBreak();
+				}
 				break;
 				
 			case ARRAY_END:
-				indent(-1);
-				if(processArrayEnd())
+				if(!wasEmptyArray())
 				{
+					indent(-1);
 					insertLineBreak();
 				}
 				addSegment(s);
 				break;
 				
 			case OBJECT_END:
-				indent(-1);
-				if(processObjectEnd())
+				if(!wasEmptyObject())
 				{
+					indent(-1);
 					insertLineBreak();
 				}
 				addSegment(s);
@@ -341,13 +509,4 @@ public class PrettyFormatter
 			addSegment(new Segment(Type.WHITESPACE, CKit.spaces(spaces)));
 		}
 	}
-	
-	
-//	protected void addIndent(int tabs)
-//	{
-//		if(tabs > 0)
-//		{
-//			addSegment(new Segment(Type.INDENT, CKit.tabs(tabs)));
-//		}
-//	}
 }
