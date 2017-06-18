@@ -23,6 +23,7 @@ public class TestPrettyFormatter
 		test2();
 		test_issue001();
 		test_issue002();
+		test_issue006();
 		test_issue007();
 		test_issue007_1();
 	}
@@ -133,6 +134,23 @@ public class TestPrettyFormatter
 			IN, OB, LB, 
 			IN, NB, NA, NE, SP, WS, VA, LB, 
 			IN, OE, LB, 
+			IN, AE, LB, 
+			OE
+		);
+	}
+	
+	
+	// fixed @Test
+	public void test_issue006()
+	{
+		// { "array":[ { }] }
+		t
+		(
+			"{ \"array\":[ { }] }",
+			OB, LB, 
+			IN, NB, NA, NE, SP, LB, 
+			IN, AB, LB,
+			IN, OB, WS, OE, LB, 
 			IN, AE, LB, 
 			OE
 		);
