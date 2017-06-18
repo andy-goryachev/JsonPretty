@@ -3,6 +3,8 @@
 **0.00.14**
 - separate rtf and html copy menus
 - fixed #1 fails to format }}}
+- fixed #2 incorrect parsing of nested array 
+- fixed #7 formatting issue: nested arrays [[[]]] 
 
 **0.00.13**
 - binary display enhancement
