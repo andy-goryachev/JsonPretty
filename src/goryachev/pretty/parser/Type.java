@@ -11,6 +11,7 @@ public enum Type
 	COMMENT,
 	ERROR,
 	IGNORE,
+	INDENT,
 	LINEBREAK,
 	NAME,
 	NAME_BEGIN,

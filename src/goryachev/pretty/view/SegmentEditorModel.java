@@ -6,8 +6,10 @@ import goryachev.fx.edit.CTextFlow;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxEditorModel;
 import goryachev.pretty.ColorScheme;
+import goryachev.pretty.Config;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
+import java.util.Arrays;
 import java.util.List;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
@@ -73,9 +75,23 @@ public class SegmentEditorModel
 	
 	protected Text createText(String text, Type type)
 	{
+		if(type == Type.INDENT)
+		{
+			text = toSpaces(text);
+		}
+		
 		Text t = new Text(text);
 		t.setFill(ColorScheme.getColor(type));
 		return t;
+	}
+	
+	
+	protected String toSpaces(String text)
+	{
+		int sz = text.length() * Config.TAB_SIZE;
+		char[] cs = new char[sz];
+		Arrays.fill(cs, ' ');
+		return new String(cs);
 	}
 
 

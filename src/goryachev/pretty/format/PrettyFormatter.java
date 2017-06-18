@@ -1,7 +1,8 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.format;
+import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.SB;
+import goryachev.common.util.Log;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;
@@ -15,9 +16,10 @@ public class PrettyFormatter
 	private final List<Segment> input;
 	private final CList<Segment> result;
 	private int indent;
+	private boolean insertIndent;
 	private Type prev = Type.IGNORE;
-	private int tabSize = 4; // TODO option
 	private boolean egyptian = false; // TODO
+	protected static Log log = Log.get("PrettyFormatter");
 	
 	
 	public PrettyFormatter(List<Segment> input)
@@ -35,7 +37,6 @@ public class PrettyFormatter
 		{
 			result.prune(ix);
 			addSpace(1);
-			addSegment(new Segment(Type.ARRAY_BEGIN, "["));
 			return false;
 		}
 		return true;
@@ -50,18 +51,48 @@ public class PrettyFormatter
 		{
 			result.prune(ix);
 			addSpace(1);
-			addSegment(new Segment(Type.OBJECT_BEGIN, "{"));
 			return false;
 		}
 		return true;
 	}
 	
 	
-	// skip whitespace and newlines until the specified tag is found
-	// then skip any additional whitespace and newline and return 
-	// what effectively is the new result array size.
-	// -1 means that we don't have this condition
+	// going backwards, skips whitespace, line break, and indents until the specified tag is found
+	// and returns what effectively is the new result array size.
+	// return value of -1 means that we don't have this condition
 	protected int skipBack(Type type)
+	{
+		for(int i=result.size()-1; i>=0; i--)
+		{
+			Segment s = result.get(i);
+			Type t = s.getType();
+			
+			if(t == type)
+			{
+				insertIndent = false;
+				return i + 1;
+			}
+			
+			switch(t)
+			{
+			case LINEBREAK:
+			case WHITESPACE:
+			case INDENT:
+				continue;
+			default:
+				return -1;
+			}
+		}
+		
+		return -1;
+	}
+	
+	
+	// going backwards, skips whitespace, line break, and indents until the specified tag is found
+	// then skip any additional whitespace, line breaks, and indents
+	// and returns what effectively is the new result array size.
+	// -1 means that we don't have this condition
+	protected int skipBack_OLD(Type type)
 	{
 		boolean leading = false;
 		
@@ -83,6 +114,7 @@ public class PrettyFormatter
 			{
 			case LINEBREAK:
 			case WHITESPACE:
+			case INDENT:
 				continue;
 			default:
 				if(leading)
@@ -124,8 +156,10 @@ public class PrettyFormatter
 			return false;
 		}
 		
-		if(lastType() == Type.LINEBREAK)
+		switch(lastType())
 		{
+		case LINEBREAK:
+		case INDENT:
 			return false;
 		}
 		
@@ -152,6 +186,9 @@ public class PrettyFormatter
 		{
 			Segment s = input.get(i);
 			Type t = s.getType();
+			
+			log.print(t, s);
+			
 			switch(t)
 			{
 			case ARRAY_BEGIN:
@@ -251,8 +288,40 @@ public class PrettyFormatter
 	}
 	
 	
+	protected void addSegment(Type t, String text)
+	{
+		addIndentConditional(t);
+		addSegmentPrivate(new Segment(t, text));
+	}
+	
+	
 	protected void addSegment(Segment s)
 	{
+		addIndentConditional(s.getType());
+		addSegmentPrivate(s);
+	}
+	
+	
+	protected void addIndentConditional(Type t)
+	{
+		if(insertIndent)
+		{
+			if(t != Type.LINEBREAK)
+			{
+				if(indent > 0)
+				{
+					addSegmentPrivate(new Segment(Type.INDENT, CKit.tabs(indent)));
+				}
+				insertIndent = false;
+			}
+		}
+	}
+	
+	
+	protected void addSegmentPrivate(Segment s)
+	{
+		log.print("     add:", s);
+		
 		result.add(s);
 		prev = s.getType();
 	}
@@ -261,7 +330,7 @@ public class PrettyFormatter
 	protected void insertLineBreak()
 	{
 		addSegment(new Segment(Type.LINEBREAK, "\n"));
-		addSpace(indent * tabSize);
+		insertIndent = true;
 	}
 	
 	
@@ -269,9 +338,16 @@ public class PrettyFormatter
 	{
 		if(spaces > 0)
 		{
-			SB sb = new SB(spaces);
-			sb.sp(spaces);
-			addSegment(new Segment(Type.WHITESPACE, sb.toString()));
+			addSegment(new Segment(Type.WHITESPACE, CKit.spaces(spaces)));
 		}
 	}
+	
+	
+//	protected void addIndent(int tabs)
+//	{
+//		if(tabs > 0)
+//		{
+//			addSegment(new Segment(Type.INDENT, CKit.tabs(tabs)));
+//		}
+//	}
 }

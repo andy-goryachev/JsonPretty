@@ -2,6 +2,7 @@
 package goryachev.pretty.parser;
 import goryachev.common.util.CKit;
 import goryachev.common.util.FH;
+import goryachev.common.util.SB;
 import goryachev.common.util.TextTools;
 
 
@@ -59,6 +60,12 @@ public class Segment
 	
 	public String toString()
 	{
-		return "Segment." + getType() + "<" + TextTools.escapeControlsForPrintout(getText()) + ">";
+		SB sb = new SB();
+		sb.a("Segment.").a(getType());
+		if(text != null)
+		{
+			sb.a("<").a(TextTools.escapeControlsForPrintout(getText())).a(">");
+		}
+		return sb.toString();
 	}
 }

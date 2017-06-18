@@ -49,12 +49,14 @@ public class FormatterTestBase
 		if(!isSame(formatted, expected))
 		{
 			TF.print("FAIL");
-			TF.print("parsed:");
+			TF.print("formatted:");
 			TF.list(formatted);
 			TF.print("expected:");
 			TF.list(expected);
 			TF.print("JSON:\n" + text + "\n");
-			throw new Rex("Mismatch at index " + findMismatchIndex(formatted, expected));
+			
+			int ix = findMismatchIndex(formatted, expected);
+			throw new Rex("Mismatch at index " + ix + ": " + formatted.get(ix) + " " + expected.get(ix));
 		}
 	}
 	

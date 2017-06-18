@@ -203,6 +203,12 @@ public class RtfClipboardHandler
 			{
 			case LINEBREAK:
 				break;
+			case INDENT:
+				for(int i=0; i<len; i++)
+				{
+					wr.write("\\tab");
+				}
+				break;
 			case WHITESPACE:
 			default:
 				wr.write("{\\cf");

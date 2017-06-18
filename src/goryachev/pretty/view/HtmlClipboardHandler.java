@@ -10,6 +10,7 @@ import goryachev.fx.edit.FxEditorModel;
 import goryachev.fx.edit.Marker;
 import goryachev.fx.edit.SelectionSegment;
 import goryachev.pretty.ColorScheme;
+import goryachev.pretty.Config;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.io.StringWriter;
@@ -193,6 +194,13 @@ public class HtmlClipboardHandler
 			{
 			case LINEBREAK:
 				wr.write("<br>\n");
+				break;
+			case INDENT:
+				int spaces = text.length() * Config.TAB_SIZE;
+				for(int i=0; i<spaces; i++)
+				{
+					wr.write("&nbsp;");
+				}
 				break;
 			case WHITESPACE:
 				writeWhitespace(wr, text);
