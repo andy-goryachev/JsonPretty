@@ -431,24 +431,31 @@ public class PrettyFormatter
 				
 			case XML_COMMENT:
 			case XML_TAG_EMPTY:
-				if(insertLineBreakBeforeXmlTag())
-				{
-					insertLineBreak();
-				}
+//				if(insertLineBreakBeforeXmlTag())
+//				{
+//					insertLineBreak();
+//				}
 				addSegment(s);
 				break;
 				
 			case XML_TAG_OPEN:
 				// TODO check if needed to reset the xml indent (after ignore, json)
 				insertLineBreak();
-				indent(1);
 				addSegment(s);
+//				indent(1);
 				break;
 				
 			case XML_TAG_CLOSING:
-				indent(-1);
+//				indent(-1);
 				insertLineBreak();
 				addSegment(s);
+				break;
+				
+			case XML_TEXT:
+				indent(1);
+				insertLineBreak();
+				addSegment(s);
+				indent(-1);
 				break;
 				
 			default:

@@ -13,7 +13,7 @@ public class TestPrettyFormatter
 {
 	public static void main(String[] args)
 	{
-//		Log.connect("PrettyFormatter", "console");
+		Log.connect("PrettyFormatter", "console");
 //		Log.connect("RecursiveJsonXmlParser", "console");
 		TF.run();
 	}
@@ -31,6 +31,7 @@ public class TestPrettyFormatter
 		issue007_1();
 		issue_008();
 		testXml();
+		testXmlComment();
 	}
 	
 	
@@ -184,7 +185,27 @@ public class TestPrettyFormatter
 		(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<yo> </yo>\n",
 			XN, LB,
-			IN, XB, XT, LB,
+			XB, LB,
+			IN, XT, LB,
+			XE
+		);
+	}
+	
+	
+//	@Test
+	public void testXmlComment()
+	{
+		/*
+<!-- comment -->
+<yo> </yo>
+
+		 */
+		t
+		(
+			"<!-- comment -->\n<yo> </yo>\n",
+			XC, LB,
+			XB, LB,
+			IN, XT, LB,
 			XE
 		);
 	}
