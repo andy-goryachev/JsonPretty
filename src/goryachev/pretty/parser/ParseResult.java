@@ -21,11 +21,23 @@ public class ParseResult
 	{
 		return segments;
 	}
+	
+	
+	public Segment getSegment(int ix)
+	{
+		return segments.get(ix);
+	}
+	
+	
+	public Type getType(int ix)
+	{
+		return getSegment(ix).getType();
+	}
 
 		
-	public void addSegment(Segment c)
+	public void addSegment(Type type, String text)
 	{
-		segments.add(c);
+		segments.add(new Segment(type, text));
 	}
 	
 	
@@ -43,5 +55,18 @@ public class ParseResult
 			}
 		}
 		return false;
+	}
+
+
+	public int size()
+	{
+		return segments.size();
+	}
+
+
+	public void replaceTail(int ix, Type t, String text)
+	{
+		segments.prune(ix);
+		addSegment(t, text);
 	}
 }

@@ -2,6 +2,7 @@
 package goryachev.pretty.json;
 import goryachev.common.test.TF;
 import goryachev.common.test.Test;
+import goryachev.common.util.Log;
 
 
 public class TestMixed
@@ -9,6 +10,7 @@ public class TestMixed
 {
 	public static void main(String[] args)
 	{
+//		Log.connect("RecursiveJsonXmlParser", "console");
 		TF.run();
 	}
 	
@@ -23,6 +25,8 @@ public class TestMixed
 	public void test()
 	{
 		// issue #5
-		t(IG, "embedded xml tags [ because it's malformed json\n[info]\ntext=[<xml>this should be <xml>yo</xml></xml>]\nignore");
+		//t(IG, "embedded xml tags [ because it's malformed json\n[info]\ntext=[<xml>this should be <xml>yo</xml></xml>]\nignore");
+		
+		t(IG, "a[info]");
 	}
 }

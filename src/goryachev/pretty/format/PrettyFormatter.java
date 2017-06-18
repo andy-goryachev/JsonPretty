@@ -426,6 +426,7 @@ public class PrettyFormatter
 				break;
 				
 			case XML_TAG_OPEN:
+				// TODO check if needed to reset the xml indent (after ignore, json)
 				insertLineBreak();
 				indent(1);
 				addSegment(s);

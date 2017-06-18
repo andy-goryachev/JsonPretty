@@ -1,6 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
 import goryachev.common.util.D;
+import goryachev.common.util.Log;
 import goryachev.common.util.Rex;
 
 
@@ -10,7 +11,6 @@ import goryachev.common.util.Rex;
 public class RecursiveJsonXmlParser
 {
 	private static final int EOF = -1;
-	
 	protected final String text;
 	private final int maxSameOffsetCount = 50;
 	private int ch;
@@ -22,6 +22,7 @@ public class RecursiveJsonXmlParser
 	private int sameOffsetCount;
 	private int prevOffset = -1;
 	private int xmlLevel;
+	protected static Log log = Log.get("RecursiveJsonXmlParser");
 	
 	
 	public RecursiveJsonXmlParser(String text)
@@ -91,12 +92,162 @@ public class RecursiveJsonXmlParser
 	}
 	
 	
+	protected boolean isADouble(String s)
+	{
+		try
+		{
+			Double.parseDouble(s);
+			return true;
+		}
+		catch(NumberFormatException e)
+		{
+			return false;
+		}
+	}
+	
+	
+	protected boolean isInvalidValue(String s)
+	{
+		if("true".equals(s))
+		{
+			return false;
+		}
+		else if("false".equals(s))
+		{
+			return false;
+		}
+		else if("null".equals(s))
+		{
+			return false;
+		}
+		else if(s.startsWith("\"") && s.endsWith("\""))
+		{
+			return false;
+		}
+		else if(isADouble(s))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	
+	/** backtrack and combine preceding segments with the specified string to form a single IGNORE segment */
+	protected void backtrackAndIgnore(String s)
+	{
+		int sz = result.size();
+		if(sz == 0)
+		{
+			result.addSegment(Type.IGNORE, s);
+		}
+		else
+		{
+			int add = -1;
+			int i = sz - 1;
+			while(i >= 0)
+			{
+				Segment seg = result.getSegments().get(i);
+				Type t = seg.getType();
+				switch(t)
+				{
+				case ARRAY_BEGIN:
+				case OBJECT_BEGIN:
+				case COMMA_ARRAY:
+				case SEPARATOR:
+				case IGNORE:
+					s = seg.getText() + s;
+					add = i;
+					--i;
+					continue;
+				}
+				
+				break;
+			}
+			
+			if(add >= 0)
+			{
+				result.replaceTail(add, Type.IGNORE, s);
+			}
+		}
+	}
+	
+	
+	protected boolean isInvalidArrayEnd()
+	{
+		for(int i=result.size()-1; i>=0; i--)
+		{
+			Type t = result.getType(i);
+			switch(t)
+			{
+			case OBJECT_BEGIN:
+			case ERROR:
+			case IGNORE:
+				return true;
+			case VALUE:
+			case ARRAY_BEGIN:
+			case OBJECT_END:
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	
+	protected boolean isInvalidObjectEnd()
+	{
+		for(int i=result.size()-1; i>=0; i--)
+		{
+			Type t = result.getType(i);
+			switch(t)
+			{
+			case ARRAY_BEGIN:
+			case ERROR:
+			case IGNORE:
+				return true;
+			case VALUE:
+			case OBJECT_BEGIN:
+			case ARRAY_END:
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	
+	protected boolean isWrongState(Type state, String s)
+	{
+		switch(state)
+		{
+		case ARRAY_END:
+			return isInvalidArrayEnd();
+		case OBJECT_END:
+			return isInvalidObjectEnd();
+		case ERROR:
+			return true;
+		case VALUE:
+			return isInvalidValue(s);
+		default:
+			return false;
+		}
+	}
+	
+	
 	protected void addSegment()
 	{
 		int off = Math.min(offset, text.length());
 		if(off > startOffset)
 		{
 			String s = text.substring(startOffset, off);
+			startOffset = offset;
+			
+			if(isWrongState(state, s))
+			{
+				backtrackAndIgnore(s);
+				return;
+			}
 			
 			switch(state)
 			{
@@ -109,10 +260,9 @@ public class RecursiveJsonXmlParser
 				break;
 			}
 			
-			Segment ch = new Segment(state, s);
-			result.addSegment(ch);
-
-			startOffset = offset;
+			log.print("add:", state, s);
+			
+			result.addSegment(state, s);
 		}
 	}
 	
@@ -225,12 +375,10 @@ public class RecursiveJsonXmlParser
 				setState(Type.WHITESPACE);
 				break;
 			case EOF:
-				return;
 			default:
 				return;
 			}
 			
-			setState(Type.WHITESPACE);
 			next();
 		}
 	}
@@ -299,7 +447,6 @@ public class RecursiveJsonXmlParser
 			case EOF:
 				return;
 			default:
-				// TODO backtrack to { and turn everything in between into an error
 				setState(Type.ERROR);
 				next();
 				break;

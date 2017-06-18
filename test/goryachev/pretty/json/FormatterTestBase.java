@@ -48,15 +48,8 @@ public class FormatterTestBase
 		
 		if(!isSame(formatted, expected))
 		{
-			TF.print("FAIL");
-			TF.print("formatted:");
-			TF.list(formatted);
-			TF.print("expected:");
-			TF.list(expected);
-			TF.print("JSON:\n" + text + "\n");
-			
-			int ix = findMismatchIndex(formatted, expected);
-			throw new Rex("Mismatch at index " + ix + ": " + formatted.get(ix) + " " + expected.get(ix));
+			TF.print("FAIL JSON:\n" + text + "\n");
+			throw TF.printDiff("formatted:", formatted, "expected:", expected, (a,b) -> isSame(a, b));
 		}
 	}
 	
@@ -98,25 +91,5 @@ public class FormatterTestBase
 			}
 		}
 		return false;
-	}
-	
-	
-	private static int findMismatchIndex(List<Segment> segments, List<Segment> expected)
-	{
-		for(int i=0; i<10000; i++)
-		{
-			if((i >= segments.size()) || (i >= expected.size()))
-			{
-				return i;
-			}
-			
-			Segment a = segments.get(i);
-			Segment b = expected.get(i);
-			if(!isSame(a, b))
-			{
-				return i;
-			}
-		}
-		return -1;
 	}
 }

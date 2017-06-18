@@ -3,7 +3,6 @@ package goryachev.pretty.json;
 import goryachev.common.test.TF;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.Rex;
 import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonXmlParser;
 import goryachev.pretty.parser.Segment;
@@ -28,7 +27,7 @@ public class ParserTestBase
 		
 		RecursiveJsonXmlParser p = new RecursiveJsonXmlParser(text);
 		ParseResult r = p.parse();
-		List<Segment> segments = r.getSegments();
+		List<Segment> parsed = r.getSegments();
 		
 		int sz = parts.length / 2;
 		CList<Segment> expected = new CList(sz);
@@ -40,35 +39,10 @@ public class ParserTestBase
 			expected.add(new Segment(type, part));
 		}
 		
-		if(!CKit.equals(segments, expected))
+		if(!CKit.equals(parsed, expected))
 		{
-			TF.print("FAIL");
-			TF.print("parsed:");
-			TF.list(segments);
-			TF.print("expected:");
-			TF.list(expected);
-			TF.print("JSON:\n" + text + "\n");
-			throw new Rex("Mismatch at index " + findMismatchIndex(segments, expected));
+			TF.print("FAIL JSON:\n" + text + "\n");
+			throw TF.printDiff("parsed:", parsed, "expected:", expected, (a,b) -> CKit.equals(a, b));
 		}
-	}
-	
-	
-	private static int findMismatchIndex(List<Segment> segments, List<Segment> expected)
-	{
-		for(int i=0; i<10000; i++)
-		{
-			if((i >= segments.size()) || (i >= expected.size()))
-			{
-				return i;
-			}
-			
-			Segment a = segments.get(i);
-			Segment b = expected.get(i);
-			if(CKit.notEquals(a, b))
-			{
-				return i;
-			}
-		}
-		return -1;
 	}
 }
