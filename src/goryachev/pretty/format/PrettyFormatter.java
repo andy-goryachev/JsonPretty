@@ -310,6 +310,16 @@ public class PrettyFormatter
 		
 		return isAfter(Type.SEPARATOR, Type.COMMA, Type.COMMA_ARRAY, Type.OBJECT_END, Type.ARRAY_END, Type.XML_TAG_CLOSING, Type.XML_TAG_EMPTY);
 	}
+	
+	
+	protected boolean insertLineBreakBeforeXmlTag()
+	{
+		if(result.size() == 0)
+		{
+			return false;
+		}
+		return true;
+	}
 
 
 	public CList<Segment> format()
@@ -421,7 +431,10 @@ public class PrettyFormatter
 				
 			case XML_COMMENT:
 			case XML_TAG_EMPTY:
-				insertLineBreak();
+				if(insertLineBreakBeforeXmlTag())
+				{
+					insertLineBreak();
+				}
 				addSegment(s);
 				break;
 				
