@@ -6,6 +6,7 @@
 - fixed #2 incorrect parsing of nested array 
 - fixed #7 formatting issue: nested arrays [[[]]] 
 - fixed #6 formatting issue: empty object in an array
+- fixed #8 unnecessary line break
 
 **0.00.13**
 - binary display enhancement

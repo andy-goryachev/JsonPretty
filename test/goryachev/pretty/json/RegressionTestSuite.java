@@ -21,5 +21,6 @@ public class RegressionTestSuite
 		new TestJsonParser().regressionTests();
 		new TestXmlParser().regressionTests();
 		new TestPrettyFormatter().regressionTests();
+		new TestMixed().regressionTests();
 	}
 }

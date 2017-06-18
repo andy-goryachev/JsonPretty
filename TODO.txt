@@ -1,6 +1,4 @@
 TODO
 
 - reset indent on IGNORE
-- json parser: single AB,OB,AE,OE tags
-- xml parser: remove newlines from tags
 

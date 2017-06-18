@@ -53,12 +53,12 @@ public class TestJsonParser
 		t(IG, "ignore", LB, "\r\n", OB, "{", OE, "}");
 		t(OB, "{", OE, "}", LB, "\r\n", IG, "ignore", OB, "{", OE, "}", LB, "\r\n");
 		t(AB, "[", AB, "[", AB, "[", AE, "]", AE, "]", AE, "]");
+		t(OB, "{", NB, "\"", NA, "issue_002", NE, "\"", SP, ":", AB, "[", AB, "[", AB, "[", AE, "]", AE, "]", AE, "]", OE, "}");
 	}
 
 
 	@Test
 	public void test()
 	{
-		t(OB, "{", NB, "\"", NA, "issue_002", NE, "\"", SP, ":", AB, "[", AB, "[", AB, "[", AE, "]", AE, "]", AE, "]", OE, "}");
 	}
 }
