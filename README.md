@@ -18,7 +18,7 @@ a super-fast text editor that works with very large texts.
 
 ## Download
 
-[Download JsonPretty JAR](https://github.com/andy-goryachev/JsonPretty/raw/master/releases/JsonPretty.0.00.13.jar)
+[Download JsonPretty JAR](https://github.com/andy-goryachev/JsonPretty/raw/master/releases/JsonPretty.0.00.14.jar)
 
 ## License
 
