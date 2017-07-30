@@ -1,11 +1,14 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.D;
+import goryachev.common.util.Log;
 import goryachev.fx.Binder;
 import goryachev.fx.CAction;
 import goryachev.fx.CBooleanProperty;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
+import goryachev.fx.Formatters;
+import goryachev.fx.FxFormatter;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.Markers;
 import java.io.StringWriter;
@@ -17,8 +20,8 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -47,27 +50,32 @@ public class FxEditor
 {
 	/** caret style */
 	public static final CssStyle CARET = new CssStyle("FxEditor_CARET");
+	/** caret line highlight */
+	public static final CssStyle CARET_LINE_HIGHLIGHT = new CssStyle("FxEditor_CARET_LINE_HIGHLIGHT");
 	/** selection highlight */
 	public static final CssStyle HIGHLIGHT = new CssStyle("FxEditor_HIGHLIGHT");
 	/** panel style */
 	public static final CssStyle PANEL = new CssStyle("FxEditor_PANEL");
+	/** line number component */
+	public static final CssStyle LINE_NUMBER = new CssStyle("FxEditor_LINE_NUMBER");
 	
 	public final CAction copyAction = new CAction(this::copy);
 	public final CAction selectAllAction = new CAction(this::selectAll);
 	
-	protected final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
+	protected final SimpleBooleanProperty editableProperty = new SimpleBooleanProperty(false);
 	protected final ReadOnlyObjectWrapper<FxEditorModel> modelProperty = new ReadOnlyObjectWrapper<>();
 	protected final CBooleanProperty wrapTextProperty = new CBooleanProperty(true, this::updateLayout);
-	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
-	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
-	protected final ReadOnlyObjectWrapper<EditorSelection> selection = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
-	protected Markers markers = new Markers(32);
+	protected final ReadOnlyBooleanWrapper multipleSelectionProperty = new ReadOnlyBooleanWrapper(false);
+	protected final BooleanProperty displayCaretProperty = new SimpleBooleanProperty(true);
+	protected final BooleanProperty showLineNumbersProperty = new SimpleBooleanProperty(false);
+	protected final BooleanProperty highlightCaretLineProperty = new SimpleBooleanProperty(true);
+	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRateProperty = new ReadOnlyObjectWrapper(Duration.millis(500));
+	protected final SimpleObjectProperty<FxFormatter> lineNumberFormatterProperty = new SimpleObjectProperty<>();
+	protected final Markers markers = new Markers(32);
 	protected final VFlow vflow;
 	protected final ScrollBar vscroll;
 	protected final ScrollBar hscroll;
-	protected final BooleanProperty displayCaret = new SimpleBooleanProperty(true);
-	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
-	protected final EditorSelectionController selector;
+	protected final SelectionController selector;
 	protected final KeyMap keymap;
 	protected boolean handleScrollEvents = true;
 
@@ -81,9 +89,12 @@ public class FxEditor
 	public FxEditor(FxEditorModel m)
 	{
 		setFocusTraversable(true);
-		setTextModel(m);
 		FX.style(this, PANEL);
 		setBackground(FX.background(Color.WHITE));
+		
+		selector = createSelectionController();
+
+		setTextModel(m);
 		
 		vflow = new VFlow(this);
 		
@@ -94,8 +105,7 @@ public class FxEditor
 		
 		getChildren().addAll(vflow, vscroll, hscroll);
 		
-		selector = createSelectionController();
-		segments.addListener((Observable src) -> vflow.reloadSelectionDecorations());
+		selector.segments.addListener((Observable src) -> vflow.updateCaretAndSelection());
 
 		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
 		Binder.onChange(this::updateLayout, widthProperty(), heightProperty());
@@ -105,17 +115,7 @@ public class FxEditor
 		initMouseController();
 		
 		// init key handler
-		addEventFilter(KeyEvent.ANY, (ev) ->
-		{
-			if(!ev.isConsumed())
-			{
-				Runnable a = keymap.getActionForKeyEvent(ev);
-				if(a != null)
-				{
-					a.run();
-				}
-			}
-		});
+		addEventFilter(KeyEvent.ANY, (ev) -> handleKeyEvent(ev));
 	}
 	
 	
@@ -125,18 +125,37 @@ public class FxEditor
 	}
 	
 	
-	/** override to provide your own selection model */
-	protected EditorSelectionController createSelectionController()
+	public FxFormatter getLineNumberFormatter()
 	{
-		return new EditorSelectionController(this, segments);
+		FxFormatter f = lineNumberFormatterProperty.get();
+		if(f == null)
+		{
+			f = Formatters.getIntegerFormat();
+		}
+		return f;
 	}
 	
 	
-	/** override to provide your own controller */
+	public void setLineNumberFormatter(FxFormatter f)
+	{
+		lineNumberFormatterProperty.set(f);
+		requestLayout();
+	}
+	
+	
+	/** override to provide your own selection model */
+	protected SelectionController createSelectionController()
+	{
+		return new SelectionController();
+	}
+	
+	
+	/** override to provide your own mouse handler */
 	protected void initMouseController()
 	{
-		FxEditorMouseController h = new FxEditorMouseController(this, selector);
+		FxEditorMouseHandler h = new FxEditorMouseHandler(this, selector);
 		
+		addEventFilter(MouseEvent.MOUSE_CLICKED, (ev) -> h.handleMouseClicked(ev));
 		addEventFilter(MouseEvent.MOUSE_PRESSED, (ev) -> h.handleMousePressed(ev));
 		addEventFilter(MouseEvent.MOUSE_RELEASED, (ev) -> h.handleMouseReleased(ev));
 		addEventFilter(MouseEvent.MOUSE_DRAGGED, (ev) -> h.handleMouseDragged(ev));
@@ -158,21 +177,21 @@ public class FxEditor
 	
 	public ReadOnlyObjectProperty<EditorSelection> selectionProperty()
 	{
-		return selection.getReadOnlyProperty();
+		return selector.selectionProperty();
 	}
 	
 	
 	public EditorSelection getSelection()
 	{
-		return selection.get();
+		return selector.getSelection();
 	}
 	
 	
-	/** perhaps make this method public */
-	protected void setSelection(EditorSelection es)
-	{
-		selection.set(es);
-	}
+	// TODO use selector for this
+//	protected void setSelection(EditorSelection es)
+//	{
+//		selectionProperty.set(es);
+//	}
 	
 	
 	public void clearSelection()
@@ -203,6 +222,10 @@ public class FxEditor
 		{
 			m.addListener(this);
 		}
+		
+//		Marker ma = new Marker(0, 0, true);
+//		selector.setSelection(ma, ma);
+//		selector.commitSelection();
 		
 		updateLayout();
 	}
@@ -289,19 +312,19 @@ public class FxEditor
 	
 	public void setMultipleSelectionEnabled(boolean on)
 	{
-		multipleSelection.set(on);
+		multipleSelectionProperty.set(on);
 	}
 	
 	
 	public boolean isMultipleSelectionEnabled()
 	{
-		return multipleSelection.get();
+		return multipleSelectionProperty.get();
 	}
 	
 	
 	public ReadOnlyBooleanProperty multipleSelectionProperty()
 	{
-		return multipleSelection.getReadOnlyProperty();
+		return multipleSelectionProperty.getReadOnlyProperty();
 	}
 	
 	
@@ -373,38 +396,38 @@ public class FxEditor
 	
 	protected int getViewStartLine()
 	{
-		return vflow.layout.startLine();
+		return vflow.layout.getTopLine();
 	}
 	
 	
 	public ReadOnlyObjectProperty<Duration> blinkRateProperty()
 	{
-		return caretBlinkRate.getReadOnlyProperty();
+		return caretBlinkRateProperty.getReadOnlyProperty();
 	}
 	
 	
 	public Duration getBlinkRate()
 	{
-		return caretBlinkRate.get();
+		return caretBlinkRateProperty.get();
 	}
 	
 	
 	public void setBlinkRate(Duration d)
 	{
-		caretBlinkRate.set(d);
+		caretBlinkRateProperty.set(d);
 	}
 	
 	
 	public boolean isEditable()
 	{
-		return editable.get();
+		return editableProperty.get();
 	}
 	
 	
-	/** enables editing.  FIX not yet editable */
+	/** enables editing in the component.  this setting will be ignored if a a model is read only */
 	public void setEditable(boolean on)
 	{
-		editable.set(on);
+		editableProperty.set(on);
 	}
 
 	
@@ -444,13 +467,37 @@ public class FxEditor
 	
 	public void setDisplayCaret(boolean on)
 	{
-		displayCaret.set(on);
+		displayCaretProperty.set(on);
 	}
 	
 	
 	public boolean isDisplayCaret()
 	{
-		return displayCaret.get();
+		return displayCaretProperty.get();
+	}
+	
+	
+	public void setShowLineNumbers(boolean on)
+	{
+		showLineNumbersProperty.set(on);
+	}
+	
+	
+	public boolean isShowLineNumbers()
+	{
+		return showLineNumbersProperty.get();
+	}
+	
+	
+	public void setHighlightCaretLine(boolean on)
+	{
+		highlightCaretLineProperty.set(on);
+	}
+	
+	
+	public boolean isHighlightCaretLine()
+	{
+		return highlightCaretLineProperty.get();
 	}
 	
 
@@ -510,8 +557,8 @@ public class FxEditor
 			--ix;
 			
 			String s = getTextModel().getPlainText(ix);
-			Marker beg = new Marker(0, 0, true);
-			Marker end = new Marker(ix, Math.max(0, s.length() - 1), false);
+			Marker beg = markers.newMarker(0, 0, true);
+			Marker end = markers.newMarker(ix, Math.max(0, s.length() - 1), false);
 			
 			selector.setSelection(beg, end);
 			selector.commitSelection();
@@ -531,6 +578,102 @@ public class FxEditor
 		{
 			// FIX smarter positioning so the target line is somewhere at 25% of the height
 			vflow.setOrigin(ix, 0);
+		}
+	}
+	
+	
+	protected void handleKeyEvent(KeyEvent ev)
+	{
+		if(!ev.isConsumed())
+		{
+			Runnable a = keymap.getActionForKeyEvent(ev);
+			if(a != null)
+			{
+				a.run();
+				return;
+			}
+			
+			EventType<KeyEvent> t = ev.getEventType();
+			if(t == KeyEvent.KEY_PRESSED)
+			{
+				handleKeyPressed(ev);
+			}
+			else if(t == KeyEvent.KEY_RELEASED)
+			{
+				handleKeyReleased(ev);
+			}
+			else if(t == KeyEvent.KEY_TYPED)
+			{
+				handleKeyTyped(ev);
+			}
+		}
+	}
+
+
+	protected void handleKeyPressed(KeyEvent ev)
+	{
+	}
+	
+	
+	protected void handleKeyReleased(KeyEvent ev)
+	{
+	}
+	
+	
+	protected void handleKeyTyped(KeyEvent ev)
+	{
+		FxEditorModel m = getTextModel();
+		if(m.isEditable())
+		{
+			String ch = ev.getCharacter();
+			if(isTypedCharacter(ch))
+			{
+				Edit ed = new Edit(getSelection(), ch);
+				try
+				{
+					Edit undo = m.edit(ed);
+					// TODO add to undo manager
+				}
+				catch(Exception e)
+				{
+					// TODO provide user feedback
+					Log.ex(e);
+				}
+			}
+		}
+	}
+
+
+	protected boolean isTypedCharacter(String ch)
+	{
+		if(KeyEvent.CHAR_UNDEFINED.equals(ch))
+		{
+			return false;
+		}
+		
+		int len = ch.length();
+		switch(len)
+		{
+		case 0:
+			return false;
+		case 1:
+			break;
+		default:
+			return true;
+		}
+		
+		char c = ch.charAt(0);
+		if(c < ' ')
+		{
+			return false;
+		}
+		
+		switch(c)
+		{
+		case 0x7f:
+			return false;
+		default:
+			return true;
 		}
 	}
 }

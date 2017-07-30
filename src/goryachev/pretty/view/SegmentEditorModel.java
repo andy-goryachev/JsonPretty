@@ -5,13 +5,13 @@ import goryachev.common.util.SB;
 import goryachev.fx.edit.CTextFlow;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxEditorModel;
+import goryachev.fx.edit.LineBox;
 import goryachev.pretty.ColorScheme;
 import goryachev.pretty.Config;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.Arrays;
 import java.util.List;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 
 
@@ -55,15 +55,16 @@ public class SegmentEditorModel
 	}
 
 
-	public Region getDecoratedLine(int ix)
+	public LineBox getDecoratedLine(int ix)
 	{
 		Line line = lines.get(ix);
-		CTextFlow flow = new CTextFlow();
+		LineBox b = new LineBox();
+		CTextFlow flow = b.text();
 		for(Segment s: line.segments)
 		{
 			flow.getChildren().add(createText(s.getText(), s.getType()));
 		}
-		return flow;
+		return b;
 	}
 	
 	

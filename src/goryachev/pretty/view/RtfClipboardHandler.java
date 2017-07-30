@@ -47,8 +47,6 @@ public class RtfClipboardHandler
 	
 	protected void writeRtf(EditorSelection sel, StringWriter wr) throws Exception
 	{
-		sel = sel.getNormalizedSelection();
-		
 		wr.write("{\\rtf1\\ansi\\uc1\\deff0{\\fonttbl{\\f0\\fnil Courier New;}}\n");
 		
 		writeStyles(wr);
@@ -99,8 +97,8 @@ public class RtfClipboardHandler
 
 	protected void writeSelectionSegment(SelectionSegment sel, Writer wr) throws Exception
 	{
-		Marker m0 = sel.getTop();
-		Marker m1 = sel.getBottom();
+		Marker m0 = sel.getMin();
+		Marker m1 = sel.getMax();
 		
 		int first = m0.getLine();
 		int last = m1.getLine();

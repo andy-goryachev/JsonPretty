@@ -5,9 +5,9 @@ import goryachev.common.util.CSorter;
 import goryachev.fx.edit.CTextFlow;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxEditorModel;
+import goryachev.fx.edit.LineBox;
 import goryachev.pretty.analysis.AnalysisReport;
 import javafx.geometry.Insets;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 
 
@@ -91,17 +91,18 @@ public class DetailModel
 	}
 
 
-	public Region getDecoratedLine(int ix)
+	public LineBox getDecoratedLine(int ix)
 	{
 		Line line = getLine(ix);
 		
 		Text t = new Text(line.text);
 		t.setFill(ColorScheme.getDetailColor(line.heading));
 		
-		CTextFlow flow = new CTextFlow();
+		LineBox b = new LineBox();
+		CTextFlow flow = b.text();
 		flow.add(t);
 		flow.setPadding(line.heading ? HEADING_INSETS : LINE_INSETS);
-		return flow;
+		return b;
 	}
 	
 

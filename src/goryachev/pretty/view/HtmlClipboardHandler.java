@@ -1,7 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view;
 import goryachev.common.util.CKit;
-import goryachev.common.util.CMap;
 import goryachev.common.util.Hex;
 import goryachev.common.util.html.HtmlTools;
 import goryachev.fx.edit.ClipboardHandlerBase;
@@ -51,8 +50,6 @@ public class HtmlClipboardHandler
 
 	protected void writeHtml(EditorSelection sel, StringWriter wr) throws Exception
 	{
-		sel = sel.getNormalizedSelection();
-		
 		wr.write("<html><head><style>\n");
 		writeStyles(wr);
 		wr.write("</style><body style=\"font-family:courier,monospace\">\n");
@@ -98,8 +95,8 @@ public class HtmlClipboardHandler
 
 	protected void writeSelectionSegment(SelectionSegment sel, Writer wr) throws Exception
 	{
-		Marker m0 = sel.getTop();
-		Marker m1 = sel.getBottom();
+		Marker m0 = sel.getMin();
+		Marker m1 = sel.getMax();
 		
 		int first = m0.getLine();
 		int last = m1.getLine();

@@ -77,7 +77,7 @@ public class ContentView
 			
 			if(sel.isEmpty())
 			{
-				Marker m = sel.getEnd();
+				Marker m = sel.getCaret();
 				text = textField.getTextOnLine(m.getLine());
 				pos = m.getLineOffset();
 			}

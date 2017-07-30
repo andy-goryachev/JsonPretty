@@ -1,6 +1,9 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.Assert;
 import goryachev.common.util.FH;
+import goryachev.common.util.SB;
+import goryachev.fx.edit.internal.Markers;
 
 
 /**
@@ -10,16 +13,27 @@ import goryachev.common.util.FH;
 public class Marker
 	implements Comparable<Marker>
 {
+	public static final Marker ZERO = new Marker();
 	private int line;
 	private int charIndex;
 	private boolean leading;
 	
 	
-	public Marker(int line, int charIndex, boolean leading)
+	public Marker(Markers owner, int line, int charIndex, boolean leading)
 	{
+		Assert.notNull(owner, "owner");
+		
 		this.line = line;
 		this.charIndex = charIndex;
-		this.leading = leading;
+		this.leading = leading;		
+	}
+	
+	
+	private Marker()
+	{
+		this.line = 0;
+		this.charIndex = 0;
+		this.leading = true;	
 	}
 	
 
@@ -60,7 +74,20 @@ public class Marker
 	
 	public String toString()
 	{
-		return line + "." + charIndex + (leading ? ".L" : "T");
+		SB sb = new SB(16);
+		sb.a(line);
+		sb.a(':');
+//		if(leading)
+//		{
+//			sb.a('*');
+//		}
+//		sb.a(charIndex);
+//		if(!leading)
+//		{
+//			sb.a('*');
+//		}
+		sb.a(getCharIndex());
+		return sb.toString();
 	}
 
 	
@@ -69,10 +96,13 @@ public class Marker
 		int d = line - m.line;
 		if(d == 0)
 		{
-			d = charIndex - m.charIndex;
-			if(leading != m.leading)
+			d = getLineOffset() - m.getLineOffset();
+			if(d == 0)
 			{
-				return leading ? -1 : 1;
+				if(leading != m.leading)
+				{
+					return leading ? -1 : 1;
+				}
 			}
 		}
 		return d;
