@@ -1,5 +1,8 @@
 # JsonPretty Release Notes
 
+**0.00.15**
+- fxeditor update
+
 **0.00.14**
 - separate rtf and html copy menus
 - fixed #1 fails to format }}}
