@@ -640,6 +640,8 @@ public class RecursiveJsonXmlParser
 			int c = peek();
 			switch(c)
 			{
+			case EOF:
+				return;
 			case '-':
 				if(peek("-->"))
 				{
@@ -679,6 +681,8 @@ public class RecursiveJsonXmlParser
 			int c = peek();
 			switch(c)
 			{
+			case EOF:
+				return;
 			case '>':
 				next();
 				if(xmlLevel > 0)
