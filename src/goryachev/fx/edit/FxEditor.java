@@ -108,7 +108,7 @@ public class FxEditor
 		selector.segments.addListener((Observable src) -> vflow.updateCaretAndSelection());
 
 		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
-		Binder.onChange(this::updateLayout, widthProperty(), heightProperty());
+		Binder.onChange(this::updateLayout, widthProperty(), heightProperty(), showLineNumbersProperty);
 		
 		keymap = createKeyMap();
 		
@@ -223,10 +223,11 @@ public class FxEditor
 			m.addListener(this);
 		}
 		
-//		Marker ma = new Marker(0, 0, true);
-//		selector.setSelection(ma, ma);
-//		selector.commitSelection();
-		
+		selector.clear();
+		if(vflow != null)
+		{
+			vflow.invalidateLayout();
+		}
 		updateLayout();
 	}
 	
@@ -486,6 +487,12 @@ public class FxEditor
 	public boolean isShowLineNumbers()
 	{
 		return showLineNumbersProperty.get();
+	}
+	
+	
+	public BooleanProperty showLineNumbersProperty()
+	{
+		return showLineNumbersProperty;
 	}
 	
 	
