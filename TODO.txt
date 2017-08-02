@@ -2,3 +2,6 @@ TODO
 
 - reset indent on IGNORE
 
+- eclipse copy: 
+[ms-stuff/preferred-drop-effect]
+0000  01 00 00 00        

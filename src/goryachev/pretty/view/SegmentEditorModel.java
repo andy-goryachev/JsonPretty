@@ -58,7 +58,7 @@ public class SegmentEditorModel
 	public LineBox getDecoratedLine(int ix)
 	{
 		Line line = lines.get(ix);
-		LineBox b = new LineBox();
+		LineBox b = LineBox.createTextBox();
 		CTextFlow flow = b.text();
 		for(Segment s: line.segments)
 		{
@@ -76,25 +76,11 @@ public class SegmentEditorModel
 	
 	protected Text createText(String text, Type type)
 	{
-		if(type == Type.INDENT)
-		{
-			text = toSpaces(text);
-		}
-		
 		Text t = new Text(text);
 		t.setFill(ColorScheme.getColor(type));
 		return t;
 	}
 	
-	
-	protected String toSpaces(String text)
-	{
-		int sz = text.length() * Config.TAB_SIZE;
-		char[] cs = new char[sz];
-		Arrays.fill(cs, ' ');
-		return new String(cs);
-	}
-
 
 	public void setSegments(List<Segment> formatted)
 	{
