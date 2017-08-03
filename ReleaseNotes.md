@@ -2,6 +2,7 @@
 
 **0.00.15**
 - fxeditor update
+- fixed #2 StringIndexOutOfBoundsException selecting text 
 
 **0.00.14**
 - separate rtf and html copy menus

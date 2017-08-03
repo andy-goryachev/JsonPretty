@@ -45,6 +45,10 @@ public class SegmentEditorModel
 
 	public String getPlainText(int ix)
 	{
+		if(ix >= getLineCount())
+		{
+			return "";
+		}
 		return lines.get(ix).getText();
 	}
 	
@@ -70,6 +74,10 @@ public class SegmentEditorModel
 	
 	public Segment[] getSegments(int ix)
 	{
+		if(ix >= getLineCount())
+		{
+			return new Segment[0];
+		}
 		return lines.get(ix).segments;
 	}
 	
