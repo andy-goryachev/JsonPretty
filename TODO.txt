@@ -1,7 +1,17 @@
 TODO
-
+- do not eat linebreaks if ignore or error
+- fix xml indent
+- remember recent or selected files
 - reset indent on IGNORE
 
 - eclipse copy: 
 [ms-stuff/preferred-drop-effect]
-0000  01 00 00 00        
+0000  01 00 00 00       
+
+colors
+	ff5f87
+	a8de70
+	ffd95c
+	fe9861
+	ab9bf5
+	74dce9
