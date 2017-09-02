@@ -7,10 +7,8 @@ import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxEditorModel;
 import goryachev.fx.edit.LineBox;
 import goryachev.pretty.ColorScheme;
-import goryachev.pretty.Config;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
-import java.util.Arrays;
 import java.util.List;
 import javafx.scene.text.Text;
 
@@ -59,10 +57,10 @@ public class SegmentEditorModel
 	}
 
 
-	public LineBox getDecoratedLine(int ix)
+	public LineBox getLineBox(int ix)
 	{
 		Line line = lines.get(ix);
-		LineBox b = LineBox.createTextBox();
+		LineBox b = new LineBox();
 		CTextFlow flow = b.text();
 		for(Segment s: line.segments)
 		{

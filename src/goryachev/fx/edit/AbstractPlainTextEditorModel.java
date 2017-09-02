@@ -1,8 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 
 /**
@@ -16,7 +14,7 @@ public abstract class AbstractPlainTextEditorModel
 	}
 	
 	
-	public LineBox getDecoratedLine(int line)
+	public LineBox getLineBox(int line)
 	{
 		LineBox b = new LineBox();
 		String s = getPlainText(line);

@@ -1,6 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
@@ -44,7 +43,7 @@ public class VFlow
 	// TODO line decorations/line numbers
 	protected FxEditorLayout layout;
 	/** index of the topmost visible line */
-	protected int topLineIndex;
+	protected int topLine;
 	/** horizontal shift in pixels */
 	protected double offsetx;
 	/** vertical offset or the viewport relative to the topmost line.  always positive */
@@ -54,6 +53,8 @@ public class VFlow
 	public VFlow(FxEditor ed)
 	{
 		this.editor = ed;
+		
+		FX.style(this, FxEditor.VFLOW);
 		
 		clip = new Rectangle();
 		
@@ -69,7 +70,7 @@ public class VFlow
 		caretLineHighlight.setFill(Color.rgb(255, 0, 255, 0.02));
 
 		selectionHighlight = new Path();
-		FX.style(selectionHighlight, FxEditor.HIGHLIGHT);
+		FX.style(selectionHighlight, FxEditor.SELECTION_HIGHLIGHT);
 		selectionHighlight.setManaged(false);
 		selectionHighlight.setStroke(null);
 		selectionHighlight.setFill(Color.rgb(255, 255, 0, 0.25));
@@ -96,7 +97,7 @@ public class VFlow
 	
 	public void setOrigin(int top, double offy)
 	{
-		topLineIndex = top;
+		topLine = top;
 		offsety = offy;
 		
 		layoutChildren();
@@ -108,11 +109,47 @@ public class VFlow
 		editor.vscroll.setValue(v);
 		editor.setHandleScrollEvents(true);
 	}
+	
+	
+	/** adjusts the origin to maximize the visibility of the specified line */
+	public void scrollToVisible(int ix)
+	{
+		// TODO all this could be smarter and actually compute the new origin
+		if(ix <= topLine)
+		{
+			setOrigin(topLine, 0);
+		}
+		else
+		{
+			LineBox b = layout.getLineBox(ix);
+			if(b != null)
+			{
+				double y = b.getY() + b.getHeight();
+				double dy = y - getHeight();
+				if(y > 0)
+				{
+					blockScroll(dy, true);
+				}
+			}
+		}
+	}
 
 
 	public void setTopLineIndex(int ix)
 	{
-		topLineIndex = ix;
+		topLine = ix;
+	}
+	
+	
+	public int getTopLine()
+	{
+		return topLine;
+	}
+	
+	
+	public int getVisibleLineCount()
+	{
+		return layout.getVisibleLineCount();
 	}
 	
 	
@@ -137,7 +174,7 @@ public class VFlow
 	{
 		offsetx = 0;
 		offsety = 0;
-		topLineIndex = 0;
+		topLine = 0;
 	}
 	
 	
@@ -187,7 +224,7 @@ public class VFlow
 	{			
 		double h = Math.max(1.0, c.prefHeight(-1));
 		int lineCount = (int)(getHeight() / h);
-		int ix = Math.max(999, topLineIndex + lineCount);
+		int ix = Math.max(999, topLine + lineCount);
 		
 		setLineNumber(c, ix);
 		
@@ -223,9 +260,9 @@ public class VFlow
 		clip.setHeight(height);
 		
 		// TODO is loaded?
-		FxEditorModel model = editor.getTextModel();
+		FxEditorModel model = editor.getModel();
 		int lines = model.getLineCount();
-		FxEditorLayout la = new FxEditorLayout(editor, topLineIndex);
+		FxEditorLayout la = new FxEditorLayout(editor, topLine);
 		
 		Insets pad = getInsets();
 		double ymax = height - pad.getBottom();
@@ -236,24 +273,24 @@ public class VFlow
 		boolean showLineNumbers = editor.isShowLineNumbers();
 		boolean estimateLineNumberWidth = showLineNumbers;
 		double wid = width - x1 - pad.getRight();
-		double lnw = 0;
+		double lineNumbersColumnWidth = 0;
 		
 		// from top to bottom
-		for(int ix=topLineIndex; ix<lines; ix++)
+		for(int ix=topLine; ix<lines; ix++)
 		{
 			LineBox b = (prev == null ? null : prev.getLineBox(ix));
 			if(b == null)
 			{
-				b = model.getDecoratedLine(ix);
+				b = model.getLineBox(ix);
 				b.init(ix);
 			}
 			
 			if(estimateLineNumberWidth)
 			{
-				lnw = estimateLineNumberColumnWidth(b.getLineNumberComponent());
+				lineNumbersColumnWidth = estimateLineNumberColumnWidth(b.getLineNumberComponent());
 				
-				x1 += lnw;
-				wid -= lnw;
+				x1 += lineNumbersColumnWidth;
+				wid -= lineNumbersColumnWidth;
 				if(wid < 0)
 				{
 					wid = 0;
@@ -282,15 +319,16 @@ public class VFlow
 				getChildren().add(nc);
 				nc.applyCss();
 				
-				h = Math.max(h, nc.prefHeight(lnw));
-				b.setLineHeight(h);
+				h = Math.max(h, nc.prefHeight(lineNumbersColumnWidth));
+				b.setHeight(h);
+				b.setY(y);
 				
 				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
-				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
+				layoutInArea(nc, x0, y, lineNumbersColumnWidth, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
 			}
 			else
 			{
-				b.setLineHeight(h);
+				b.setHeight(h);
 				
 				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			}
@@ -303,6 +341,8 @@ public class VFlow
 				break;
 			}
 		}
+		
+		la.setLineNumbersColumnWidth(lineNumbersColumnWidth);
 		
 		return la;
 	}
@@ -385,7 +425,7 @@ public class VFlow
 	{
 		if(layout == null)
 		{
-			layout = new FxEditorLayout(editor, topLineIndex);
+			layout = new FxEditorLayout(editor, topLine);
 		}
 		return layout;
 	}
@@ -420,19 +460,19 @@ public class VFlow
 	}
 	
 	
-	protected void blockScroll(double delta, boolean up)
+	public void blockScroll(double delta, boolean up)
 	{
 		if(up)
 		{
 			if(delta <= offsety)
 			{
 				// no need to query the model
-				setOrigin(topLineIndex, offsety -= delta);
+				setOrigin(topLine, offsety -= delta);
 				return;
 			}
 			else
 			{
-				int ix = topLineIndex;
+				int ix = topLine;
 				double targetY = -delta;
 				double y = -offsety;
 					
@@ -460,7 +500,7 @@ public class VFlow
 		}
 		else
 		{
-			int ix = topLineIndex;
+			int ix = topLine;
 			double targetY = delta;
 			double y = -offsety;
 			
@@ -570,12 +610,12 @@ public class VFlow
 			throw new Error(startMarker + "<" + endMarker);
 		}
 		
-		if(endMarker.getLine() < topLineIndex)
+		if(endMarker.getLine() < topLine)
 		{
 			// selection is above visible area
 			return;
 		}
-		else if(startMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount()))
+		else if(startMarker.getLine() >= (topLine + layout.getVisibleLineCount()))
 		{
 			// selection is below visible area
 			return;
@@ -608,8 +648,8 @@ public class VFlow
 		}
 		
 		// generate shapes
-		double left = 0.0;
-		double right = getWidth() - left;
+		double left = layout.getLineNumbersColumnWidth();
+		double right = getWidth();
 		SelectionHelper h = new SelectionHelper(b, left, right);
 		
 		h.process(top);

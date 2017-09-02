@@ -1,9 +1,13 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.D;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.util.Duration;
 
 
 /**
@@ -13,39 +17,27 @@ public class FxEditorMouseHandler
 {
 	protected final FxEditor editor;
 	protected final SelectionController selector;
-	protected boolean dragging;
-	protected boolean draggingScroll;
+	protected final Timeline autoScrollTimer;
+	private boolean fastAutoScroll;
+	private Duration autoScrollPeriod = Duration.millis(100); // arbitrary number
+	private double fastScrollThreshold = 100; // arbitrary number
+	private double autoScrollStepFast = 200; // arbitrary
+	private double autoScrollStepSlow = 20; // arbitrary
+	private boolean autoScrollUp;
 
 
 	public FxEditorMouseHandler(FxEditor ed, SelectionController sel)
 	{
 		this.editor = ed;
 		this.selector = sel;
-	}
-	
-	
-	protected boolean isOverScrollBars(double x, double y)
-	{
-		// might use getPickResult() to see if over VFlow or any other node
-		if(x >= editor.vscroll.getLayoutX())
-		{
-			return true;
-		}
-		else if(editor.hscroll.isVisible() && (y >= editor.hscroll.getLayoutY()))
-		{
-			return true;
-		}
-		return false;
+		
+		autoScrollTimer = new Timeline(new KeyFrame(autoScrollPeriod, (ev) -> autoScroll()));
+		autoScrollTimer.setCycleCount(Timeline.INDEFINITE);
 	}
 	
 	
 	protected void handleScroll(ScrollEvent ev)
 	{
-		if(isOverScrollBars(ev.getX(), ev.getY()))
-		{
-			return;
-		}
-		
 		if(ev.isShiftDown())
 		{
 			// TODO horizontal scroll perhaps?
@@ -90,50 +82,18 @@ public class FxEditorMouseHandler
 		switch(clicks)
 		{
 		case 2:
-			D.print("double click"); // FIX
+			editor.selectWord(getTextPos(ev));
 			break;
 		case 3:
-			selectLine(getTextPos(ev));
+			editor.selectLine(getTextPos(ev));
 			ev.consume();
 			break;
 		}
 	}
 	
 	
-	protected void selectLine(Marker m)
-	{
-		if(m != null)
-		{
-			FxEditorModel model = editor.getTextModel(); 
-			int lines = model.getLineCount();
-			int line = m.getLine();
-
-			Marker start = editor.markers.newMarker(line, 0, true);
-			line++;
-			
-			Marker end;
-			if(line >= lines)
-			{
-				--line;
-				int ix = Math.max(0, model.getPlainText(line).length() - 1);
-				end = editor.markers.newMarker(line, ix, false);
-			}
-			else
-			{
-				end = editor.markers.newMarker(line, 0, true);
-			}
-			selector.setSelection(start, end);
-		}
-	}
-	
-	
 	public void handleMousePressed(MouseEvent ev)
 	{
-		if(isOverScrollBars(ev.getX(), ev.getY()))
-		{
-			return;
-		}
-			
 		Marker pos = getTextPos(ev);
 		editor.setSuppressBlink(true);
 				
@@ -170,19 +130,23 @@ public class FxEditorMouseHandler
 	
 	public void handleMouseDragged(MouseEvent ev)
 	{
-		if(draggingScroll)
+		double y = ev.getY();
+		if(y < 0)
 		{
+			// above vflow
+			autoScroll(y);
 			return;
 		}
-		
-		if(isOverScrollBars(ev.getX(), ev.getY()))
+		else if(y > editor.vflow.getHeight())
 		{
-			dragging = false;
-			draggingScroll = true;
+			// below vflow
+			autoScroll(y - editor.vflow.getHeight());
 			return;
 		}
-		
-		dragging = true;
+		else
+		{
+			stopAutoScroll();
+		}
 		
 		Marker pos = getTextPos(ev);
 		selector.extendLastSegment(pos);
@@ -191,15 +155,45 @@ public class FxEditorMouseHandler
 	
 	public void handleMouseReleased(MouseEvent ev)
 	{
-		dragging = false;
-		draggingScroll = false;
+		stopAutoScroll();
 		editor.setSuppressBlink(false);
-
-		if(isOverScrollBars(ev.getX(), ev.getY()))
+		selector.commitSelection();
+	}
+	
+	
+	protected void autoScroll(double delta)
+	{
+		autoScrollUp = delta < 0;
+		fastAutoScroll = Math.abs(delta) > fastScrollThreshold;
+		autoScrollTimer.play();
+	}
+	
+	
+	protected void stopAutoScroll()
+	{
+		autoScrollTimer.stop();
+	}
+	
+	
+	protected void autoScroll()
+	{
+		double delta = fastAutoScroll ? autoScrollStepFast : autoScrollStepSlow;
+		editor.blockScroll(delta, autoScrollUp);
+		
+		Point2D p;
+		if(autoScrollUp)
 		{
-			return;
+			p = editor.vflow.localToScreen(0, 0);
+		}
+		else
+		{
+			p = editor.vflow.localToScreen(0, editor.vflow.getHeight());
 		}
 		
-		selector.commitSelection();
+		// TODO this could be done on mouse released!
+		editor.scrollToVisible(p);
+		
+		Marker pos = editor.getTextPos(p.getX(), p.getY());
+		selector.extendLastSegment(pos);
 	}
 }

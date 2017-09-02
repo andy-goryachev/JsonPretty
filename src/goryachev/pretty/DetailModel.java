@@ -91,7 +91,7 @@ public class DetailModel
 	}
 
 
-	public LineBox getDecoratedLine(int ix)
+	public LineBox getLineBox(int ix)
 	{
 		Line line = getLine(ix);
 		
