@@ -129,7 +129,7 @@ public class Base64Analyzer
 		try
 		{
 			byte[] b = decodeBase64(s);
-			String[] hex = Hex.toHexStringsAscii(b);
+			String[] hex = Hex.toHexStringsASCII(b);
 			rep.addSection(urlSafe ? "base64 url-safe" : "base64", hex);
 			
 			try
