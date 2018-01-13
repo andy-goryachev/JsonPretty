@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright (c) 2013-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.json;
 import goryachev.common.test.TF;
 import goryachev.common.test.Test;
