@@ -17,30 +17,31 @@ import javafx.scene.control.ToggleButton;
  * An AbstractAction equivalent for FX, using method references.
  * 
  * Usage:
- *    public final CAction backAction = new CAction(this::actionBack);
+ *    public final FxAction backAction = new CAction(this::actionBack);
  */
-public class CAction
+public class FxAction
     implements EventHandler<ActionEvent>
 {
+	public static final FxAction TODO = new FxAction(null, false);
 	private final BooleanProperty selectedProperty = new SimpleBooleanProperty(this, "selected");
 	private final BooleanProperty disabledProperty = new SimpleBooleanProperty(this, "disabled");
 	private Runnable onAction;
 	
 	
-	public CAction(Runnable onAction, boolean enabled)
+	public FxAction(Runnable onAction, boolean enabled)
 	{
 		this.onAction = onAction;
 		setEnabled(enabled);
 	}
 	
 	
-	public CAction(Runnable onAction)
+	public FxAction(Runnable onAction)
 	{
 		this.onAction = onAction;
 	}
 	
 	
-	public CAction()
+	public FxAction()
 	{
 	}
 	

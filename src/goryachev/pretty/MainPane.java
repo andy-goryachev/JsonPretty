@@ -3,11 +3,11 @@ package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
-import goryachev.fx.CAction;
 import goryachev.fx.CBooleanProperty;
 import goryachev.fx.CCheckBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
+import goryachev.fx.FxAction;
 import goryachev.pretty.analysis.AnalysisReport;
 import goryachev.pretty.analysis.Base64Analyzer;
 import goryachev.pretty.analysis.HexAnalyzer;
@@ -34,10 +34,10 @@ import javafx.util.Duration;
 public class MainPane
 	extends CPane
 {
-	public final CAction copyAction = new CAction(this::copy);
-	public final CAction copyHtmlAction = new CAction(this::copyHtml); 
-	public final CAction copyRtfAction = new CAction(this::copyRtf); 
-	public final CAction pasteAction = new CAction(this::pasteFromClipboard);
+	public final FxAction copyAction = new FxAction(this::copy);
+	public final FxAction copyHtmlAction = new FxAction(this::copyHtml); 
+	public final FxAction copyRtfAction = new FxAction(this::copyRtf); 
+	public final FxAction pasteAction = new FxAction(this::pasteFromClipboard);
 	public final CCheckBox monitorClipboardCheckbox;
 	public final ContentView view;
 	public final DetailPane detailPane;

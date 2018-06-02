@@ -1,11 +1,11 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
-import goryachev.fx.CButton;
 import goryachev.fx.CCheckMenuItem;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
+import goryachev.fx.FxButton;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
@@ -92,7 +92,7 @@ public class MainWindow
 		);
 		p.add(0, 0, mb);
 		p.add(1, 0, pane.monitorClipboardCheckbox);
-		p.add(2, 0, new CButton("Paste", pane.pasteAction));
+		p.add(2, 0, new FxButton("Paste", pane.pasteAction));
 		
 		return p;
 	}
@@ -102,7 +102,7 @@ public class MainWindow
 	{
 		HPane p = new HPane();
 		p.fill();
-		p.add(FX.label("copyright © 2017 andy goryachev", Color.GRAY, new Insets(1, 10, 1, 2)));
+		p.add(FX.label("copyright © 2018 andy goryachev", Color.GRAY, new Insets(1, 10, 1, 2)));
 		return p;
 	}
 }

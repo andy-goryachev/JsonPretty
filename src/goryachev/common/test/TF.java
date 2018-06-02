@@ -29,6 +29,20 @@ public class TF
 	}
 	
 	
+	/** checks if two arguments are not CKit.equals() and throws a meaningful exception if not */
+	public static void notEquals(Object value, Object expected)
+	{
+		if(CKit.equals(value, expected))
+		{
+			throw new TestException
+			(
+				"Values are not expected to be equals: " + 
+				Dump.describe(value) 
+			);
+		}
+	}
+	
+	
 	/** checks if two arguments are CKit.equals() and throws a meaningful exception if not */
 	public static void eq(Object value, Object expected, Object message)
 	{
