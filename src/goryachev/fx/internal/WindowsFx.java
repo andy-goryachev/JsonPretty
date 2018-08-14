@@ -118,8 +118,8 @@ public class WindowsFx
 	
 	protected void exitPrivate()
 	{
+		// calls Application.close()
 		Platform.exit();
-		System.exit(0);
 	}
 
 	

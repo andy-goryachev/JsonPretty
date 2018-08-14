@@ -4,10 +4,10 @@ import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
 import goryachev.fx.CBooleanProperty;
-import goryachev.fx.CCheckBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
+import goryachev.fx.FxCheckBox;
 import goryachev.pretty.analysis.AnalysisReport;
 import goryachev.pretty.analysis.Base64Analyzer;
 import goryachev.pretty.analysis.HexAnalyzer;
@@ -38,7 +38,7 @@ public class MainPane
 	public final FxAction copyHtmlAction = new FxAction(this::copyHtml); 
 	public final FxAction copyRtfAction = new FxAction(this::copyRtf); 
 	public final FxAction pasteAction = new FxAction(this::pasteFromClipboard);
-	public final CCheckBox monitorClipboardCheckbox;
+	public final FxCheckBox monitorClipboardCheckbox;
 	public final ContentView view;
 	public final DetailPane detailPane;
 	public final SplitPane split;
@@ -66,7 +66,7 @@ public class MainPane
 		
 		// clipboard
 		clipboard = Clipboard.getSystemClipboard();
-		monitorClipboardCheckbox = new CCheckBox("monitor clipboard");
+		monitorClipboardCheckbox = new FxCheckBox("monitor clipboard");
 		monitorClipboardCheckbox.selectedProperty().bindBidirectional(monitorClipboardProperty);
 		FX.listen(this::updateSplit, true, horizontalSplit);
 	}

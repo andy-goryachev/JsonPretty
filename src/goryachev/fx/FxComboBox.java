@@ -1,6 +1,7 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import java.util.Collection;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 
@@ -8,28 +9,28 @@ import javafx.scene.control.ComboBox;
 /**
  * Slightly improved ComboBox.
  */
-public class CComboBox<T>
+public class FxComboBox<T>
 	extends ComboBox<T>
 {
-	public CComboBox(ObservableList<T> items)
+	public FxComboBox(ObservableList<T> items)
 	{
 		super(items);
 	}
 	
 	
-	public CComboBox(T[] items)
+	public FxComboBox(T ... items)
 	{
 		setValues(items);
 	}
 	
 	
-	public CComboBox(Collection<T> items)
+	public FxComboBox(Collection<T> items)
 	{
 		setValues(items);
 	}
 	
 	
-	public CComboBox()
+	public FxComboBox()
 	{
 	}
 	
@@ -75,5 +76,12 @@ public class CComboBox<T>
 	public void select(T item)
 	{
 		getSelectionModel().select(item);
+	}
+	
+	
+	/** notice: utility method, the property will change if the underlying model has been changed */
+	public final ReadOnlyObjectProperty<T> selectedItemProperty()
+	{
+		return getSelectionModel().selectedItemProperty();
 	}
 }

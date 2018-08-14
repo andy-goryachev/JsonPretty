@@ -6,12 +6,12 @@ import javafx.scene.control.SeparatorMenuItem;
 
 
 /**
- * ContextMenu.
+ * Popup menu.
  */
-public class CContextMenu
+public class FxPopupMenu
 	extends ContextMenu
 {
-	public CContextMenu()
+	public FxPopupMenu()
 	{
 		setHideOnEscape(true);
 		setAutoHide(true);
@@ -25,16 +25,23 @@ public class CContextMenu
 	}
 	
 	
-	public void add(String text, FxAction a)
+	public void item(String text, FxAction a)
 	{
-		CMenuItem m = new CMenuItem(text, a);
+		FxMenuItem m = new FxMenuItem(text, a);
 		add(m);
 	}
 	
 	
-	public void add(String text)
+	public void item(String text, Runnable a)
 	{
-		CMenuItem m = new CMenuItem(text);
+		FxMenuItem m = new FxMenuItem(text, a);
+		add(m);
+	}
+	
+	
+	public void item(String text)
+	{
+		FxMenuItem m = new FxMenuItem(text);
 		m.setDisable(true);
 		add(m);
 	}
@@ -43,5 +50,11 @@ public class CContextMenu
 	public void separator()
 	{
 		add(new SeparatorMenuItem());
+	}
+
+	
+	public void clear()
+	{
+		getItems().clear();
 	}
 }

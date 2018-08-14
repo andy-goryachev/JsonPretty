@@ -1,12 +1,11 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
-import goryachev.fx.CCheckMenuItem;
-import goryachev.fx.CMenu;
-import goryachev.fx.CMenuBar;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxButton;
+import goryachev.fx.FxCheckMenuItem;
 import goryachev.fx.FxDump;
+import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
 import javafx.geometry.Insets;
@@ -48,33 +47,32 @@ public class MainWindow
 	
 	protected Node createMenu()
 	{
-		CMenu m;
-		CMenuBar mb = new CMenuBar();
+		FxMenuBar m = new FxMenuBar();
 		// file
-		mb.add(m = new CMenu("File"));
-		m.add("Save As...");
+		m.menu("File");
+		m.item("Save As...");
 		m.separator();
-		m.add("Preferences");
+		m.item("Preferences");
 		m.separator();
-		m.add("Quit", FX.exitAction());
+		m.item("Quit", FX.exitAction());
 		// edit
-		mb.add(m = new CMenu("Edit"));
-		m.add("Copy", pane.copyAction);
-		m.add("Copy HTML", pane.copyHtmlAction);
-		m.add("Copy RTF", pane.copyRtfAction);
+		m.menu("Edit");
+		m.item("Copy", pane.copyAction);
+		m.item("Copy HTML", pane.copyHtmlAction);
+		m.item("Copy RTF", pane.copyRtfAction);
 		m.separator();
-		m.add("Save Selection As...");
+		m.item("Save Selection As...");
 		m.separator();
-		m.add("Select All", pane.view.textField.selectAllAction);
+		m.item("Select All", pane.view.textField.selectAllAction);
 		m.separator();
-		m.add(new CCheckMenuItem("Monitor Clipboard", pane.monitorClipboardProperty));
-		m.add("Paste from Clipboard", pane.pasteAction);
+		m.add(new FxCheckMenuItem("Monitor Clipboard", pane.monitorClipboardProperty));
+		m.item("Paste from Clipboard", pane.pasteAction);
 		// view
-		mb.add(m = new CMenu("View"));
-		m.add(new CCheckMenuItem("Detail Pane on a Side", pane.horizontalSplit));
+		m.menu("View");
+		m.add(new FxCheckMenuItem("Detail Pane on a Side", pane.horizontalSplit));
 		// help
-		mb.add(m = new CMenu("Help"));
-		m.add("About");
+		m.menu("Help");
+		m.item("About");
 		
 //		mb.addFill();
 //		mb.add(monitorClipboardCheckbox);
@@ -90,7 +88,7 @@ public class MainWindow
 			CPane.PREF,
 			CPane.PREF
 		);
-		p.add(0, 0, mb);
+		p.add(0, 0, m);
 		p.add(1, 0, pane.monitorClipboardCheckbox);
 		p.add(2, 0, new FxButton("Paste", pane.pasteAction));
 		
