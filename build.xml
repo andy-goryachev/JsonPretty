@@ -88,6 +88,7 @@
 	<!-- copy jar to base dir -->
 	<target name="copy-jar" depends="make-jar">
 		<copy file="build/jars/${TARGET}.jar" todir="." />
+		<copy file="build/jars/${TARGET}.jar" todir="release" />
 	</target>
 	
 

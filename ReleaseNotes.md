@@ -1,5 +1,8 @@
 # JsonPretty Release Notes
 
+**0.00.16**
+- java 10 compatibility
+
 **0.00.15**
 - fxeditor update
 - fixed #2 StringIndexOutOfBoundsException selecting text 
