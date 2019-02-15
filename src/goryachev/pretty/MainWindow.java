@@ -1,4 +1,4 @@
-// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
@@ -100,7 +100,7 @@ public class MainWindow
 	{
 		HPane p = new HPane();
 		p.fill();
-		p.add(FX.label("copyright © 2018 andy goryachev", Color.GRAY, new Insets(1, 10, 1, 2)));
+		p.add(FX.label(Version.COPYRIGHT, Color.GRAY, new Insets(1, 10, 1, 2)));
 		return p;
 	}
 }
