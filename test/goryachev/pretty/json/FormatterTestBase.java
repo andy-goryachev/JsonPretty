@@ -2,7 +2,6 @@
 package goryachev.pretty.json;
 import goryachev.common.test.TF;
 import goryachev.common.util.CList;
-import goryachev.common.util.Rex;
 import goryachev.pretty.format.PrettyFormatter;
 import goryachev.pretty.parser.ParseResult;
 import goryachev.pretty.parser.RecursiveJsonXmlParser;
@@ -42,7 +41,7 @@ public class FormatterTestBase
 			}
 			else
 			{
-				throw new Rex("?" + x);
+				throw new Error("?" + x);
 			}
 		}
 		

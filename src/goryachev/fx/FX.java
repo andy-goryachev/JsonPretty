@@ -1,8 +1,10 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.CPlatform;
 import goryachev.common.util.GlobalSettings;
 import goryachev.fx.hacks.FxHacks;
 import goryachev.fx.internal.CssTools;
+import goryachev.fx.internal.FxSchema;
 import goryachev.fx.internal.WindowsFx;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -14,6 +16,7 @@ import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +32,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -37,6 +41,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -66,10 +71,14 @@ public final class FX
 	
 	public static FxWindow getWindow(Node n)
 	{
-		Window w = n.getScene().getWindow();
-		if(w instanceof FxWindow)
+		Scene sc = n.getScene();
+		if(sc != null)
 		{
-			return (FxWindow)w;
+			Window w = sc.getWindow();
+			if(w instanceof FxWindow)
+			{
+				return (FxWindow)w;
+			}
 		}
 		return null;
 	}
@@ -77,15 +86,20 @@ public final class FX
 	
 	public static void storeSettings(Node n)
 	{
-		FxWindow w = getWindow(n);
-		storeSettings(w);
+		if(n != null)
+		{
+			windowsFx.storeNode(n);
+			GlobalSettings.save();
+		}
 	}
 	
 	
 	public static void restoreSettings(Node n)
 	{
-		FxWindow w = getWindow(n);
-		restoreSettings(w);
+		if(n != null)
+		{
+			windowsFx.restoreNode(n);
+		}
 	}
 	
 	
@@ -586,31 +600,48 @@ public final class FX
 	}
 	
 	
+	/** assign a name to the node for the purposes of saving settings */
+	public static void setName(Node n, String name)
+	{
+		FxSchema.setName(n, name);
+	}
+	
+	
+	/** 
+	 * attaches a handler to be notified when settings for the node have been loaded.  
+	 * setting null clears the handler 
+	 */
+	public static void setOnSettingsLoaded(Node n, Runnable r)
+	{
+		FxSchema.setOnSettingsLoaded(n, r);
+	}
+	
+	
 	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
 	public static <T> void bind(Node n, String subKey, Property<T> p)
 	{
-		windowsFx.bindings(n, true).add(subKey, p, null);
+		FxSchema.bindings(n, true).add(subKey, p, null);
 	}
 	
 	
 	/** bind an object with settings to be saved as part of FxWindow settings using the specified subkey */
 	public static <T> void bind(Node n, String subKey, HasSettings x)
 	{
-		windowsFx.bindings(n, true).add(subKey, x);
+		FxSchema.bindings(n, true).add(subKey, x);
 	}
 	
 	
 	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
 	public static <T> void bind(Node n, String subKey, Property<T> p, StringConverter<T> c)
 	{
-		windowsFx.bindings(n, true).add(subKey, p, c);
+		FxSchema.bindings(n, true).add(subKey, p, c);
 	}
 	
 	
 	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
 	public static <T> void bind(Node n, String subKey, Property<T> p, SSConverter<T> c)
 	{
-		windowsFx.bindings(n, true).add(subKey, c, p);
+		FxSchema.bindings(n, true).add(subKey, c, p);
 	}
 	
 	
@@ -1060,5 +1091,60 @@ public final class FX
 				}
 			}
 		});
+	}
+	
+	
+	public static <T> void addOneShotListener(Property<T> p, Consumer<T> c)
+	{
+		p.addListener(new ChangeListener<T>()
+		{
+			public void changed(ObservableValue<? extends T> observable, T old, T cur)
+			{
+				c.accept(cur);
+				p.removeListener(this);
+			}
+		});
+	}
+	
+	
+	/** Prevents the node from being resized when the SplitPane is resized. */
+	public static void preventSplitPaneResizing(Node nd)
+	{
+		SplitPane.setResizableWithParent(nd, Boolean.FALSE);
+	}
+	
+	
+	/** sometimes MouseEvent.isPopupTrigger() is not enough */
+	public static boolean isPopupTrigger(MouseEvent ev)
+	{
+		if(ev.getButton() == MouseButton.SECONDARY)
+		{
+			if(CPlatform.isMac())
+			{
+				if
+				(
+					!ev.isAltDown() &&
+					!ev.isMetaDown() &&
+					!ev.isShiftDown()
+				)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				if
+				(
+					!ev.isAltDown() &&
+					!ev.isControlDown() &&
+					!ev.isMetaDown() &&
+					!ev.isShiftDown()
+				)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

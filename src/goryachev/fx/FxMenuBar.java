@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
@@ -90,6 +90,13 @@ public class FxMenuBar
 	{
 		FxMenuItem m = new FxMenuItem(name, r);
 		add(m);
+		return m;
+	}
+	
+	
+	public FxMenu item(FxMenu m)
+	{
+		lastMenu().add(m);
 		return m;
 	}
 	

@@ -2,7 +2,6 @@
 package goryachev.pretty.parser;
 import goryachev.common.util.D;
 import goryachev.common.util.Log;
-import goryachev.common.util.Rex;
 
 
 /**
@@ -35,7 +34,7 @@ public class RecursiveJsonXmlParser
 	{
 		if(result != null)
 		{
-			throw new Rex("parser can be called only once");
+			throw new Error("parser can be called only once");
 		}
 		
 		result = new ParseResult();
@@ -312,7 +311,7 @@ public class RecursiveJsonXmlParser
 			}
 			else if(sameOffsetCount > maxSameOffsetCount)
 			{
-				throw new Rex("stuck at offset " + offset);
+				throw new Error("stuck at offset " + offset);
 			}
 		}
 		else

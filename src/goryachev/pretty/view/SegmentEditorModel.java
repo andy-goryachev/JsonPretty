@@ -61,7 +61,7 @@ public class SegmentEditorModel
 	{
 		Line line = lines.get(ix);
 		LineBox b = new LineBox();
-		CTextFlow flow = b.text();
+		CTextFlow flow = b.flow();
 		for(Segment s: line.segments)
 		{
 			flow.getChildren().add(createText(s.getText(), s.getType()));

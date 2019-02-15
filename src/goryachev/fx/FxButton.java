@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.scene.control.Button;
 
@@ -19,6 +19,13 @@ public class FxButton
 	{
 		super(text);
 		a.attach(this);
+		FX.style(this, style);
+	}
+	
+	
+	public FxButton(String text, CssStyle style)
+	{
+		super(text);
 		FX.style(this, style);
 	}
 	

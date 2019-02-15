@@ -63,7 +63,7 @@ public class ContentView
 	
 	public void setWrapText(boolean on)
 	{
-		textField.setWrapText(on);
+		textField.setWordWrap(on);
 	}
 	
 	

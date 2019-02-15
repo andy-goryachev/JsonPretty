@@ -99,7 +99,7 @@ public class DetailModel
 		t.setFill(ColorScheme.getDetailColor(line.heading));
 		
 		LineBox b = new LineBox();
-		CTextFlow flow = b.text();
+		CTextFlow flow = b.flow();
 		flow.add(t);
 		flow.setPadding(line.heading ? HEADING_INSETS : LINE_INSETS);
 		return b;

@@ -3,10 +3,10 @@ package goryachev.pretty;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
-import goryachev.fx.CBooleanProperty;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
+import goryachev.fx.FxBoolean;
 import goryachev.fx.FxCheckBox;
 import goryachev.pretty.analysis.AnalysisReport;
 import goryachev.pretty.analysis.Base64Analyzer;
@@ -45,7 +45,7 @@ public class MainPane
 	protected final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(true);
 	protected static final Duration PERIOD = Duration.millis(200);
 	protected final Clipboard clipboard;
-	protected final CBooleanProperty monitorClipboardProperty = new CBooleanProperty(true, this::updateClipboardMonitoring);
+	protected final FxBoolean monitorClipboardProperty = new FxBoolean(true);
 	private Timeline timeline;
 	private String oldContent;
 
@@ -63,6 +63,8 @@ public class MainPane
 		split.setDividerPositions(0.8);
 
 		setCenter(split);
+		
+		monitorClipboardProperty.addListener((s,p,c) -> updateClipboardMonitoring());
 		
 		// clipboard
 		clipboard = Clipboard.getSystemClipboard();

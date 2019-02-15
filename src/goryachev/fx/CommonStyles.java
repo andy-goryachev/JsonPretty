@@ -1,5 +1,6 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.CPlatform;
 import goryachev.fx.edit.FxEditor;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.FxCssProp;
@@ -18,6 +19,8 @@ public class CommonStyles
 	public static final CssStyle BOLD = new CssStyle("CommonStyles_BOLD");
 	/** disables horizontal scroll bar */
 	public static final CssStyle NO_HORIZONTAL_SCROLL_BAR = new CssStyle("CommonStyles_NO_HORIZONTAL_SCROLL_BAR");
+	
+	private static String TABLE_ROW_HEIGHT = "1.8em";
 
 	
 	public CommonStyles()
@@ -38,8 +41,24 @@ public class CommonStyles
 				prop("-fx-focus-color", theme.focus),
 				// focus glow
 				prop("-fx-faint-focus-color", TRANSPARENT)
-			),
+			)
+		);
+		
+		if(CPlatform.isMac())
+		{
+			add
+			(
+				// bold still does not work, think different: https://bugs.openjdk.java.net/browse/JDK-8176835
+				selector(".root").defines
+				(
+					prop("-fx-font-size", "9pt"),
+					prop("-fx-font-family", "Dialog")
+				)
+			);
+		}
 			
+		add
+		(
 			button(theme),
 			// FIX
 //			checkbox(theme),						
@@ -49,6 +68,7 @@ public class CommonStyles
 			scrollBar(theme),
 			scrollPane(theme),
 			table(theme),
+			treeTable(theme),
 			text(theme),
 			// FIX
 			//radioButton(theme),
@@ -91,7 +111,7 @@ public class CommonStyles
 	
 	protected Object button(Theme theme)
 	{
-//	    -fx-body-color: ;
+		int flatButtonRadius = 4;
 	
 		String affirm = CssTools.toColor(theme.affirm);
 		String destruct = CssTools.toColor(theme.destruct);
@@ -100,18 +120,71 @@ public class CommonStyles
 		{
 			selector(FxButton.AFFIRM).defines
 			(
-				prop
+				backgroundColor(String.format("-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, linear-gradient(to bottom, ladder(%1$s, derive(%1$s,8%%) 75%%, derive(%1$s,10%%) 80%% ), derive(%1$s,-8%%))", affirm)),
+				selector(FOCUSED).defines
 				(
-					"-fx-background-color", 
-					String.format("-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, linear-gradient(to bottom, ladder(%1$s, derive(%1$s,8%%) 75%%, derive(%1$s,10%%) 80%% ), derive(%1$s,-8%%))", affirm)
+					backgroundColor("-fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, " + CssTools.toColor(affirm))
 				)
 			),
 			selector(FxButton.DESTRUCT).defines
 			(
-				prop
+				backgroundColor(String.format("-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, linear-gradient(to bottom, ladder(%1$s, derive(%1$s,8%%) 75%%, derive(%1$s,10%%) 80%% ), derive(%1$s,-8%%))", destruct)),
+				selector(FOCUSED).defines
 				(
-					"-fx-background-color", 
-					String.format("-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, linear-gradient(to bottom, ladder(%1$s, derive(%1$s,8%%) 75%%, derive(%1$s,10%%) 80%% ), derive(%1$s,-8%%))", destruct)
+					backgroundColor("-fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, " + CssTools.toColor(destruct))
+				)
+			),
+
+			selector(FlatButton.STYLE).defines
+			(
+				backgroundColor(TRANSPARENT),
+				backgroundInsets(0),
+				backgroundRadius(0),
+				padding(spaces("0.33333em 0.666667em 0.333333em 0.666667em")),
+				textFill("-fx-text-base-color"),
+				prop("-fx-alignment", "center"),
+				prop("-fx-content-display", "left"),
+				
+				selector(HOVER).defines
+				(
+					backgroundColor(Color.LIGHTGRAY),
+					backgroundInsets(0),
+					backgroundRadius(px(flatButtonRadius))
+				),
+				
+				selector(FOCUSED).defines
+				(
+					backgroundColor(commas(theme.focus, theme.base)),
+					backgroundInsets("0, 1"),
+					backgroundRadius(px(flatButtonRadius))
+				),
+				
+				selector(FOCUSED, HOVER).defines
+				(
+					backgroundColor(commas(theme.focus, Color.LIGHTGRAY)),
+					backgroundInsets("0 0 0 0, 1 1 1 1"),
+					backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+				),
+				
+				selector(DISABLED).defines
+				(
+					opacity(0.4)
+				),
+				
+				selector(ARMED).defines
+				(
+					textFill(Color.BLACK),
+					backgroundColor(commas(theme.focus, Color.WHITE)),
+					backgroundInsets("0, 1"),
+					backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+				),
+				
+				selector(ARMED, HOVER).defines
+				(
+					textFill(Color.BLACK),
+					backgroundColor(commas(theme.focus, Color.WHITE)),
+					backgroundInsets("0, 1"),
+					backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
 				)
 			)
 		};
@@ -455,6 +528,23 @@ public class CommonStyles
 	}
 	
 	
+	protected Object treeTable(Theme theme)
+	{
+		return new Object[]
+		{
+			selector(".tree-table-cell").defines
+			(
+				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+			),
+			
+			selector(".tree-table-row-cell").defines
+			(
+				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+			)
+		};
+	}
+	
+	
 	protected Object table(Theme theme)
 	{
 		Color c = FX.alpha(theme.selectedTextBG, 0.15);
@@ -462,6 +552,16 @@ public class CommonStyles
 		
 		return new Object[]
 		{
+			selector(".table-cell").defines
+			(
+				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+			),
+			
+			selector(".table-row-cell").defines
+			(
+				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+			),
+			
 			selector(".table-row-cell:filled:selected").defines
 			(
 				backgroundColor(c),
@@ -565,7 +665,7 @@ public class CommonStyles
 	{
 		return new Object[]
 		{
-			selector(CPane.CPANE).defines
+			selector(CPane.STYLE).defines
 			(
 				padding(10),
 				prop("-ag-hgap", 10),

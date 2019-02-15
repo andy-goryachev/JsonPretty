@@ -1,4 +1,4 @@
-// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
@@ -78,7 +78,7 @@ public class VFlow
 		caretAnimation = new Timeline();
 		caretAnimation.setCycleCount(Animation.INDEFINITE);
 		
-		getChildren().addAll(selectionHighlight, caretLineHighlight, caretPath);
+		getChildren().addAll(caretLineHighlight, selectionHighlight, caretPath);
 		setClip(clip);
 		
 		caretPath.visibleProperty().bind(new BooleanBinding()
@@ -112,14 +112,11 @@ public class VFlow
 	
 	
 	/** adjusts the origin to maximize the visibility of the specified line */
+	// FIX handle all cases
 	public void scrollToVisible(int ix)
 	{
 		// TODO all this could be smarter and actually compute the new origin
-		if(ix <= topLine)
-		{
-			setOrigin(topLine, 0);
-		}
-		else
+		if((ix >= topLine) && (ix <= topLine + getVisibleLineCount()))
 		{
 			if(layout != null)
 			{
@@ -131,10 +128,13 @@ public class VFlow
 					if(y > 0)
 					{
 						blockScroll(dy, true);
+						return;
 					}
 				}
 			}
 		}
+		
+		setOrigin(ix, 0);
 	}
 
 
@@ -264,32 +264,37 @@ public class VFlow
 		
 		// TODO is loaded?
 		FxEditorModel model = editor.getModel();
-		int lines = model.getLineCount();
+		int lineCount = model.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(editor, topLine);
 		
 		Insets pad = getInsets();
+		double y0 = pad.getTop() - offsety;
 		double ymax = height - pad.getBottom();
-		double y = pad.getTop() - offsety;
 		double x0 = pad.getLeft();
-		double x1 = x0;
-		boolean wrap = editor.isWrapText();
+		double wid = width - pad.getLeft() - pad.getRight();
+		boolean wrap = editor.isWordWrap();
 		boolean showLineNumbers = editor.isShowLineNumbers();
 		boolean estimateLineNumberWidth = showLineNumbers;
-		double wid = width - x1 - pad.getRight();
-		double lineNumbersColumnWidth = 0;
+		double lineNumbersColumnWidth = 0.0;
+		double unwrappedWidth = -1.0;
 		
-		// from top to bottom
-		for(int ix=topLine; ix<lines; ix++)
+		// layout from top to bottom.
+		// stage 1: computing preferred sizes
+		
+		double x1 = x0;
+		double y = y0;
+		for(int i=topLine; i<lineCount; i++)
 		{
-			LineBox b = (prev == null ? null : prev.getLineBox(ix));
+			LineBox b = (prev == null ? null : prev.getLineBox(i));
 			if(b == null)
 			{
-				b = model.getLineBox(ix);
-				b.init(ix);
+				b = model.getLineBox(i);
+				b.init(i);
 			}
 			
 			if(estimateLineNumberWidth)
 			{
+				// TODO can simply get the last line pref width after the sizing cycle, before the actual layout cycle
 				lineNumbersColumnWidth = estimateLineNumberColumnWidth(b.getLineNumberComponent());
 				
 				x1 += lineNumbersColumnWidth;
@@ -309,34 +314,76 @@ public class VFlow
 			nd.applyCss();
 			la.addLineBox(b);
 			
-			double w = wrap ? wid : nd.prefWidth(-1);
+			// TODO can use cached value if the vflow width is the same
+			double w = wrap ? wid : -1;
 			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
 			double h = nd.prefHeight(w);
+			
+			if(!wrap)
+			{
+				Region center = b.getCenter();
+				double prefw = center == null ? 0.0 : center.prefWidth(-1);
+				if(unwrappedWidth < prefw)
+				{
+					unwrappedWidth = prefw;
+				}
+			}
 			
 			if(showLineNumbers)
 			{
 				Labeled nc = b.getLineNumberComponent();
-				setLineNumber(nc, ix);
+				setLineNumber(nc, i);
 				
 				nc.setManaged(true);
 				getChildren().add(nc);
 				nc.applyCss();
 				
-				h = Math.max(h, nc.prefHeight(lineNumbersColumnWidth));
+				// FIX
+				// for some reason, label is taller than the text flow alone, even with the same font
+				// the -fx-padding is correct, and -fx-label-padding is 0 on line number labels
+//				h = Math.max(h, nc.prefHeight(-1));
+				
 				b.setHeight(h);
 				b.setY(y);
+			}
+			else
+			{
+				b.setHeight(h);
+			}
+			
+			y += h;
+			if(y > ymax)
+			{
+				break;
+			}
+		}
+		
+		// stage 2: layout components
+		
+		if(unwrappedWidth < wid)
+		{
+			unwrappedWidth = wid;
+		}
+		
+		y = y0;
+		for(int ix=topLine; ix<lineCount; ix++)
+		{
+			LineBox b = la.getLineBox(ix);
+			Region nd = b.getCenter();
+			double h = b.getHeight();
+			double w = wrap ? wid : unwrappedWidth;
+			
+			if(showLineNumbers)
+			{
+				Labeled nc = b.getLineNumberComponent();
 				
 				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 				layoutInArea(nc, x0, y, lineNumbersColumnWidth, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
 			}
 			else
 			{
-				b.setHeight(h);
-				
 				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			}
-			
-			// TODO set line box width
 			
 			y += h;
 			if(y > ymax)
@@ -346,6 +393,7 @@ public class VFlow
 		}
 		
 		la.setLineNumbersColumnWidth(lineNumbersColumnWidth);
+		la.setUnwrappedWidth(unwrappedWidth);
 		
 		return la;
 	}
@@ -356,7 +404,7 @@ public class VFlow
 		// warning: the same code in recreateLayout() above
 		Insets pad = getInsets();
 		double x0 = pad.getLeft();
-		boolean wrap = editor.isWrapText();
+		boolean wrap = editor.isWordWrap();
 		double width = getWidth();
 		
 		// TODO account for leading, trailing components
@@ -414,12 +462,13 @@ public class VFlow
 	}
 	
 	
-	protected void createCaretLineHighlight(FxPathBuilder pbuilder, Marker m)
+	protected void createCaretLineHighlight(FxPathBuilder pbuilder, Marker mark)
 	{
-		LineBox b = layout.getLineBox(m.getLine());
+		LineBox b = layout.getLineBox(mark.getLine());
 		if(b != null)
 		{
-			b.addBoxOutline(pbuilder, getWidth());
+			Insets m = getPadding();
+			b.addBoxOutline(pbuilder, m.getLeft(), getWidth() - m.getLeft() - m.getRight());
 		}
 	}
 	
@@ -578,7 +627,7 @@ public class VFlow
 		if(startOffset == endOffset)
 		{
 			// not a range, use caret shape instead
-			pe = lineBox.getCaretShape(startOffset, false);
+			pe = lineBox.getCaretShape(startOffset, true);
 		}
 		else
 		{
@@ -624,10 +673,8 @@ public class VFlow
 			return;
 		}
 		
-		// get selection shapes for top and bottom lines
+		// get selection shapes for top and bottom segments,
 		// translated to this VFlow coordinates.
-		// when we say "visible text line" we mean the first row of text, since the model text line
-		// might contain multiple visible rows due to wrapping.
 		PathElement[] top;
 		PathElement[] bottom;
 		if(startMarker.getLine() == endMarker.getLine())
@@ -651,25 +698,14 @@ public class VFlow
 		}
 		
 		// generate shapes
-		double left = layout.getLineNumbersColumnWidth();
-		double right = getWidth();
-		SelectionHelper h = new SelectionHelper(b, left, right);
-		
-		h.process(top);
-		
-		if(bottom == null)
-		{
-			h.generateTop(top);
-			h.generateMiddle();
-			h.generateBottom(top);
-		}
-		else
-		{
-			h.process(bottom);
+		Insets m = getPadding();
+		double left = m.getLeft() + layout.getLineNumbersColumnWidth(); // FIX padding? border?
+		double right = getWidth() - m.getLeft() - m.getRight();
 
-			h.generateTop(top);
-			h.generateMiddle();
-			h.generateBottom(bottom);
-		}
+		// TODO
+		boolean topLTR = true;
+		boolean bottomLTR = true;
+		
+		new SelectionHelper(b, left, right).generate(top, bottom, topLTR, bottomLTR);
 	}
 }
