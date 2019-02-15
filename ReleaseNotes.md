@@ -1,5 +1,9 @@
 # JsonPretty Release Notes
 
+**2019.0214.2033**
+- fx update
+- updated color scheme
+
 **0.00.16**
 - java 10 compatibility
 

@@ -23,7 +23,7 @@ public class TestJsonParser
 	}
 	
 	
-//	@Test
+	@Test
 	public void testNormal()
 	{
 		t(IG, "]");
@@ -71,7 +71,7 @@ public class TestJsonParser
 	}
 	
 	
-//	@Test
+	@Test
 	public void testErrors()
 	{
 		t(IG, "{{");
