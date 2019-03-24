@@ -68,6 +68,10 @@ public class EditorTools
 	{
 		Insets pad = src.getPadding();
 		Point2D p = src.localToScreen(pad.getLeft(), pad.getTop());
+		if(p == null)
+		{
+			return null;
+		}
 		
 		p = target.screenToLocal(p);
 		double dx = p.getX();

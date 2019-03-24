@@ -87,7 +87,7 @@ public class SimpleWordSelector
 	public void accept(FxEditor ed, Marker m)
 	{
 		int line = m.getLine();
-		String text = ed.getTextOnLine(line);
+		String text = ed.getPlainText(line);
 		if(text == null)
 		{
 			return;

@@ -25,6 +25,7 @@ public class FxEditorMouseHandler
 	private double autoScrollStepFast = 200; // arbitrary
 	private double autoScrollStepSlow = 20; // arbitrary
 	private boolean autoScrollUp;
+	private double scrollWheelStepSize = 0.1;
 
 
 	public FxEditorMouseHandler(FxEditor ed, SelectionController sel)
@@ -59,7 +60,8 @@ public class FxEditorMouseHandler
 		else
 		{
 			// vertical block scroll
-			editor.blockScroll(ev.getDeltaY() >= 0);
+			double frac = scrollWheelStepSize * (ev.getDeltaY() >= 0 ? -1 : 1); 
+			editor.scroll(frac); 
 		}
 	}
 	
@@ -95,6 +97,8 @@ public class FxEditorMouseHandler
 	
 	public void handleMousePressed(MouseEvent ev)
 	{
+		// not sure - perhaps only ignore if the mouse press is within a selection
+		// and reset selection if outside?
 		if(FX.isPopupTrigger(ev))
 		{
 			return;
@@ -136,6 +140,11 @@ public class FxEditorMouseHandler
 
 	public void handleMouseDragged(MouseEvent ev)
 	{
+		if(!FX.isLeftButton(ev))
+		{
+			return;
+		}
+		
 		double y = ev.getY();
 		if(y < 0)
 		{
@@ -184,7 +193,11 @@ public class FxEditorMouseHandler
 	protected void autoScroll()
 	{
 		double delta = fastAutoScroll ? autoScrollStepFast : autoScrollStepSlow;
-		editor.blockScroll(delta, autoScrollUp);
+		if(autoScrollUp)
+		{
+			delta = -delta;
+		}
+		editor.blockScroll(delta);
 		
 		Point2D p;
 		if(autoScrollUp)

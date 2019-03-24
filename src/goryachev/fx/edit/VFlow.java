@@ -15,6 +15,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -102,12 +103,7 @@ public class VFlow
 		
 		layoutChildren();
 		
-		// update scroll
-		editor.setHandleScrollEvents(false);
-		int max = editor.getLineCount();
-		double v = (max == 0 ? 0.0 : top / (double)max); 
-		editor.vscroll.setValue(v);
-		editor.setHandleScrollEvents(true);
+		updateVerticalScrollBar();
 	}
 	
 	
@@ -127,7 +123,7 @@ public class VFlow
 					double dy = y - getHeight();
 					if(y > 0)
 					{
-						blockScroll(dy, true);
+						blockScroll(dy);
 						return;
 					}
 				}
@@ -152,14 +148,20 @@ public class VFlow
 	
 	public int getVisibleLineCount()
 	{
+		if(layout == null)
+		{
+			return 0;
+		}
 		return layout.getVisibleLineCount();
 	}
 	
 	
 	protected void layoutChildren()
 	{
+		// TODO skip if nothing changed!
 		layout = recreateLayout(layout);
 		updateCaretAndSelection();
+		//updateVerticalScrollBar();
 	}
 	
 	
@@ -249,155 +251,6 @@ public class VFlow
 		c.setText(s);
 	}
 	
-
-	public FxEditorLayout recreateLayout(FxEditorLayout prev)
-	{
-		if(prev != null)
-		{
-			prev.removeFrom(this);
-		}
-		
-		double width = getWidth();
-		double height = getHeight();
-		clip.setWidth(width);
-		clip.setHeight(height);
-		
-		// TODO is loaded?
-		FxEditorModel model = editor.getModel();
-		int lineCount = model.getLineCount();
-		FxEditorLayout la = new FxEditorLayout(editor, topLine);
-		
-		Insets pad = getInsets();
-		double y0 = pad.getTop() - offsety;
-		double ymax = height - pad.getBottom();
-		double x0 = pad.getLeft();
-		double wid = width - pad.getLeft() - pad.getRight();
-		boolean wrap = editor.isWordWrap();
-		boolean showLineNumbers = editor.isShowLineNumbers();
-		boolean estimateLineNumberWidth = showLineNumbers;
-		double lineNumbersColumnWidth = 0.0;
-		double unwrappedWidth = -1.0;
-		
-		// layout from top to bottom.
-		// stage 1: computing preferred sizes
-		
-		double x1 = x0;
-		double y = y0;
-		for(int i=topLine; i<lineCount; i++)
-		{
-			LineBox b = (prev == null ? null : prev.getLineBox(i));
-			if(b == null)
-			{
-				b = model.getLineBox(i);
-				b.init(i);
-			}
-			
-			if(estimateLineNumberWidth)
-			{
-				// TODO can simply get the last line pref width after the sizing cycle, before the actual layout cycle
-				lineNumbersColumnWidth = estimateLineNumberColumnWidth(b.getLineNumberComponent());
-				
-				x1 += lineNumbersColumnWidth;
-				wid -= lineNumbersColumnWidth;
-				if(wid < 0)
-				{
-					wid = 0;
-				}
-				estimateLineNumberWidth = false;
-			}
-			
-			// TODO skip sizing if the width has not changed (incl. line number component)
-			
-			Region nd = b.getCenter();
-			nd.setManaged(true);
-			getChildren().add(nd);
-			nd.applyCss();
-			la.addLineBox(b);
-			
-			// TODO can use cached value if the vflow width is the same
-			double w = wrap ? wid : -1;
-			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
-			double h = nd.prefHeight(w);
-			
-			if(!wrap)
-			{
-				Region center = b.getCenter();
-				double prefw = center == null ? 0.0 : center.prefWidth(-1);
-				if(unwrappedWidth < prefw)
-				{
-					unwrappedWidth = prefw;
-				}
-			}
-			
-			if(showLineNumbers)
-			{
-				Labeled nc = b.getLineNumberComponent();
-				setLineNumber(nc, i);
-				
-				nc.setManaged(true);
-				getChildren().add(nc);
-				nc.applyCss();
-				
-				// FIX
-				// for some reason, label is taller than the text flow alone, even with the same font
-				// the -fx-padding is correct, and -fx-label-padding is 0 on line number labels
-//				h = Math.max(h, nc.prefHeight(-1));
-				
-				b.setHeight(h);
-				b.setY(y);
-			}
-			else
-			{
-				b.setHeight(h);
-			}
-			
-			y += h;
-			if(y > ymax)
-			{
-				break;
-			}
-		}
-		
-		// stage 2: layout components
-		
-		if(unwrappedWidth < wid)
-		{
-			unwrappedWidth = wid;
-		}
-		
-		y = y0;
-		for(int ix=topLine; ix<lineCount; ix++)
-		{
-			LineBox b = la.getLineBox(ix);
-			Region nd = b.getCenter();
-			double h = b.getHeight();
-			double w = wrap ? wid : unwrappedWidth;
-			
-			if(showLineNumbers)
-			{
-				Labeled nc = b.getLineNumberComponent();
-				
-				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
-				layoutInArea(nc, x0, y, lineNumbersColumnWidth, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
-			}
-			else
-			{
-				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
-			}
-			
-			y += h;
-			if(y > ymax)
-			{
-				break;
-			}
-		}
-		
-		la.setLineNumbersColumnWidth(lineNumbersColumnWidth);
-		la.setUnwrappedWidth(unwrappedWidth);
-		
-		return la;
-	}
-	
 	
 	public double addAndComputePreferredHeight(Region nd)
 	{
@@ -428,7 +281,7 @@ public class VFlow
 			for(SelectionSegment s: editor.selector.segments)
 			{
 				Marker caret = s.getCaret();
-				createCaretLineHighlight(caretLineBuilder, caret);
+				createCurrentLineHighlight(caretLineBuilder, caret);
 			}
 			caretLineHighlight.getElements().setAll(caretLineBuilder.getPath());
 		}
@@ -462,13 +315,20 @@ public class VFlow
 	}
 	
 	
-	protected void createCaretLineHighlight(FxPathBuilder pbuilder, Marker mark)
+	protected void createCurrentLineHighlight(FxPathBuilder pbuilder, Marker mark)
 	{
 		LineBox b = layout.getLineBox(mark.getLine());
 		if(b != null)
 		{
 			Insets m = getPadding();
-			b.addBoxOutline(pbuilder, m.getLeft(), getWidth() - m.getLeft() - m.getRight());
+			if(editor.isWordWrap())
+			{
+				b.addBoxOutline(pbuilder, 0, getWidth());
+			}
+			else
+			{
+				b.addBoxOutline(pbuilder, 0, layout.getTotalWidth()); 
+			}
 		}
 	}
 	
@@ -485,37 +345,27 @@ public class VFlow
 	
 	public void pageUp()
 	{
-		blockScroll(getHeight(), true);
+		blockScroll(-getHeight());
 	}
 	
 	
 	public void pageDown()
 	{
-		blockScroll(getHeight(), false);
+		blockScroll(getHeight());
 	}
 	
 	
-	public void blockScroll(boolean up)
+	public void scroll(double fractionOfHeight)
 	{
-		// this could be a preference
-		double BLOCK_SCROLL_FACTOR = 0.1;
-		double BLOCK_MIN_SCROLL = 40;
-		
-		double h = getHeight();
-		double delta = h * BLOCK_SCROLL_FACTOR;
-		if(delta < BLOCK_MIN_SCROLL)
-		{
-			delta = h;
-		}
-		
-		blockScroll(delta, up);
+		blockScroll(getHeight() * fractionOfHeight);
 	}
 	
 	
-	public void blockScroll(double delta, boolean up)
+	public void blockScroll(double delta)
 	{
-		if(up)
+		if(delta < 0)
 		{
+			delta = -delta;
 			if(delta <= offsety)
 			{
 				// no need to query the model
@@ -700,12 +550,277 @@ public class VFlow
 		// generate shapes
 		Insets m = getPadding();
 		double left = m.getLeft() + layout.getLineNumbersColumnWidth(); // FIX padding? border?
-		double right = getWidth() - m.getLeft() - m.getRight();
+		double right = editor.isWordWrap() ? (getWidth() - m.getLeft() - m.getRight()) : layout.getTotalWidth();
 
 		// TODO
 		boolean topLTR = true;
 		boolean bottomLTR = true;
 		
 		new SelectionHelper(b, left, right).generate(top, bottom, topLTR, bottomLTR);
+	}
+
+	
+	public FxEditorLayout recreateLayout(FxEditorLayout prev)
+	{
+		editor.setHandleScrollEvents(false);
+		
+		if(prev != null)
+		{
+			prev.removeFrom(this);
+		}
+		
+		double height = getHeight();
+		clip.setWidth(getWidth());
+		clip.setHeight(height);
+		
+		// TODO is loaded?
+		FxEditorModel model = editor.getModel();
+		int lineCount = model == null ? 0 : model.getLineCount();
+		FxEditorLayout la = new FxEditorLayout(editor, topLine);
+		
+		Insets pad = getInsets();
+		double y0 = pad.getTop() - offsety;
+		double ymax = height - pad.getBottom();
+		double x0 = pad.getLeft();
+		double wid = getWidth() - pad.getLeft() - pad.getRight();
+		boolean wrap = editor.isWordWrap();
+		boolean showLineNumbers = editor.isShowLineNumbers();
+		boolean estimateLineNumberWidth = showLineNumbers;
+		double lineNumbersColumnWidth = 0.0;
+		double unwrappedWidth = -1.0;
+		
+		// layout from top to bottom.
+		// stage 1: computing preferred sizes
+		
+		double x1 = x0;
+		double y = y0;
+		if(model != null)
+		{
+			for(int i=topLine; i<lineCount; i++)
+			{
+				LineBox b = (prev == null ? null : prev.getLineBox(i));
+				if(b == null)
+				{
+					b = model.getLineBox(i);
+					b.init(i);
+				}
+				
+				if(estimateLineNumberWidth)
+				{
+					// TODO can simply get the last line pref width after the sizing cycle, before the actual layout cycle
+					lineNumbersColumnWidth = estimateLineNumberColumnWidth(b.getLineNumberComponent());
+					
+					x1 += lineNumbersColumnWidth;
+					wid -= lineNumbersColumnWidth;
+					if(wid < 0)
+					{
+						wid = 0;
+					}
+					estimateLineNumberWidth = false;
+				}
+				
+				// TODO skip sizing if the width has not changed (incl. line number component)
+				
+				Region nd = b.getCenter();
+				nd.setManaged(true);
+				getChildren().add(nd);
+				nd.applyCss();
+				la.addLineBox(b);
+				
+				// TODO can use cached value if the vflow width is the same
+				double w = wrap ? wid : -1;
+				nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
+				double h = nd.prefHeight(w);
+				
+				if(!wrap)
+				{
+					Region center = b.getCenter();
+					double prefw = center == null ? 0.0 : center.prefWidth(-1);
+					if(unwrappedWidth < prefw)
+					{
+						unwrappedWidth = prefw;
+					}
+				}
+				
+				if(showLineNumbers)
+				{
+					Labeled nc = b.getLineNumberComponent();
+					setLineNumber(nc, i);
+					
+					nc.setManaged(true);
+					getChildren().add(nc);
+					nc.applyCss();
+					
+					// FIX
+					// for some reason, label is taller than the text flow alone, even with the same font
+					// the -fx-padding is correct, and -fx-label-padding is 0 on line number labels
+	//				h = Math.max(h, nc.prefHeight(-1));
+					
+					b.setHeight(h);
+					b.setY(y);
+				}
+				else
+				{
+					b.setHeight(h);
+				}
+				
+				y += h;
+				if(y > ymax)
+				{
+					break;
+				}
+			}
+		}
+		
+		// stage 2: layout components
+		
+		if(unwrappedWidth < wid)
+		{
+			unwrappedWidth = wid;
+		}
+		
+		la.setLineNumbersColumnWidth(lineNumbersColumnWidth);
+		la.setUnwrappedWidth(unwrappedWidth);
+		
+		layoutFlow(la, y0, ymax, x0, x1);
+				
+		if(!wrap)
+		{
+			//double val = unwrappedWidth - wid; // FIX
+			ScrollBar hscroll = editor.getHorizontalScrollBar();
+			hscroll.setMin(0); // padding?
+	        hscroll.setMax(unwrappedWidth);
+	        hscroll.setVisibleAmount(wid);
+		}
+		
+		editor.setHandleScrollEvents(true);
+		
+		return la;
+	}
+	
+	
+	protected void layoutFlow(FxEditorLayout la, double y0, double ymax, double x0, double x1)
+	{
+		boolean showLineNumbers = editor.isShowLineNumbers();
+		// TODO is loaded?
+		FxEditorModel model = editor.getModel();
+		int lineCount = model == null ? 0 : model.getLineCount();
+		Insets pad = getInsets();
+		double wid = getWidth() - pad.getLeft() - pad.getRight();
+		double w = editor.isWordWrap() ? wid : la.getTotalWidth();
+		
+		double y = y0;
+		for(int ix=topLine; ix<lineCount; ix++)
+		{
+			LineBox b = la.getLineBox(ix);
+			Region nd = b.getCenter();
+			double h = b.getHeight();
+			
+			if(showLineNumbers)
+			{
+				Labeled nc = b.getLineNumberComponent();
+				// TODO line numbers are slightly off vertically
+				//nc.setPadding(Insets.EMPTY);
+				layoutInArea(nc, x0, y, la.getLineNumbersColumnWidth(), h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
+
+				nd.setClip(new Rectangle(offsetx, 0, w, h));
+				layoutInArea(nd, x1 - offsetx, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			}
+			else
+			{
+				nd.setClip(null);
+				layoutInArea(nd, x1 - offsetx, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			}
+			
+			y += h;
+			if(y > ymax)
+			{
+				break;
+			}
+		}
+	}
+	
+	
+	public void setHorizontalScroll(double val)
+	{
+		double unwrappedWidth = layout.getTotalWidth();
+		Insets pad = getPadding();
+		double wid = getWidth() - pad.getLeft() - pad.getRight() - layout.getLineNumbersColumnWidth();
+		
+		offsetx = val * (unwrappedWidth - wid) / unwrappedWidth;
+		
+		double y0 = pad.getTop() - offsety;
+		double ymax = getHeight() - pad.getBottom();
+		boolean showLineNumbers = editor.isShowLineNumbers();
+		double x0 = pad.getLeft();
+		double x1 = x0 + layout.getLineNumbersColumnWidth();
+		
+		// no need to recreate the layout
+		layoutFlow(layout, y0, ymax, x0, x1);
+
+		updateCaretAndSelection();
+	}
+
+
+	// returns true if update resulted in a visual change
+	public boolean update(int startLine, int linesInserted, int endLine)
+	{
+		try
+		{
+			int max = Math.max(endLine, startLine + linesInserted);
+			if(max < topLine)
+			{
+				return false;
+			}
+			else if(startLine > (topLine + getVisibleLineCount()))
+			{
+				return false;
+			}
+			
+			// TODO optimize, but for now simply
+			invalidateLayout();
+			requestLayout();
+			
+			return true;
+		}
+		finally
+		{
+			updateVerticalScrollBar();
+		}
+	}
+	
+	
+	protected void updateVerticalScrollBar()
+	{
+		editor.setHandleScrollEvents(false);
+		
+		int max;
+		int visible;
+		double val;
+		
+//		double v = (max == 0 ? 0.0 : topLine / (double)max); 
+//		editor.vscroll.setValue(v);
+		
+		FxEditorModel model = editor.getModel();
+		if(model == null)
+		{
+			visible = 1;
+			max = 1;
+			val = 0;
+		}
+		else
+		{
+			max = model.getLineCount();
+			visible = getVisibleLineCount();
+			val = topLine; //(max - visible);
+		}
+		
+		ScrollBar vscroll = editor.getVerticalScrollBar();
+		vscroll.setMin(0);
+        vscroll.setMax(max);
+        vscroll.setVisibleAmount(visible);
+        vscroll.setValue(val);
+        
+		editor.setHandleScrollEvents(true);
 	}
 }

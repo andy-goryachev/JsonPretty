@@ -13,12 +13,10 @@ import javafx.scene.paint.Color;
 public class CommonStyles
 	extends FxStyleSheet
 {
-	/** suppresses alternate rows styling */
-	public static final CssStyle ALTERNATE_ROWS_OFF = new CssStyle("CommonStyles_ALTERNATE_ROWS_OFF");
 	/** bold type face */
 	public static final CssStyle BOLD = new CssStyle("CommonStyles_BOLD");
-	/** disables horizontal scroll bar */
-	public static final CssStyle NO_HORIZONTAL_SCROLL_BAR = new CssStyle("CommonStyles_NO_HORIZONTAL_SCROLL_BAR");
+	/** disables alternative row color */
+	public static final CssStyle DISABLE_ALTERNATIVE_ROW_COLOR = new CssStyle("CommonStyles_DISABLE_ALTERNATIVE_ROW_COLOR");
 	
 	private static String TABLE_ROW_HEIGHT = "1.8em";
 
@@ -31,6 +29,7 @@ public class CommonStyles
 		(
 			selector(".root").defines
 			(
+				prop("-fx-font-smoothing-type", "gray"),
 				// text selection
 				prop("-fx-accent", FX.alpha(theme.selectedTextBG, 0.7)),
 				prop("-fx-base", theme.base),
@@ -77,7 +76,7 @@ public class CommonStyles
 						
 			// andy's hacks
 			
-			selector(ALTERNATE_ROWS_OFF).defines
+			selector(DISABLE_ALTERNATIVE_ROW_COLOR).defines
 			(
 				new FxCssProp("-fx-control-inner-background-alt", "-fx-control-inner-background")
 			),
@@ -86,24 +85,6 @@ public class CommonStyles
 			selector(BOLD).defines
 			(
 				fontWeight("bold")
-			),
-			
-			// disables horizontal scroll bar
-			// FIX does not disable completely
-			selector(NO_HORIZONTAL_SCROLL_BAR).defines
-			(
-				selector(".scroll-bar:horizontal").defines
-				(
-					maxHeight(0),
-					padding(0),
-					opacity(0)
-				),
-				selector(".scroll-bar:horizontal *").defines
-				(
-					maxHeight(0),
-					padding(0),
-					opacity(0)
-				)
 			)
 		);
 	}
@@ -185,6 +166,88 @@ public class CommonStyles
 					backgroundColor(commas(theme.focus, Color.WHITE)),
 					backgroundInsets("0, 1"),
 					backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+				),
+				
+				selector(FlatToggleButton.STYLE).defines
+				(
+					backgroundColor(TRANSPARENT),
+					backgroundInsets(0),
+					backgroundRadius(0),
+					padding(spaces("0.33333em 0.666667em 0.333333em 0.666667em")),
+					textFill("-fx-text-base-color"),
+					prop("-fx-alignment", "center"),
+					prop("-fx-content-display", "left"),
+					
+					selector(HOVER).defines
+					(
+						backgroundColor(Color.LIGHTGRAY),
+						backgroundInsets(0),
+						backgroundRadius(px(flatButtonRadius))
+					),
+					
+					selector(FOCUSED).defines
+					(
+						backgroundColor(commas(theme.focus, theme.base)),
+						backgroundInsets("0, 1"),
+						backgroundRadius(px(flatButtonRadius))
+					),
+					
+					selector(FOCUSED, HOVER).defines
+					(
+						backgroundColor(commas(theme.focus, Color.LIGHTGRAY)),
+						backgroundInsets("0 0 0 0, 1 1 1 1"),
+						backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+					),
+					
+					selector(DISABLED).defines
+					(
+						opacity(0.4)
+					),
+					
+					selector(ARMED).defines
+					(
+						textFill(Color.BLACK),
+						backgroundColor(commas(theme.focus, Color.WHITE)),
+						backgroundInsets("0, 1"),
+						backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+					),
+					
+					selector(ARMED, HOVER).defines
+					(
+						textFill(Color.BLACK),
+						backgroundColor(commas(theme.focus, Color.WHITE)),
+						backgroundInsets("0, 1"),
+						backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+					),
+					
+					selector(SELECTED).defines
+					(
+						textFill(Color.BLACK),
+						backgroundColor(Color.WHITE),
+						backgroundInsets("0, 1"),
+						backgroundRadius(px(flatButtonRadius)),
+						
+						selector(FOCUSED).defines
+						(
+							backgroundColor(commas(theme.focus, Color.WHITE)),
+							backgroundInsets("0 0 0 0, 1 1 1 1"),
+							backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1))),
+							
+							selector(HOVER).defines
+							(
+								backgroundColor(commas(theme.focus, FX.gray(250))),
+								backgroundInsets("0 0 0 0, 1 1 1 1"),
+								backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+							)
+						),
+						
+						selector(HOVER).defines
+						(
+							backgroundColor(commas(theme.focus, FX.gray(250))),
+							backgroundInsets("0 0 0 0, 1 1 1 1"),
+							backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+						)
+					)
 				)
 			)
 		};
@@ -309,7 +372,7 @@ public class CommonStyles
 	
 	protected Object fxEditor(Theme theme)
 	{
-		return selector(FxEditor.PANEL).defines
+		return selector(FxEditor.PANE).defines
 		(
 			backgroundColor(commas(theme.textBG, theme.textBG)),
 			backgroundInsets(commas(0, 1)),
@@ -630,6 +693,7 @@ public class CommonStyles
 				backgroundInsets(commas(0, 1)),
 				backgroundColor(commas(theme.outline, theme.textBG)),
 				backgroundRadius(commas(0, 0)),
+//				padding("0.333333em, 0.583em, 0.333333em, 0.583em"),
 				
 				new Selector(FOCUSED).defines
 				(
