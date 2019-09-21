@@ -17,8 +17,8 @@ public class IntegerAnalyzer
 	private static final long MAX_TIME_MS = time(2100, Calendar.DECEMBER, 31);
 	private static final long MIN_TIME_UNIX = MIN_TIME_MS / 1000;
 	private static final long MAX_TIME_UNIX = MAX_TIME_MS / 1000;
-	private static final SimpleDateFormat javaFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS z");
-	private static final SimpleDateFormat unixFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss z");
+	private static final SimpleDateFormat javaFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z");
+	private static final SimpleDateFormat unixFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 	
 	
 	public IntegerAnalyzer(int pos, String text)
