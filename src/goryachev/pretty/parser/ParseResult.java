@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2013-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
 import goryachev.common.util.CList;
 import java.util.List;

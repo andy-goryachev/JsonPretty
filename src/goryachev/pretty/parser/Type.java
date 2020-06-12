@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2014 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2010-2014 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
 
 

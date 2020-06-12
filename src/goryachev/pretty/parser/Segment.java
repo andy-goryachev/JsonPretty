@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
 import goryachev.common.util.CKit;
 import goryachev.common.util.FH;
