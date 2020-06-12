@@ -4,7 +4,7 @@ import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fxeditor.FxEditor;
-import goryachev.pretty.analysis.AnalysisReport;
+import goryachev.text.analysis.AnalysisReport;
 
 
 /**

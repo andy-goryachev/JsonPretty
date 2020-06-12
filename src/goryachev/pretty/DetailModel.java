@@ -6,8 +6,8 @@ import goryachev.fxeditor.CTextFlow;
 import goryachev.fxeditor.Edit;
 import goryachev.fxeditor.FxEditorModel;
 import goryachev.fxeditor.FxEditorModel.LoadInfo;
+import goryachev.text.analysis.AnalysisReport;
 import goryachev.fxeditor.LineBox;
-import goryachev.pretty.analysis.AnalysisReport;
 import javafx.geometry.Insets;
 import javafx.scene.text.Text;
 
