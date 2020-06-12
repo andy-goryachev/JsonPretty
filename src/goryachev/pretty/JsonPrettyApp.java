@@ -1,8 +1,8 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
+import goryachev.common.log.Log;
 import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
-import goryachev.common.util.Log;
 import goryachev.fx.CssLoader;
 import java.io.File;
 import javafx.application.Application;
@@ -28,7 +28,7 @@ public class JsonPrettyApp
 			
 		File logFolder = new File(baseDir, "logs"); 
 //		Log.init(logFolder);
-		Log.initConsole();
+//		Log.initConsole();
 		
 		File settingsFile = new File(baseDir, "settings.conf");
 		FileSettingsProvider p = new FileSettingsProvider(settingsFile);

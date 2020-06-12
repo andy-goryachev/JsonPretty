@@ -2,17 +2,18 @@
 package goryachev.pretty;
 import goryachev.common.util.CList;
 import goryachev.common.util.CSorter;
-import goryachev.fx.edit.CTextFlow;
-import goryachev.fx.edit.Edit;
-import goryachev.fx.edit.FxEditorModel;
-import goryachev.fx.edit.LineBox;
+import goryachev.fxeditor.CTextFlow;
+import goryachev.fxeditor.Edit;
+import goryachev.fxeditor.FxEditorModel;
+import goryachev.fxeditor.FxEditorModel.LoadInfo;
+import goryachev.fxeditor.LineBox;
 import goryachev.pretty.analysis.AnalysisReport;
 import javafx.geometry.Insets;
 import javafx.scene.text.Text;
 
 
 /**
- * DetailModel.
+ * Detail Model.
  */
 public class DetailModel
 	extends FxEditorModel

@@ -1,11 +1,11 @@
 // Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view;
 import goryachev.common.util.CKit;
-import goryachev.fx.edit.ClipboardHandlerBase;
-import goryachev.fx.edit.EditorSelection;
-import goryachev.fx.edit.FxEditorModel;
-import goryachev.fx.edit.Marker;
-import goryachev.fx.edit.SelectionSegment;
+import goryachev.fxeditor.ClipboardHandlerBase;
+import goryachev.fxeditor.EditorSelection;
+import goryachev.fxeditor.FxEditorModel;
+import goryachev.fxeditor.Marker;
+import goryachev.fxeditor.SelectionSegment;
 import goryachev.pretty.ColorScheme;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;

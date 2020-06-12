@@ -1,8 +1,8 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package research.clipboard;
+import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
 import goryachev.common.util.D;
-import goryachev.common.util.Log;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import javafx.application.Application;
@@ -22,7 +22,7 @@ public class TestClipboard
 
 	public void init() throws Exception
 	{
-		Log.initConsole();
+//		Log.initConsole();
 	}
 
 

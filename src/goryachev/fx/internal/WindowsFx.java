@@ -1,11 +1,9 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.internal;
-import goryachev.common.util.CKit;
+import goryachev.common.log.Log;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
-import goryachev.common.util.D;
 import goryachev.common.util.GlobalSettings;
-import goryachev.common.util.Log;
 import goryachev.common.util.WeakList;
 import goryachev.fx.CssLoader;
 import goryachev.fx.FxAction;
@@ -30,6 +28,7 @@ import javafx.stage.WindowEvent;
  */
 public class WindowsFx
 {
+	protected static final Log log = Log.get("WindowsFx");
 	/** in the focus order */
 	protected final WeakList<FxWindow> windowStack = new WeakList<>();
 	/** prefix->window and window->prefix */
@@ -134,7 +133,14 @@ public class WindowsFx
 	public void storeWindow(FxWindow w)
 	{
 		String windowPrefix = lookupWindowPrefix(w);
-		w.storeSettings(windowPrefix);
+		
+		LocalSettings settings = LocalSettings.find(w);
+		if(settings != null)
+		{
+			String k = windowPrefix + FxSchema.SFX_SETTINGS;
+			settings.saveValues(k);
+		}
+		
 		FxSchema.storeWindow(windowPrefix, w);
 		
 		Parent p = w.getScene().getRoot();
@@ -145,7 +151,13 @@ public class WindowsFx
 	public void restoreWindow(FxWindow w)
 	{
 		String windowPrefix = lookupWindowPrefix(w);
-		w.loadSettings(windowPrefix);
+		
+		LocalSettings settings = LocalSettings.find(w);
+		if(settings != null)
+		{
+			String k = windowPrefix + FxSchema.SFX_SETTINGS;
+			settings.loadValues(k);
+		}
 		FxSchema.restoreWindow(windowPrefix, w);
 		
 		Parent p = w.getScene().getRoot();
@@ -172,8 +184,6 @@ public class WindowsFx
 		FxWindow w = getFxWindow(n);
 		if(w == null)
 		{
-			D.print("delayed restore", CKit.getSimpleName(n)); // FIX
-			
 			// the node is not yet connected to the scene graph
 			// let's attach a listener to the bounds in parent property which gets set
 			// when the hierarchy of this node is completely connected
@@ -183,7 +193,6 @@ public class WindowsFx
 				public void changed(ObservableValue<? extends Bounds> src, Bounds prev, Bounds cur)
 				{
 					src.removeListener(this);
-					D.print("delayed restore performed", CKit.getSimpleName(n)); // FIX
 					restoreNode(n);
 				}
 			});
@@ -246,7 +255,7 @@ public class WindowsFx
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 		
 		w.show();
@@ -407,7 +416,7 @@ public class WindowsFx
 		}
 		catch(Throwable e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 }

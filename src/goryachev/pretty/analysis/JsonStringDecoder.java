@@ -5,7 +5,7 @@ import goryachev.common.util.SB;
 
 
 /**
- * JsonStringDecoder.
+ * Json String Decoder.
  */
 public class JsonStringDecoder
 {

@@ -8,6 +8,7 @@ import goryachev.fx.FxDump;
 import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
+import goryachev.fx.internal.LocalSettings;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -35,8 +36,10 @@ public class MainWindow
 		setSize(600, 700);
 
 		// preferences
-		bind("HSPLIT", pane.horizontalSplit);
-		bind("MONITOR_CLIPBOARD", pane.monitorClipboardProperty);
+		LocalSettings.
+			get(this).
+			add("HSPLIT", pane.horizontalSplit).
+			add("MONITOR_CLIPBOARD", pane.monitorClipboardProperty);
 		
 		pane.updateClipboardMonitoring();
 

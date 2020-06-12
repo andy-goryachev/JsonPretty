@@ -1,12 +1,11 @@
 // Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.view;
-import goryachev.common.util.Log;
-import goryachev.fx.Binder;
+import goryachev.common.log.Log;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
-import goryachev.fx.edit.FxEditor;
-import goryachev.fx.edit.Marker;
-import goryachev.fx.edit.SelectionSegment;
+import goryachev.fxeditor.FxEditor;
+import goryachev.fxeditor.Marker;
+import goryachev.fxeditor.SelectionSegment;
 import goryachev.pretty.CaretSpot;
 import goryachev.pretty.parser.Segment;
 import java.util.List;
@@ -24,6 +23,8 @@ public class ContentView
 	public static CssStyle CONTENT_PANE = new CssStyle("ContentView_CONTENT_PANE");
 	public static CssStyle CONTENT_TEXT = new CssStyle("ContentView_CONTENT_TEXT");
 
+	protected static Log log = Log.get("ContentView");
+	
 	public final FxEditor textField;
 	public final SegmentEditorModel model;
 	private final ReadOnlyObjectWrapper<CaretSpot> caretSpot = new ReadOnlyObjectWrapper();
@@ -39,7 +40,7 @@ public class ContentView
 		// TODO set single selection
 		// TODO disable editing
 		//textField.addEventFilter(KeyEvent.ANY, (ev) -> ev.consume());
-		Binder.onChange(this::updateCaret, textField.selectionProperty());
+		FX.onChange(this::updateCaret, textField.selectionProperty());
 	}
 
 
@@ -89,7 +90,7 @@ public class ContentView
 				}
 				catch(Exception e)
 				{
-					Log.ex(e);
+					log.error(e);
 					text = "";
 				}
 				

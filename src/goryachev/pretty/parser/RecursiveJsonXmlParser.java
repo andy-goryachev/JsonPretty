@@ -1,7 +1,7 @@
 // Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.parser;
+import goryachev.common.log.Log;
 import goryachev.common.util.D;
-import goryachev.common.util.Log;
 
 
 /**
@@ -273,7 +273,7 @@ public class RecursiveJsonXmlParser
 				break;
 			}
 			
-			log.print("add:", state, s);
+			log.debug("add:%s %s", state, s);
 			
 			result.addSegment(state, s);
 		}

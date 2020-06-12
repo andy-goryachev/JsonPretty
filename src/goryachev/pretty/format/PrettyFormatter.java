@@ -1,8 +1,8 @@
 // Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.format;
+import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.Log;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;
 import java.util.List;
@@ -330,7 +330,7 @@ public class PrettyFormatter
 			Segment s = input.get(i);
 			Type t = s.getType();
 			
-			log.print(t, s);
+			log.debug("%s %s", t, s);
 			
 			switch(t)
 			{
@@ -509,7 +509,7 @@ public class PrettyFormatter
 	
 	protected void addSegmentPrivate(Segment s)
 	{
-		log.print("     add:", s);
+		log.debug("     add:%s", s);
 		
 		result.add(s);
 		prev = s.getType();

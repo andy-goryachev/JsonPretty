@@ -3,7 +3,7 @@ package goryachev.pretty;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
-import goryachev.fx.edit.FxEditor;
+import goryachev.fxeditor.FxEditor;
 import goryachev.pretty.analysis.AnalysisReport;
 
 

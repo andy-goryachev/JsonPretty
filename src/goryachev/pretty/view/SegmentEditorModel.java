@@ -2,10 +2,11 @@
 package goryachev.pretty.view;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
-import goryachev.fx.edit.CTextFlow;
-import goryachev.fx.edit.Edit;
-import goryachev.fx.edit.FxEditorModel;
-import goryachev.fx.edit.LineBox;
+import goryachev.fxeditor.CTextFlow;
+import goryachev.fxeditor.Edit;
+import goryachev.fxeditor.FxEditorModel;
+import goryachev.fxeditor.FxEditorModel.LoadInfo;
+import goryachev.fxeditor.LineBox;
 import goryachev.pretty.ColorScheme;
 import goryachev.pretty.parser.Segment;
 import goryachev.pretty.parser.Type;

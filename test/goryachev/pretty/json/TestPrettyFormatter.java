@@ -1,8 +1,7 @@
 // Copyright (c) 2013-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty.json;
+import goryachev.common.log.Log;
 import goryachev.common.test.TF;
-import goryachev.common.test.Test;
-import goryachev.common.util.Log;
 
 
 /**
@@ -13,7 +12,7 @@ public class TestPrettyFormatter
 {
 	public static void main(String[] args)
 	{
-		Log.connect("PrettyFormatter", "console");
+//		Log.connect("PrettyFormatter", "console");
 //		Log.connect("RecursiveJsonXmlParser", "console");
 		TF.run();
 	}

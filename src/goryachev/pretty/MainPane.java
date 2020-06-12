@@ -1,8 +1,8 @@
 // Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.pretty;
+import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.Log;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
@@ -70,7 +70,7 @@ public class MainPane
 		clipboard = Clipboard.getSystemClipboard();
 		monitorClipboardCheckbox = new FxCheckBox("monitor clipboard");
 		monitorClipboardCheckbox.selectedProperty().bindBidirectional(monitorClipboardProperty);
-		FX.listen(this::updateSplit, true, horizontalSplit);
+		FX.onChange(this::updateSplit, true, horizontalSplit);
 	}
 	
 	
@@ -131,7 +131,7 @@ public class MainPane
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 			return new CList<Segment>(new Segment(Type.ERROR, CKit.stackTrace(e)));
 		}
 	}
