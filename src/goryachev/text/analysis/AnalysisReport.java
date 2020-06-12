@@ -23,6 +23,7 @@ public class AnalysisReport
 	}
 	
 	
+	/** returns String or String[] */
 	public Object getSection(String name)
 	{
 		return rep.get(name);
